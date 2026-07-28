@@ -75,25 +75,21 @@ const CosmozDateInput = (host: Props) => {
 		const input = e.detail.value;
 		setInputState((prev) => {
 			if (type === 'year') {
-				const year = input === '' ? '' : parseYearInput(Number(input));
+				const year = parseYearInput(input);
 				return {
 					...prev,
 					year,
 				};
 			} else if (type === 'month') {
-				const monthVal =
-					input === '' ? '' : parseMonthInput(Number(input), prev.month);
-				const month = getLocaleMonthString(Number(monthVal), locale);
+				const monthVal = parseMonthInput(input, prev.month);
+				const month = getLocaleMonthString(monthVal, locale);
 				return {
 					...prev,
 					month,
 				};
 			}
-			const dayVal =
-				input === ''
-					? ''
-					: parseDayInput(Number(input), prev.year, prev.month, prev.day);
-			const day = getLocaleDayString(Number(dayVal), locale);
+			const dayVal = parseDayInput(input, prev);
+			const day = getLocaleDayString(dayVal, locale);
 			return {
 				...prev,
 				day,

@@ -19,21 +19,30 @@ export const isDateType = (
 	type: Intl.DateTimeFormatPartTypes,
 ): type is DateType => ['year', 'month', 'day'].includes(type);
 
+export type DateObject = {
+	year: string;
+	month: string;
+	day: string;
+};
+
 const resetInput = (value: number) => String(value).slice(-1);
 
-export const parseDayInput = (
-	value: number,
-	year: string,
-	month: string,
-	prev: string,
-) => {
+export const parseDayInput = (input: string, prev: DateObject) => {
+	if (input === '' || isNaN(Number(input))) {
+		return '';
+	}
+
+	const value = Number(input);
+
 	let daysInMonth = 31;
-	if (month !== '' && year !== '') {
-		daysInMonth = getDaysInMonth(new Date(Number(year), Number(month) - 1));
+	if (prev.month !== '' && prev.year !== '') {
+		daysInMonth = getDaysInMonth(
+			new Date(Number(prev.year), Number(prev.month) - 1),
+		);
 	}
 
 	let newDay;
-	if (value === daysInMonth + 1 && Number(prev) === daysInMonth) {
+	if (value === daysInMonth + 1 && Number(prev.day) === daysInMonth) {
 		newDay = value % daysInMonth;
 	} else if (value > daysInMonth) {
 		newDay = resetInput(value);
@@ -46,7 +55,12 @@ export const parseDayInput = (
 	return String(newDay);
 };
 
-export const parseMonthInput = (value: number, prev: string) => {
+export const parseMonthInput = (input: string, prev: string) => {
+	if (input === '' || isNaN(Number(input))) {
+		return '';
+	}
+
+	const value = Number(input);
 	let newMonth;
 	if (value === 13 && Number(prev) === 12) {
 		newMonth = value % 12;
@@ -61,7 +75,12 @@ export const parseMonthInput = (value: number, prev: string) => {
 	return String(newMonth);
 };
 
-export const parseYearInput = (value: number) => {
+export const parseYearInput = (input: string) => {
+	if (input === '' || isNaN(Number(input))) {
+		return '';
+	}
+
+	const value = Number(input);
 	let newYear;
 	if (value > 9999) {
 		newYear = resetInput(value);
@@ -74,7 +93,15 @@ export const parseYearInput = (value: number) => {
 	return String(newYear);
 };
 
-export const getLocaleMonthString = (month: number, locale: string) => {
+export const getLocaleMonthString = (
+	monthStr: string | number,
+	locale: string,
+) => {
+	if (monthStr === '') {
+		return '';
+	}
+
+	const month = Number(monthStr);
 	if (month === 0) {
 		return String(month);
 	}
@@ -89,7 +116,12 @@ export const getLocaleMonthString = (month: number, locale: string) => {
 	return localeMonth;
 };
 
-export const getLocaleDayString = (day: number, locale: string) => {
+export const getLocaleDayString = (dayStr: string | number, locale: string) => {
+	if (dayStr === '') {
+		return '';
+	}
+
+	const day = Number(dayStr);
 	if (day === 0) {
 		return String(day);
 	}
