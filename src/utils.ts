@@ -80,7 +80,10 @@ export const getLocaleMonthString = (month: number, locale: string) => {
 	}
 
 	const date = new Date(2000, month - 1, 1);
-	const parts = Intl.DateTimeFormat(locale).formatToParts(date);
+	const parts = Intl.DateTimeFormat(locale, {
+		numberingSystem: 'latn',
+		calendar: 'gregory',
+	}).formatToParts(date);
 
 	const localeMonth = parts.find((p) => p.type === 'month')!.value;
 	return localeMonth;
@@ -92,7 +95,10 @@ export const getLocaleDayString = (day: number, locale: string) => {
 	}
 
 	const date = new Date(2000, 0, day);
-	const parts = Intl.DateTimeFormat(locale).formatToParts(date);
+	const parts = Intl.DateTimeFormat(locale, {
+		numberingSystem: 'latn',
+		calendar: 'gregory',
+	}).formatToParts(date);
 
 	const localeDay = parts.find((p) => p.type === 'day')!.value;
 	return localeDay;

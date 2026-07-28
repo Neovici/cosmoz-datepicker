@@ -34,6 +34,8 @@ const options: Intl.DateTimeFormatOptions = {
 	year: 'numeric',
 	month: 'numeric',
 	day: 'numeric',
+	numberingSystem: 'latn',
+	calendar: 'gregory',
 };
 
 const CosmozDateInput = (host: Props) => {
