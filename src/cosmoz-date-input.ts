@@ -43,9 +43,9 @@ const CosmozDateInput = (host: Props) => {
 	const date = value ? new Date(value) : undefined;
 	const parts = Intl.DateTimeFormat(locale, options).formatToParts(date);
 	const [inputState, setInputState] = useState({
-		year: date?.getFullYear()?.toString() ?? '',
+		year: date ? String(date.getFullYear()) : '',
 		month: date ? getLocaleMonthString(date.getMonth() + 1, locale) : '',
-		day: date?.toLocaleDateString(locale, { day: 'numeric' }) ?? '',
+		day: date ? getLocaleDayString(date.getDate(), locale) : '',
 	});
 
 	useEffect(() => {
