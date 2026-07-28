@@ -13,9 +13,11 @@ import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import {
 	DateType,
+	getCharacterWidth,
 	getLocaleDayString,
 	getLocaleMonthString,
 	isDateType,
+	offsetDateInput,
 	parseDayInput,
 	parseMonthInput,
 	parseYearInput,
@@ -65,17 +67,11 @@ const CosmozDateInput = (host: Props) => {
 		}
 	}, [inputState]);
 
-	const onFocus = (e: InputEvent) => {
-		const target = e.currentTarget as HTMLInputElement;
-		const input = target.shadowRoot?.querySelector('input');
-		input?.select();
-	};
-
 	const onChange = (e: ValueChangedEvent, type: DateType) => {
 		const input = e.detail.value;
 		setInputState((prev) => {
 			if (type === 'year') {
-				const year = parseYearInput(input);
+				const year = parseYearInput(input, prev);
 				return {
 					...prev,
 					year,
@@ -97,6 +93,26 @@ const CosmozDateInput = (host: Props) => {
 		});
 	};
 
+	const onKeyDown = (e: KeyboardEvent, type: DateType) => {
+		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			e.preventDefault();
+			const offset = e.key === 'ArrowUp' ? 1 : -1;
+			setInputState((prev) => {
+				const value = offsetDateInput(type, prev, offset);
+
+				if (type === 'month') {
+					return { ...prev, month: getLocaleMonthString(value, locale) };
+				}
+
+				if (type === 'day') {
+					return { ...prev, day: getLocaleDayString(value, locale) };
+				}
+
+				return { ...prev, year: value };
+			});
+		}
+	};
+
 	return repeat(
 		parts,
 		(_part, i) => i,
@@ -104,18 +120,16 @@ const CosmozDateInput = (host: Props) => {
 			if (isDateType(type)) {
 				return html`
 					<cosmoz-input
-						style="width: ${String(inputState[type]).length > 0
-							? String(inputState[type]).length
-							: 2}ch;"
-						type="number"
+						style="width: ${getCharacterWidth(inputState, type)}ch;"
+						type="text"
+						inputmode="numeric"
 						no-label-float
-						part=${type}
 						no-spinner
 						autocomplete="off"
 						placeholder="0000"
 						.value=${live(inputState[type])}
-						@focus=${onFocus}
 						@value-changed=${(e: ValueChangedEvent) => onChange(e, type)}
+						@keydown=${(e: KeyboardEvent) => onKeyDown(e, type)}
 					></cosmoz-input>
 				`;
 			}
@@ -144,10 +158,22 @@ const styles = css`
 
 	cosmoz-input {
 		margin: 0;
+		padding: 0 4px;
+		box-sizing: content-box;
+	}
+
+	cosmoz-input:focus-within {
+		background: var(--cz-color-bg-brand);
+		border-radius: var(--cz-radius-sm);
 	}
 
 	cosmoz-input::part(input) {
 		padding: 0;
+		caret-color: transparent;
+	}
+
+	cosmoz-input::part(input)::selection {
+		background: transparent;
 	}
 
 	cosmoz-input::part(wrap) {

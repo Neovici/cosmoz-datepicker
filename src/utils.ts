@@ -29,7 +29,7 @@ type DateInputPattern = {
 	input: string;
 	min: 0 | 1;
 	max: number;
-	previous?: string;
+	previous: string;
 };
 
 const getMaxDay = ({ year, month }: DateObject) => {
@@ -48,8 +48,12 @@ const shouldRollunder = (value: number, min: 0 | 1) => value < min;
 const isOverflow = (value: number, max: number) => value > max;
 
 const parseDateInput = ({ input, min, max, previous }: DateInputPattern) => {
-	if (input === '' || isNaN(Number(input))) {
+	if (input === '') {
 		return '';
+	}
+
+	if (isNaN(Number(input))) {
+		return previous;
 	}
 
 	const value = Number(input);
@@ -82,8 +86,31 @@ export const parseMonthInput = (input: string, prev: DateObject) => {
 	return parseDateInput({ input, min: 0, max: 12, previous: prev.month });
 };
 
-export const parseYearInput = (input: string) => {
-	return parseDateInput({ input, min: 1, max: 9999 });
+export const parseYearInput = (input: string, prev: DateObject) => {
+	return parseDateInput({ input, min: 1, max: 9999, previous: prev.year });
+};
+
+export const offsetDateInput = (
+	type: DateType,
+	date: DateObject,
+	offset: 1 | -1,
+) => {
+	const input = String(Number(date[type] || '0') + offset);
+
+	if (type === 'year') {
+		return parseYearInput(input, date);
+	}
+
+	if (type === 'month') {
+		return parseDateInput({ input, min: 1, max: 12, previous: date.month });
+	}
+
+	return parseDateInput({
+		input,
+		min: 1,
+		max: getMaxDay(date),
+		previous: date.day,
+	});
 };
 
 export const getLocaleMonthString = (
@@ -127,4 +154,12 @@ export const getLocaleDayString = (dayStr: string | number, locale: string) => {
 
 	const localeDay = parts.find((p) => p.type === 'day')!.value;
 	return localeDay;
+};
+
+export const getCharacterWidth = (date: DateObject, type: DateType) => {
+	if (date[type].length > 0) {
+		return date[type].length;
+	}
+
+	return type === 'year' ? 4 : 2;
 };
