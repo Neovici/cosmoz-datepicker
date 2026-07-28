@@ -1,23 +1,24 @@
-import { component, html, useState } from '@pionjs/pion';
+import { component, css, html } from '@pionjs/pion';
+import './cosmoz-date-input';
 
 interface Props {
-	greeting?: string;
+	value?: string;
+	min?: string;
+	max?: string;
 }
 
 const CosmozDatepicker = (props: Props) => {
-	const [count, setCount] = useState(0);
-	const { greeting = 'Hello' } = props;
-
-	return html`
-		<p>${greeting}, World! Count: ${count}</p>
-		<button @click=${() => setCount(count + 1)}>Increment</button>
-	`;
+	return html` <cosmoz-date-input .value=${props.value}></cosmoz-date-input> `;
 };
+
+const styles = css``;
 
 customElements.define(
 	'cosmoz-datepicker',
 	component(CosmozDatepicker, {
-		observedAttributes: ['greeting'],
+		observedAttributes: ['min', 'max'],
+		styleSheets: [styles],
+		shadowRootInit: { delegatesFocus: true, mode: 'open' },
 	}),
 );
 
