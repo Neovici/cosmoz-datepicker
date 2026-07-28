@@ -81,7 +81,7 @@ const CosmozDateInput = (host: Props) => {
 					year,
 				};
 			} else if (type === 'month') {
-				const monthVal = parseMonthInput(input, prev.month);
+				const monthVal = parseMonthInput(input, prev);
 				const month = getLocaleMonthString(monthVal, locale);
 				return {
 					...prev,

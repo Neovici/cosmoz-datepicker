@@ -25,72 +25,65 @@ export type DateObject = {
 	day: string;
 };
 
-const resetInput = (value: number) => String(value).slice(-1);
-
-export const parseDayInput = (input: string, prev: DateObject) => {
-	if (input === '' || isNaN(Number(input))) {
-		return '';
-	}
-
-	const value = Number(input);
-
-	let daysInMonth = 31;
-	if (prev.month !== '' && prev.year !== '') {
-		daysInMonth = getDaysInMonth(
-			new Date(Number(prev.year), Number(prev.month) - 1),
-		);
-	}
-
-	let newDay;
-	if (value === daysInMonth + 1 && Number(prev.day) === daysInMonth) {
-		newDay = value % daysInMonth;
-	} else if (value > daysInMonth) {
-		newDay = resetInput(value);
-	} else if (value < 0) {
-		newDay = daysInMonth;
-	} else {
-		newDay = value;
-	}
-
-	return String(newDay);
+type DateInputPattern = {
+	input: string;
+	min: 0 | 1;
+	max: number;
+	previous?: string;
 };
 
-export const parseMonthInput = (input: string, prev: string) => {
+const getMaxDay = ({ year, month }: DateObject) => {
+	if (month === '' || year === '') {
+		return 31;
+	}
+
+	return getDaysInMonth(new Date(Number(year), Number(month) - 1));
+};
+
+const shouldRollover = (value: number, max: number, previous?: string) =>
+	value === max + 1 && Number(previous) === max;
+
+const shouldRollunder = (value: number, min: 0 | 1) => value < min;
+
+const isOverflow = (value: number, max: number) => value > max;
+
+const parseDateInput = ({ input, min, max, previous }: DateInputPattern) => {
 	if (input === '' || isNaN(Number(input))) {
 		return '';
 	}
 
 	const value = Number(input);
-	let newMonth;
-	if (value === 13 && Number(prev) === 12) {
-		newMonth = value % 12;
-	} else if (value > 12) {
-		newMonth = resetInput(value);
-	} else if (value < 0) {
-		newMonth = 12;
-	} else {
-		newMonth = value;
+
+	if (shouldRollover(value, max, previous)) {
+		return String(value % max);
 	}
 
-	return String(newMonth);
+	if (shouldRollunder(value, min)) {
+		return String(max);
+	}
+
+	if (isOverflow(value, max)) {
+		return String(value).slice(-1);
+	}
+
+	return String(value);
+};
+
+export const parseDayInput = (input: string, prev: DateObject) => {
+	return parseDateInput({
+		input,
+		min: 0,
+		max: getMaxDay(prev),
+		previous: prev.day,
+	});
+};
+
+export const parseMonthInput = (input: string, prev: DateObject) => {
+	return parseDateInput({ input, min: 0, max: 12, previous: prev.month });
 };
 
 export const parseYearInput = (input: string) => {
-	if (input === '' || isNaN(Number(input))) {
-		return '';
-	}
-
-	const value = Number(input);
-	let newYear;
-	if (value > 9999) {
-		newYear = resetInput(value);
-	} else if (value < 1) {
-		newYear = 9999;
-	} else {
-		newYear = value;
-	}
-
-	return String(newYear);
+	return parseDateInput({ input, min: 1, max: 9999 });
 };
 
 export const getLocaleMonthString = (
