@@ -8,7 +8,9 @@ interface Props {
 }
 
 const CosmozDatepicker = (props: Props) => {
-	return html` <cosmoz-date-input .value=${props.value}></cosmoz-date-input> `;
+	return html`
+		<cosmoz-date-input .value=${props.value} locale="sv-SE"></cosmoz-date-input>
+	`;
 };
 
 const styles = css``;

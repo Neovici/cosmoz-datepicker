@@ -9,9 +9,12 @@ import {
 	useState,
 } from '@pionjs/pion';
 import { format } from 'date-fns';
+import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import {
 	DateType,
+	getLocaleDayString,
+	getLocaleMonthString,
 	isDateType,
 	parseDayInput,
 	parseMonthInput,
@@ -41,8 +44,8 @@ const CosmozDateInput = (host: Props) => {
 	const parts = Intl.DateTimeFormat(locale, options).formatToParts(date);
 	const [inputState, setInputState] = useState({
 		year: date?.getFullYear()?.toString() ?? '',
-		month: date ? String(date?.getMonth() + 1) : '',
-		day: date?.getDate()?.toString() ?? '',
+		month: date ? getLocaleMonthString(date.getMonth() + 1, locale) : '',
+		day: date?.toLocaleDateString(locale, { day: 'numeric' }) ?? '',
 	});
 
 	useEffect(() => {
@@ -68,27 +71,31 @@ const CosmozDateInput = (host: Props) => {
 
 	const onChange = (e: ValueChangedEvent, type: DateType) => {
 		const input = e.detail.value;
-		const val = Number(input);
 		setInputState((prev) => {
 			if (type === 'year') {
-				const year = val === 0 ? '' : parseYearInput(val);
+				const year = input === '' ? '' : parseYearInput(Number(input));
 				return {
 					...prev,
 					year,
 				};
 			} else if (type === 'month') {
-				const month = val === 0 ? '' : parseMonthInput(val);
+				const monthVal =
+					input === '' ? '' : parseMonthInput(Number(input), prev.month);
+				const month = getLocaleMonthString(Number(monthVal), locale);
 				return {
 					...prev,
 					month,
 				};
-			} 
-				const day = val === 0 ? '' : parseDayInput(val, prev.month, prev.year);
-				return {
-					...prev,
-					day,
-				};
-			
+			}
+			const dayVal =
+				input === ''
+					? ''
+					: parseDayInput(Number(input), prev.year, prev.month, prev.day);
+			const day = getLocaleDayString(Number(dayVal), locale);
+			return {
+				...prev,
+				day,
+			};
 		});
 	};
 
@@ -108,7 +115,7 @@ const CosmozDateInput = (host: Props) => {
 						no-spinner
 						autocomplete="off"
 						placeholder="0000"
-						.value=${inputState[type]}
+						.value=${live(inputState[type])}
 						@focus=${onFocus}
 						@value-changed=${(e: ValueChangedEvent) => onChange(e, type)}
 					></cosmoz-input>
@@ -154,7 +161,7 @@ const styles = css`
 customElements.define(
 	'cosmoz-date-input',
 	component(CosmozDateInput, {
-		observedAttributes: ['min', 'max'],
+		observedAttributes: ['min', 'max', 'locale'],
 		styleSheets: [styles],
 		shadowRootInit: {
 			delegatesFocus: true,
