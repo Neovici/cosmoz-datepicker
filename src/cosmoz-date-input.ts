@@ -96,8 +96,8 @@ const CosmozDateInput = (host: Props) => {
 	const onKeyDown = (e: KeyboardEvent, type: DateType) => {
 		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
 			e.preventDefault();
-			const offset = e.key === 'ArrowUp' ? 1 : -1;
 			setInputState((prev) => {
+				const offset = e.key === 'ArrowUp' ? 1 : -1;
 				const value = offsetDateInput(type, prev, offset);
 
 				if (type === 'month') {
@@ -110,6 +110,32 @@ const CosmozDateInput = (host: Props) => {
 
 				return { ...prev, year: value };
 			});
+		}
+
+		if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+			e.preventDefault();
+			const focused = host.shadowRoot?.activeElement as
+				| HTMLInputElement
+				| undefined;
+			if (!focused) {
+				return;
+			}
+
+			const inputs = [
+				...(host.shadowRoot?.querySelectorAll(
+					'cosmoz-input',
+				) as NodeListOf<HTMLInputElement>),
+			];
+
+			const index = inputs.indexOf(focused);
+			if (e.key === 'ArrowLeft' && index - 1 >= 0) {
+				inputs[index - 1].focus();
+				return;
+			}
+
+			if (e.key === 'ArrowRight' && index + 1 < inputs.length) {
+				inputs[index + 1].focus();
+			}
 		}
 	};
 
