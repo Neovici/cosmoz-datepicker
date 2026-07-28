@@ -135,7 +135,7 @@ const styles = css`
 	:host {
 		display: flex;
 		align-items: center;
-		gap: calc(var(--cz-spacing) * 1.5);
+		gap: var(--cz-spacing);
 		position: relative;
 		font-size: var(--cz-text-base);
 		line-height: var(--cz-text-base-line-height);
