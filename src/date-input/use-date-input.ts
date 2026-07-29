@@ -65,7 +65,7 @@ export const useDateInput = () => {
 
 	useEffect(() => {
 		setInputState(initializeState(date, locale));
-	}, [date, locale]);
+	}, [date, locale, setInputState]);
 
 	useEffect(() => {
 		if (isValidDateInput(inputState)) {
