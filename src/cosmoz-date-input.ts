@@ -153,7 +153,6 @@ const CosmozDateInput = (host: Props) => {
 						type="text"
 						inputmode="numeric"
 						no-label-float
-						no-spinner
 						autocomplete="off"
 						placeholder=${getPlaceholder(type)}
 						.value=${live(inputState[type])}
