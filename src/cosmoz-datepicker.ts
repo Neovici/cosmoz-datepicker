@@ -1,5 +1,5 @@
 import { component, css, html } from '@pionjs/pion';
-import './cosmoz-date-input';
+import './date-input';
 
 interface Props {
 	value?: string;

@@ -1,6 +1,6 @@
 import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '../src/cosmoz-date-input';
+import '../src/date-input';
 
 const meta: Meta = {
 	title: 'CosmozDateInput',
@@ -13,5 +13,5 @@ export default meta;
 type Story = StoryObj;
 
 export const Default: Story = {
-	render: () => html`<cosmoz-date-input></cosmoz-date-input>`,
+	render: () => html`<cosmoz-date-input locale="sv-SE"></cosmoz-date-input>`,
 };

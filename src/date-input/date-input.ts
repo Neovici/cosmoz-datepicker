@@ -3,7 +3,7 @@ import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { component, html } from '@pionjs/pion';
 import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { styles } from './index.css';
+import { styles } from './styles.css';
 import { useDateInput, ValueChangedEvent } from './use-date-input';
 import { getCharacterWidth, getPlaceholder, isDateType } from './utils';
 
