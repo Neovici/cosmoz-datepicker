@@ -14,11 +14,13 @@ import { repeat } from 'lit-html/directives/repeat.js';
 import {
 	DateType,
 	getCharacterWidth,
+	getIncrementedDayWithWrapping,
+	getIncrementedMonthWithWrapping,
+	getIncrementedYearWithWrapping,
 	getLocaleDayString,
 	getLocaleMonthString,
 	getPlaceholder,
 	isDateType,
-	offsetDateValue,
 	parseDayInput,
 	parseMonthInput,
 	parseYearInput,
@@ -78,18 +80,16 @@ const CosmozDateInput = (host: Props) => {
 					year,
 				};
 			} else if (type === 'month') {
-				const monthVal = parseMonthInput(input, prev);
-				const month = getLocaleMonthString(monthVal, locale);
+				const month = parseMonthInput(input, prev);
 				return {
 					...prev,
-					month,
+					month: getLocaleMonthString(month, locale),
 				};
 			}
-			const dayVal = parseDayInput(input, prev);
-			const day = getLocaleDayString(dayVal, locale);
+			const day = parseDayInput(input, prev);
 			return {
 				...prev,
-				day,
+				day: getLocaleDayString(day, locale),
 			};
 		});
 	};
@@ -99,17 +99,19 @@ const CosmozDateInput = (host: Props) => {
 			e.preventDefault();
 			setInputState((prev) => {
 				const offset = e.key === 'ArrowUp' ? 1 : -1;
-				const value = offsetDateValue(type, prev, offset);
-
-				if (type === 'month') {
-					return { ...prev, month: getLocaleMonthString(value, locale) };
-				}
 
 				if (type === 'day') {
-					return { ...prev, day: getLocaleDayString(value, locale) };
+					const day = getIncrementedDayWithWrapping(prev, offset);
+					return { ...prev, day: getLocaleDayString(day, locale) };
 				}
 
-				return { ...prev, year: value };
+				if (type === 'month') {
+					const month = getIncrementedMonthWithWrapping(prev, offset);
+					return { ...prev, month: getLocaleMonthString(month, locale) };
+				}
+
+				const year = getIncrementedYearWithWrapping(prev, offset);
+				return { ...prev, year };
 			});
 		}
 

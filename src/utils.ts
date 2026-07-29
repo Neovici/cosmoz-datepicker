@@ -59,51 +59,63 @@ const parseDateInput = ({ input, max, previous }: DateInputPattern) => {
 	return String(value);
 };
 
-export const parseDayInput = (input: string, prev: DateObject) => {
-	return parseDateInput({
+export const parseDayInput = (input: string, prev: DateObject) =>
+	parseDateInput({
 		input,
 		max: getMaxDay(prev),
 		previous: prev.day,
 	});
-};
 
-export const parseMonthInput = (input: string, prev: DateObject) => {
-	return parseDateInput({ input, max: 12, previous: prev.month });
-};
+export const parseMonthInput = (input: string, prev: DateObject) =>
+	parseDateInput({ input, max: 12, previous: prev.month });
 
-export const parseYearInput = (input: string, prev: DateObject) => {
-	return parseDateInput({ input, max: 9999, previous: prev.year });
-};
+export const parseYearInput = (input: string, prev: DateObject) =>
+	parseDateInput({ input, max: 9999, previous: prev.year });
 
-const wrapOverflowingDates = (value: number, min: number, max: number) => {
-	if (value > max) {
+const wrapOverflowingDate = ({
+	value,
+	offset,
+	min,
+	max,
+}: {
+	value: string;
+	offset: number;
+	min: number;
+	max: number;
+}) => {
+	const newValue = Number(value) + offset;
+
+	if (newValue > max) {
 		return String(min);
 	}
 
-	if (value < min) {
+	if (newValue < min) {
 		return String(max);
 	}
 
-	return String(value);
+	return String(newValue);
 };
 
-export const offsetDateValue = (
-	type: DateType,
-	prev: DateObject,
-	offset: 1 | -1,
-) => {
-	const input = Number(prev[type]) + offset;
+export const getIncrementedDayWithWrapping = (
+	date: DateObject,
+	offset: number,
+) =>
+	wrapOverflowingDate({
+		value: date.day,
+		offset,
+		min: 1,
+		max: getMaxDay(date),
+	});
 
-	if (type === 'year') {
-		return wrapOverflowingDates(input, 1, 9999);
-	}
+export const getIncrementedMonthWithWrapping = (
+	date: DateObject,
+	offset: number,
+) => wrapOverflowingDate({ value: date.month, offset, min: 1, max: 12 });
 
-	if (type === 'month') {
-		return wrapOverflowingDates(input, 1, 12);
-	}
-
-	return wrapOverflowingDates(input, 1, getMaxDay(prev));
-};
+export const getIncrementedYearWithWrapping = (
+	date: DateObject,
+	offset: number,
+) => wrapOverflowingDate({ value: date.year, offset, min: 1, max: 9999 });
 
 export const getLocaleMonthString = (
 	monthStr: string | number,
