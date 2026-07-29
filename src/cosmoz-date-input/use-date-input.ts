@@ -105,9 +105,9 @@ export const useDateInput = () => {
 				setInputState((prev) => {
 					const offset = e.key === 'ArrowUp' ? 1 : -1;
 
-					if (type === 'day') {
-						const day = getIncrementedDayWithWrapping(prev, offset);
-						return { ...prev, day: getLocaleDayString(day, locale) };
+					if (type === 'year') {
+						const year = getIncrementedYearWithWrapping(prev, offset);
+						return { ...prev, year };
 					}
 
 					if (type === 'month') {
@@ -115,8 +115,8 @@ export const useDateInput = () => {
 						return { ...prev, month: getLocaleMonthString(month, locale) };
 					}
 
-					const year = getIncrementedYearWithWrapping(prev, offset);
-					return { ...prev, year };
+					const day = getIncrementedDayWithWrapping(prev, offset);
+					return { ...prev, day: getLocaleDayString(day, locale) };
 				});
 			}
 
