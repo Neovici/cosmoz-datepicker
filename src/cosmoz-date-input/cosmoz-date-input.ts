@@ -4,17 +4,14 @@ import { component, html } from '@pionjs/pion';
 import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { styles } from './index.css';
-import { useDateInput, ValueChangedEvent } from './use-date-input';
+import {
+	DateInputProps,
+	useDateInput,
+	ValueChangedEvent,
+} from './use-date-input';
 import { getCharacterWidth, getPlaceholder, isDateType } from './utils';
 
-interface Props extends HTMLElement {
-	value?: string;
-	locale?: string;
-	min?: string;
-	max?: string;
-}
-
-const CosmozDateInput = (host: Props) => {
+const CosmozDateInput = (host: DateInputProps) => {
 	const { inputState, onChange, onKeyDown, parts } = useDateInput(host);
 
 	return repeat(
@@ -47,7 +44,7 @@ const CosmozDateInput = (host: Props) => {
 customElements.define(
 	'cosmoz-date-input',
 	component(CosmozDateInput, {
-		observedAttributes: ['min', 'max', 'locale'],
+		observedAttributes: ['locale'],
 		styleSheets: [styles],
 		shadowRootInit: {
 			delegatesFocus: true,

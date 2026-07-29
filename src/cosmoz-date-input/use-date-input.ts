@@ -22,7 +22,7 @@ import {
 
 export type ValueChangedEvent = CustomEvent<{ value: string }>;
 
-interface DateInputHost extends HTMLElement {
+export interface DateInputProps extends HTMLElement {
 	value?: string;
 	locale?: string;
 }
@@ -48,7 +48,7 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 				day: EMPTY_DATE_VALUE,
 			};
 
-export const useDateInput = (host: DateInputHost) => {
+export const useDateInput = (host: DateInputProps) => {
 	const [value, setValue] = useProperty<string>('value');
 	const { locale: _locale } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
