@@ -1,4 +1,4 @@
-import { getDaysInMonth } from 'date-fns';
+import { format, getDaysInMonth } from 'date-fns';
 
 export type DateType = 'year' | 'month' | 'day';
 
@@ -163,3 +163,6 @@ export const getPlaceholder = (type: DateType) => {
 export const getCharacterWidth = (date: DateObject, type: DateType) => {
 	return Math.max(date[type].length, getPlaceholder(type).length);
 };
+
+export const dateObjectToDateString = ({ day, month, year }: DateObject) =>
+	format(new Date(Number(year), Number(month) - 1, Number(day)), 'yyyy-MM-dd');

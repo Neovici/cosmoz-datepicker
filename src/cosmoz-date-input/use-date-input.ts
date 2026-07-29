@@ -6,9 +6,9 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
-import { format } from 'date-fns';
 import {
 	DateObject,
+	dateObjectToDateString,
 	DateType,
 	EMPTY_DATE_VALUE,
 	getIncrementedDayWithWrapping,
@@ -67,16 +67,7 @@ export const useDateInput = () => {
 
 	useEffect(() => {
 		if (Object.values(inputState).every((v) => v !== EMPTY_DATE_VALUE)) {
-			setValue(
-				format(
-					new Date(
-						Number(inputState.year),
-						Number(inputState.month) - 1,
-						Number(inputState.day),
-					),
-					'yyyy-MM-dd',
-				),
-			);
+			setValue(dateObjectToDateString(inputState));
 		}
 	}, [inputState, setValue]);
 
