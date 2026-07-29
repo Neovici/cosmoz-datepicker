@@ -1,4 +1,5 @@
 import { format, getDaysInMonth } from 'date-fns';
+import { MIN_YEAR } from '../config';
 
 export type DateType = 'year' | 'month' | 'day';
 
@@ -104,7 +105,8 @@ export const getIncrementedMonthWithWrapping = (
 export const getIncrementedYearWithWrapping = (
 	date: DateObject,
 	offset: number,
-) => wrapOverflowingDate({ value: date.year, offset, min: 1, max: 9999 });
+) =>
+	wrapOverflowingDate({ value: date.year, offset, min: MIN_YEAR, max: 9999 });
 
 export const getLocaleMonthString = (
 	monthStr: string | number,
@@ -166,3 +168,12 @@ export const getCharacterWidth = (date: DateObject, type: DateType) => {
 
 export const dateObjectToDateString = ({ day, month, year }: DateObject) =>
 	format(new Date(Number(year), Number(month) - 1, Number(day)), 'yyyy-MM-dd');
+
+export const isValidDateInput = (date: DateObject) =>
+	Number(date.year) >= MIN_YEAR &&
+	Number(date.year) >= 9999 &&
+	Number(date.month) >= 1 &&
+	Number(date.month) <= 12 &&
+	Number(date.day) >= 1 &&
+	Number(date.day) <= getDaysInMonth(dateObjectToDateString(date)) &&
+	Object.values(date).every((v) => v !== EMPTY_DATE_VALUE);

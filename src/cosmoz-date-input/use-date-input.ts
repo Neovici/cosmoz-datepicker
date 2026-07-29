@@ -16,6 +16,7 @@ import {
 	getIncrementedYearWithWrapping,
 	getLocaleDayString,
 	getLocaleMonthString,
+	isValidDateInput,
 	parseDayInput,
 	parseMonthInput,
 	parseYearInput,
@@ -66,7 +67,7 @@ export const useDateInput = () => {
 	}, [date, locale]);
 
 	useEffect(() => {
-		if (Object.values(inputState).every((v) => v !== EMPTY_DATE_VALUE)) {
+		if (isValidDateInput(inputState)) {
 			setValue(dateObjectToDateString(inputState));
 		}
 	}, [inputState, setValue]);
