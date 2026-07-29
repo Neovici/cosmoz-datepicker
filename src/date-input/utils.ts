@@ -160,7 +160,7 @@ export const getPlaceholder = (type: DateType) => {
 	}
 };
 
-export const getCharacterWidth = (date: DateObject, type: DateType) => {
+export const getCharacterCount = (date: DateObject, type: DateType) => {
 	return date[type].length > 0
 		? date[type].length
 		: getPlaceholder(type).length;
