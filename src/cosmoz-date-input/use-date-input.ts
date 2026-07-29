@@ -7,7 +7,6 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
-import { MIN_YEAR } from '../config';
 import {
 	DateObject,
 	dateObjectToDateString,
@@ -152,26 +151,10 @@ export const useDateInput = () => {
 		[host, locale, setInputState],
 	);
 
-	const onBlur = useCallback(
-		() =>
-			setInputState((prev) => {
-				if (prev.year !== '' && Number(prev.year) < MIN_YEAR) {
-					return {
-						...prev,
-						year: String(MIN_YEAR),
-					};
-				}
-
-				return prev;
-			}),
-		[setInputState],
-	);
-
 	return {
 		inputState,
 		onChange,
 		onKeyDown,
-		onBlur,
 		parts,
 	};
 };
