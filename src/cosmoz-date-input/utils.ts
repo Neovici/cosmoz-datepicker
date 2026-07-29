@@ -163,7 +163,9 @@ export const getPlaceholder = (type: DateType) => {
 };
 
 export const getCharacterWidth = (date: DateObject, type: DateType) => {
-	return Math.max(date[type].length, getPlaceholder(type).length);
+	return date[type].length > 0
+		? date[type].length
+		: getPlaceholder(type).length;
 };
 
 export const dateObjectToDateString = ({ day, month, year }: DateObject) =>
