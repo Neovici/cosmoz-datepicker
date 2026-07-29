@@ -8,10 +8,10 @@ import { useDateInput, ValueChangedEvent } from './use-date-input';
 import { getCharacterWidth, getPlaceholder, isDateType } from './utils';
 
 const CosmozDateInput = () => {
-	const { inputState, onChange, onKeyDown, parts } = useDateInput();
+	const { inputState, onChange, onKeyDown, localeDateParts } = useDateInput();
 
 	return repeat(
-		parts,
+		localeDateParts,
 		(_, i) => i,
 		({ value, type }) => {
 			if (isDateType(type)) {

@@ -53,15 +53,15 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 
 export const useDateInput = () => {
 	const host = useHost<DateInputProps>();
-	const [value, setValue] = useProperty<string>('value');
 	const { locale: _locale } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
+	const [value, setValue] = useProperty<string>('value');
 	const date = useMemo(() => ensureDate(value), [value]);
-	const parts = useMemo(
+	const [inputState, setInputState] = useState(initializeState(date, locale));
+	const localeDateParts = useMemo(
 		() => Intl.DateTimeFormat(locale, options).formatToParts(date),
 		[date, locale],
 	);
-	const [inputState, setInputState] = useState(initializeState(date, locale));
 
 	useEffect(() => {
 		setInputState(initializeState(date, locale));
@@ -83,13 +83,16 @@ export const useDateInput = () => {
 						...prev,
 						year,
 					};
-				} else if (type === 'month') {
+				}
+
+				if (type === 'month') {
 					const month = parseMonthInput(input, prev);
 					return {
 						...prev,
 						month: getLocaleMonthString(month, locale),
 					};
 				}
+
 				const day = parseDayInput(input, prev);
 				return {
 					...prev,
@@ -155,6 +158,6 @@ export const useDateInput = () => {
 		inputState,
 		onChange,
 		onKeyDown,
-		parts,
+		localeDateParts,
 	};
 };
