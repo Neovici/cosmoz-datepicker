@@ -19,7 +19,7 @@ const CosmozDateInput = (host: Props) => {
 
 	return repeat(
 		parts,
-		(_part, i) => i,
+		(_, i) => i,
 		({ value, type }) => {
 			if (isDateType(type)) {
 				return html`
