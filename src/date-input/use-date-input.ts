@@ -17,6 +17,7 @@ import {
 	getIncrementedYearWithWrapping,
 	getLocaleDayString,
 	getLocaleMonthString,
+	getMaxDay,
 	isValidDateInput,
 	parseDayInput,
 	parseMonthInput,
@@ -154,10 +155,26 @@ export const useDateInput = () => {
 		[host, locale, setInputState],
 	);
 
+	const onBlur = useCallback(() => {
+		const maxDays = getMaxDay(inputState);
+
+		setInputState((prev) => {
+			if (Number(inputState.day) > maxDays) {
+				return {
+					...prev,
+					day: getLocaleDayString(maxDays, locale),
+				};
+			}
+
+			return prev;
+		});
+	}, [inputState, setInputState, locale]);
+
 	return {
 		inputState,
 		onChange,
 		onKeyDown,
+		onBlur,
 		localeDateParts,
 	};
 };

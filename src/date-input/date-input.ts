@@ -8,7 +8,8 @@ import { useDateInput, ValueChangedEvent } from './use-date-input';
 import { getCharacterWidth, getPlaceholder, isDateType } from './utils';
 
 const CosmozDateInput = () => {
-	const { inputState, onChange, onKeyDown, localeDateParts } = useDateInput();
+	const { inputState, onChange, onKeyDown, onBlur, localeDateParts } =
+		useDateInput();
 
 	return repeat(
 		localeDateParts,
@@ -24,6 +25,7 @@ const CosmozDateInput = () => {
 						autocomplete="off"
 						placeholder=${getPlaceholder(type)}
 						.value=${live(inputState[type])}
+						@blur=${onBlur}
 						@value-changed=${(e: ValueChangedEvent) => onChange(e, type)}
 						@keydown=${(e: KeyboardEvent) => onKeyDown(e, type)}
 					></cosmoz-input>

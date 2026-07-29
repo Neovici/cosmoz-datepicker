@@ -20,7 +20,7 @@ type DateInputPattern = {
 	previous: string;
 };
 
-const getMaxDay = ({ year, month }: DateObject) => {
+export const getMaxDay = ({ year, month }: DateObject) => {
 	if (month === EMPTY_DATE_VALUE || year === EMPTY_DATE_VALUE) {
 		return 31;
 	}
