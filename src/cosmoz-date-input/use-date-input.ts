@@ -1,3 +1,4 @@
+import { ensureDate } from '@neovici/cosmoz-utils/date';
 import { useHost } from '@neovici/cosmoz-utils/hooks/use-host';
 import {
 	useCallback,
@@ -56,7 +57,7 @@ export const useDateInput = () => {
 	const [value, setValue] = useProperty<string>('value');
 	const { locale: _locale } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
-	const date = useMemo(() => (value ? new Date(value) : undefined), [value]);
+	const date = useMemo(() => ensureDate(value), [value]);
 	const parts = useMemo(
 		() => Intl.DateTimeFormat(locale, options).formatToParts(date),
 		[date, locale],
