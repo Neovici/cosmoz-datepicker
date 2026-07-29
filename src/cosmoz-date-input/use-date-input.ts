@@ -1,6 +1,13 @@
-import { useEffect, useProperty, useState } from '@pionjs/pion';
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useProperty,
+	useState,
+} from '@pionjs/pion';
 import { format } from 'date-fns';
 import {
+	DateObject,
 	DateType,
 	EMPTY_DATE_VALUE,
 	getIncrementedDayWithWrapping,
@@ -13,7 +20,7 @@ import {
 	parseYearInput,
 } from './utils';
 
-type ValueChangedEvent = CustomEvent<{ value: string }>;
+export type ValueChangedEvent = CustomEvent<{ value: string }>;
 
 interface DateInputHost extends HTMLElement {
 	value?: string;
@@ -28,25 +35,33 @@ const options: Intl.DateTimeFormatOptions = {
 	calendar: 'gregory',
 };
 
+const initializeState = (date: Date | undefined, locale: string): DateObject =>
+	date
+		? {
+				year: String(date.getFullYear()),
+				month: getLocaleMonthString(date.getMonth() + 1, locale),
+				day: getLocaleDayString(date.getDate(), locale),
+			}
+		: {
+				year: EMPTY_DATE_VALUE,
+				month: EMPTY_DATE_VALUE,
+				day: EMPTY_DATE_VALUE,
+			};
+
 export const useDateInput = (host: DateInputHost) => {
 	const [value, setValue] = useProperty<string>('value');
 	const { locale: _locale } = host;
-	const locale = _locale ?? navigator.language;
-	const date = value ? new Date(value) : undefined;
-	const parts = Intl.DateTimeFormat(locale, options).formatToParts(date);
-	const [inputState, setInputState] = useState(
-		date
-			? {
-					year: String(date.getFullYear()),
-					month: getLocaleMonthString(date.getMonth() + 1, locale),
-					day: getLocaleDayString(date.getDate(), locale),
-				}
-			: {
-					year: EMPTY_DATE_VALUE,
-					month: EMPTY_DATE_VALUE,
-					day: EMPTY_DATE_VALUE,
-				},
+	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
+	const date = useMemo(() => (value ? new Date(value) : undefined), [value]);
+	const parts = useMemo(
+		() => Intl.DateTimeFormat(locale, options).formatToParts(date),
+		[date, locale],
 	);
+	const [inputState, setInputState] = useState(initializeState(date, locale));
+
+	useEffect(() => {
+		setInputState(initializeState(date, locale));
+	}, [date, locale]);
 
 	useEffect(() => {
 		if (Object.values(inputState).every((v) => v !== EMPTY_DATE_VALUE)) {
@@ -61,79 +76,85 @@ export const useDateInput = (host: DateInputHost) => {
 				),
 			);
 		}
-	}, [inputState]);
+	}, [inputState, setValue]);
 
-	const onChange = (e: ValueChangedEvent, type: DateType) => {
-		const input = e.detail.value;
-		setInputState((prev) => {
-			if (type === 'year') {
-				const year = parseYearInput(input, prev);
-				return {
-					...prev,
-					year,
-				};
-			} else if (type === 'month') {
-				const month = parseMonthInput(input, prev);
-				return {
-					...prev,
-					month: getLocaleMonthString(month, locale),
-				};
-			}
-			const day = parseDayInput(input, prev);
-			return {
-				...prev,
-				day: getLocaleDayString(day, locale),
-			};
-		});
-	};
-
-	const onKeyDown = (e: KeyboardEvent, type: DateType) => {
-		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-			e.preventDefault();
+	const onChange = useCallback(
+		(e: ValueChangedEvent, type: DateType) => {
+			const input = e.detail.value;
 			setInputState((prev) => {
-				const offset = e.key === 'ArrowUp' ? 1 : -1;
-
-				if (type === 'day') {
-					const day = getIncrementedDayWithWrapping(prev, offset);
-					return { ...prev, day: getLocaleDayString(day, locale) };
+				if (type === 'year') {
+					const year = parseYearInput(input, prev);
+					return {
+						...prev,
+						year,
+					};
+				} else if (type === 'month') {
+					const month = parseMonthInput(input, prev);
+					return {
+						...prev,
+						month: getLocaleMonthString(month, locale),
+					};
 				}
-
-				if (type === 'month') {
-					const month = getIncrementedMonthWithWrapping(prev, offset);
-					return { ...prev, month: getLocaleMonthString(month, locale) };
-				}
-
-				const year = getIncrementedYearWithWrapping(prev, offset);
-				return { ...prev, year };
+				const day = parseDayInput(input, prev);
+				return {
+					...prev,
+					day: getLocaleDayString(day, locale),
+				};
 			});
-		}
+		},
+		[locale, setInputState],
+	);
 
-		if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-			e.preventDefault();
-			const focused = host.shadowRoot?.activeElement as
-				| HTMLInputElement
-				| undefined;
-			if (!focused) {
-				return;
+	const onKeyDown = useCallback(
+		(e: KeyboardEvent, type: DateType) => {
+			if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+				e.preventDefault();
+				setInputState((prev) => {
+					const offset = e.key === 'ArrowUp' ? 1 : -1;
+
+					if (type === 'day') {
+						const day = getIncrementedDayWithWrapping(prev, offset);
+						return { ...prev, day: getLocaleDayString(day, locale) };
+					}
+
+					if (type === 'month') {
+						const month = getIncrementedMonthWithWrapping(prev, offset);
+						return { ...prev, month: getLocaleMonthString(month, locale) };
+					}
+
+					const year = getIncrementedYearWithWrapping(prev, offset);
+					return { ...prev, year };
+				});
 			}
 
-			const inputs = [
-				...(host.shadowRoot?.querySelectorAll(
-					'cosmoz-input',
-				) as NodeListOf<HTMLInputElement>),
-			];
+			if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+				e.preventDefault();
+				const focused = host.shadowRoot?.activeElement as
+					| HTMLInputElement
+					| undefined;
+				if (!focused) {
+					return;
+				}
 
-			const index = inputs.indexOf(focused);
-			if (e.key === 'ArrowLeft' && index - 1 >= 0) {
-				inputs[index - 1].focus();
-				return;
-			}
+				const inputs = [
+					...(host.shadowRoot?.querySelectorAll(
+						'cosmoz-input',
+					) as NodeListOf<HTMLInputElement>),
+				];
 
-			if (e.key === 'ArrowRight' && index + 1 < inputs.length) {
-				inputs[index + 1].focus();
+				const index = inputs.indexOf(focused);
+				if (e.key === 'ArrowLeft' && index - 1 >= 0) {
+					inputs[index - 1].focus();
+					return;
+				}
+
+				if (e.key === 'ArrowRight' && index + 1 < inputs.length) {
+					inputs[index + 1].focus();
+				}
 			}
-		}
-	};
+		},
+		[host, locale, setInputState],
+	);
 
 	return {
 		inputState,
@@ -142,5 +163,3 @@ export const useDateInput = (host: DateInputHost) => {
 		parts,
 	};
 };
-
-export type { ValueChangedEvent };
