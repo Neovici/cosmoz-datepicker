@@ -1,8 +1,8 @@
 import { ensureDate } from '@neovici/cosmoz-utils/date';
-import { useHost } from '@neovici/cosmoz-utils/hooks/use-host';
 import {
 	useCallback,
 	useEffect,
+	useHost,
 	useMemo,
 	useProperty,
 	useState,
