@@ -12,6 +12,17 @@ export default meta;
 
 type Story = StoryObj;
 
-export const Default: Story = {
+export const Swedish: Story = {
+	name: 'sv-SE',
 	render: () => html`<cosmoz-date-input locale="sv-SE"></cosmoz-date-input>`,
+};
+
+export const EnglishUs: Story = {
+	name: 'en-US',
+	render: () => html`<cosmoz-date-input locale="en-US"></cosmoz-date-input>`,
+};
+
+export const German: Story = {
+	name: 'de-DE',
+	render: () => html`<cosmoz-date-input locale="de-DE"></cosmoz-date-input>`,
 };
