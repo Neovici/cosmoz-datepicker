@@ -49,5 +49,3 @@ customElements.define(
 		},
 	}),
 );
-
-export { CosmozDateInput as CosmozDatepicker };
