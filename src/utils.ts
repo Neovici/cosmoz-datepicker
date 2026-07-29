@@ -27,7 +27,6 @@ export type DateObject = {
 
 type DateInputPattern = {
 	input: string;
-	min: 0 | 1;
 	max: number;
 	previous: string;
 };
@@ -40,14 +39,9 @@ const getMaxDay = ({ year, month }: DateObject) => {
 	return getDaysInMonth(new Date(Number(year), Number(month) - 1));
 };
 
-const shouldRollover = (value: number, max: number, previous?: string) =>
-	value === max + 1 && Number(previous) === max;
-
-const shouldRollunder = (value: number, min: 0 | 1) => value < min;
-
 const isOverflow = (value: number, max: number) => value > max;
 
-const parseDateInput = ({ input, min, max, previous }: DateInputPattern) => {
+const parseDateInput = ({ input, max, previous }: DateInputPattern) => {
 	if (input === '') {
 		return '';
 	}
@@ -57,14 +51,6 @@ const parseDateInput = ({ input, min, max, previous }: DateInputPattern) => {
 	}
 
 	const value = Number(input);
-
-	if (shouldRollover(value, max, previous)) {
-		return String(value % max);
-	}
-
-	if (shouldRollunder(value, min)) {
-		return String(max);
-	}
 
 	if (isOverflow(value, max)) {
 		return String(value).slice(-1);
@@ -76,41 +62,47 @@ const parseDateInput = ({ input, min, max, previous }: DateInputPattern) => {
 export const parseDayInput = (input: string, prev: DateObject) => {
 	return parseDateInput({
 		input,
-		min: 0,
 		max: getMaxDay(prev),
 		previous: prev.day,
 	});
 };
 
 export const parseMonthInput = (input: string, prev: DateObject) => {
-	return parseDateInput({ input, min: 0, max: 12, previous: prev.month });
+	return parseDateInput({ input, max: 12, previous: prev.month });
 };
 
 export const parseYearInput = (input: string, prev: DateObject) => {
-	return parseDateInput({ input, min: 1, max: 9999, previous: prev.year });
+	return parseDateInput({ input, max: 9999, previous: prev.year });
 };
 
-export const offsetDateInput = (
+const wrapOverflowingDates = (value: number, min: number, max: number) => {
+	if (value > max) {
+		return String(min);
+	}
+
+	if (value < min) {
+		return String(max);
+	}
+
+	return String(value);
+};
+
+export const offsetDateValue = (
 	type: DateType,
-	date: DateObject,
+	prev: DateObject,
 	offset: 1 | -1,
 ) => {
-	const input = String(Number(date[type] || '0') + offset);
+	const input = Number(prev[type]) + offset;
 
 	if (type === 'year') {
-		return parseYearInput(input, date);
+		return wrapOverflowingDates(input, 1, 9999);
 	}
 
 	if (type === 'month') {
-		return parseDateInput({ input, min: 1, max: 12, previous: date.month });
+		return wrapOverflowingDates(input, 1, 12);
 	}
 
-	return parseDateInput({
-		input,
-		min: 1,
-		max: getMaxDay(date),
-		previous: date.day,
-	});
+	return wrapOverflowingDates(input, 1, getMaxDay(prev));
 };
 
 export const getLocaleMonthString = (

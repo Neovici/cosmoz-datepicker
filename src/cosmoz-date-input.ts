@@ -18,7 +18,7 @@ import {
 	getLocaleMonthString,
 	getPlaceholder,
 	isDateType,
-	offsetDateInput,
+	offsetDateValue,
 	parseDayInput,
 	parseMonthInput,
 	parseYearInput,
@@ -42,7 +42,7 @@ const options: Intl.DateTimeFormatOptions = {
 };
 
 const CosmozDateInput = (host: Props) => {
-	const [value, setValue] = useProperty('value', '2026-04-21');
+	const [value, setValue] = useProperty<string>('value', undefined);
 	const { locale: _locale } = host;
 	const locale = _locale ?? navigator.language;
 	const date = value ? new Date(value) : undefined;
@@ -99,7 +99,7 @@ const CosmozDateInput = (host: Props) => {
 			e.preventDefault();
 			setInputState((prev) => {
 				const offset = e.key === 'ArrowUp' ? 1 : -1;
-				const value = offsetDateInput(type, prev, offset);
+				const value = offsetDateValue(type, prev, offset);
 
 				if (type === 'month') {
 					return { ...prev, month: getLocaleMonthString(value, locale) };
