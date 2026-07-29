@@ -13,6 +13,7 @@ import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import {
 	DateType,
+	EMPTY_DATE_VALUE,
 	getCharacterWidth,
 	getIncrementedDayWithWrapping,
 	getIncrementedMonthWithWrapping,
@@ -49,14 +50,22 @@ const CosmozDateInput = (host: Props) => {
 	const locale = _locale ?? navigator.language;
 	const date = value ? new Date(value) : undefined;
 	const parts = Intl.DateTimeFormat(locale, options).formatToParts(date);
-	const [inputState, setInputState] = useState({
-		year: date ? String(date.getFullYear()) : '',
-		month: date ? getLocaleMonthString(date.getMonth() + 1, locale) : '',
-		day: date ? getLocaleDayString(date.getDate(), locale) : '',
-	});
+	const [inputState, setInputState] = useState(
+		date
+			? {
+					year: String(date.getFullYear()),
+					month: getLocaleMonthString(date.getMonth() + 1, locale),
+					day: getLocaleDayString(date.getDate(), locale),
+				}
+			: {
+					year: EMPTY_DATE_VALUE,
+					month: EMPTY_DATE_VALUE,
+					day: EMPTY_DATE_VALUE,
+				},
+	);
 
 	useEffect(() => {
-		if (Object.values(inputState).every((v) => v !== '')) {
+		if (Object.values(inputState).every((v) => v !== EMPTY_DATE_VALUE)) {
 			setValue(
 				format(
 					new Date(

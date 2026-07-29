@@ -15,6 +15,8 @@ export const formatGreeting = (greeting: string, name: string): string => {
 
 export type DateType = 'year' | 'month' | 'day';
 
+export const EMPTY_DATE_VALUE = '';
+
 export const isDateType = (
 	type: Intl.DateTimeFormatPartTypes,
 ): type is DateType => ['year', 'month', 'day'].includes(type);
@@ -32,7 +34,7 @@ type DateInputPattern = {
 };
 
 const getMaxDay = ({ year, month }: DateObject) => {
-	if (month === '' || year === '') {
+	if (month === EMPTY_DATE_VALUE || year === EMPTY_DATE_VALUE) {
 		return 31;
 	}
 
@@ -42,8 +44,8 @@ const getMaxDay = ({ year, month }: DateObject) => {
 const isOverflow = (value: number, max: number) => value > max;
 
 const parseDateInput = ({ input, max, previous }: DateInputPattern) => {
-	if (input === '') {
-		return '';
+	if (input === EMPTY_DATE_VALUE) {
+		return EMPTY_DATE_VALUE;
 	}
 
 	if (isNaN(Number(input))) {
@@ -121,8 +123,8 @@ export const getLocaleMonthString = (
 	monthStr: string | number,
 	locale: string,
 ) => {
-	if (monthStr === '') {
-		return '';
+	if (monthStr === EMPTY_DATE_VALUE) {
+		return EMPTY_DATE_VALUE;
 	}
 
 	const month = Number(monthStr);
@@ -141,8 +143,8 @@ export const getLocaleMonthString = (
 };
 
 export const getLocaleDayString = (dayStr: string | number, locale: string) => {
-	if (dayStr === '') {
-		return '';
+	if (dayStr === EMPTY_DATE_VALUE) {
+		return EMPTY_DATE_VALUE;
 	}
 
 	const day = Number(dayStr);
