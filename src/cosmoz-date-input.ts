@@ -201,7 +201,8 @@ const styles = css`
 	}
 
 	cosmoz-input:focus-within {
-		background: var(--cz-color-bg-brand);
+		background: var(--cz-color-bg-brand-solid);
+		color: var(--cz-color-text-on-brand);
 		border-radius: var(--cz-radius-sm);
 	}
 
@@ -210,6 +211,11 @@ const styles = css`
 		min-width: var(--min-chars);
 		field-sizing: content;
 		caret-color: transparent;
+		color: inherit;
+	}
+
+	cosmoz-input:focus-within::part(input)::placeholder {
+		color: inherit;
 	}
 
 	cosmoz-input::part(input)::selection {
