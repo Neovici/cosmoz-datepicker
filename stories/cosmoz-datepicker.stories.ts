@@ -1,10 +1,10 @@
 import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '../src/cosmoz-datepicker';
+import '../src/cosmoz-date-input';
 
 const meta: Meta = {
-	title: 'CosmozDatepicker',
-	component: 'cosmoz-datepicker',
+	title: 'CosmozDateInput',
+	component: 'cosmoz-date-input',
 	tags: ['autodocs'],
 };
 
@@ -13,5 +13,5 @@ export default meta;
 type Story = StoryObj;
 
 export const Default: Story = {
-	render: () => html`<cosmoz-datepicker></cosmoz-datepicker>`,
+	render: () => html`<cosmoz-date-input></cosmoz-date-input>`,
 };
