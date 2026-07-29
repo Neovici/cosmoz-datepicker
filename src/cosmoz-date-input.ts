@@ -45,7 +45,7 @@ const options: Intl.DateTimeFormatOptions = {
 };
 
 const CosmozDateInput = (host: Props) => {
-	const [value, setValue] = useProperty<string>('value', undefined);
+	const [value, setValue] = useProperty<string>('value');
 	const { locale: _locale } = host;
 	const locale = _locale ?? navigator.language;
 	const date = value ? new Date(value) : undefined;
