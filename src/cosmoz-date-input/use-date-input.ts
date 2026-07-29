@@ -1,3 +1,4 @@
+import { useHost } from '@neovici/cosmoz-utils/hooks/use-host';
 import {
 	useCallback,
 	useEffect,
@@ -22,10 +23,10 @@ import {
 
 export type ValueChangedEvent = CustomEvent<{ value: string }>;
 
-export interface DateInputProps extends HTMLElement {
+type DateInputProps = HTMLElement & {
 	value?: string;
 	locale?: string;
-}
+};
 
 const options: Intl.DateTimeFormatOptions = {
 	year: 'numeric',
@@ -48,7 +49,8 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 				day: EMPTY_DATE_VALUE,
 			};
 
-export const useDateInput = (host: DateInputProps) => {
+export const useDateInput = () => {
+	const host = useHost<DateInputProps>();
 	const [value, setValue] = useProperty<string>('value');
 	const { locale: _locale } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
