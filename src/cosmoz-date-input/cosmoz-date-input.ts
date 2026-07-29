@@ -1,5 +1,5 @@
 import '@neovici/cosmoz-input';
-import '@neovici/cosmoz-tokens';
+import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { component, html } from '@pionjs/pion';
 import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -42,7 +42,7 @@ customElements.define(
 	'cosmoz-date-input',
 	component(CosmozDateInput, {
 		observedAttributes: ['locale'],
-		styleSheets: [styles],
+		styleSheets: [normalize, styles],
 		shadowRootInit: {
 			delegatesFocus: true,
 			mode: 'open',
