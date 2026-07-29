@@ -16,6 +16,7 @@ import {
 	getCharacterWidth,
 	getLocaleDayString,
 	getLocaleMonthString,
+	getPlaceholder,
 	isDateType,
 	offsetDateInput,
 	parseDayInput,
@@ -146,13 +147,13 @@ const CosmozDateInput = (host: Props) => {
 			if (isDateType(type)) {
 				return html`
 					<cosmoz-input
-						style="width: ${getCharacterWidth(inputState, type)}ch;"
+						style="--min-chars: ${getCharacterWidth(inputState, type)}ch;"
 						type="text"
 						inputmode="numeric"
 						no-label-float
 						no-spinner
 						autocomplete="off"
-						placeholder="0000"
+						placeholder=${getPlaceholder(type)}
 						.value=${live(inputState[type])}
 						@value-changed=${(e: ValueChangedEvent) => onChange(e, type)}
 						@keydown=${(e: KeyboardEvent) => onKeyDown(e, type)}
@@ -180,6 +181,7 @@ const styles = css`
 		padding-inline: calc(var(--cz-spacing) * 3);
 		border-radius: var(--cz-radius-md);
 		box-shadow: 0 0 0 1px var(--cz-color-border-primary);
+		width: min-content;
 	}
 
 	cosmoz-input {
@@ -195,6 +197,8 @@ const styles = css`
 
 	cosmoz-input::part(input) {
 		padding: 0;
+		min-width: var(--min-chars);
+		field-sizing: content;
 		caret-color: transparent;
 	}
 

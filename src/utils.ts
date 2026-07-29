@@ -156,10 +156,17 @@ export const getLocaleDayString = (dayStr: string | number, locale: string) => {
 	return localeDay;
 };
 
-export const getCharacterWidth = (date: DateObject, type: DateType) => {
-	if (date[type].length > 0) {
-		return date[type].length;
+export const getPlaceholder = (type: DateType) => {
+	switch (type) {
+		case 'year':
+			return 'YYYY';
+		case 'month':
+			return 'MM';
+		case 'day':
+			return 'DD';
 	}
+};
 
-	return type === 'year' ? 4 : 2;
+export const getCharacterWidth = (date: DateObject, type: DateType) => {
+	return Math.max(date[type].length, getPlaceholder(type).length);
 };
