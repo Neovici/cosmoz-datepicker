@@ -194,6 +194,10 @@ const styles = css`
 		width: min-content;
 	}
 
+	:host(:focus-within) {
+		box-shadow: var(--cz-focus-ring);
+	}
+
 	cosmoz-input {
 		margin: 0;
 		padding: 0 4px;
