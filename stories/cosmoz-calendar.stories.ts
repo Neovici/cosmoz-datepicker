@@ -13,6 +13,29 @@ export default meta;
 type Story = StoryObj;
 
 export const Swedish: Story = {
-	name: 'sv-SE',
-	render: () => html`<cosmoz-calendar locale="sv-SE"></cosmoz-calendar>`,
+	name: 'sv-SE Two Calendars',
+	render: () =>
+		html`<cosmoz-calendar
+			.value="2026-07-14"
+			locale="sv-SE"
+		></cosmoz-calendar>`,
+};
+
+export const SwedishSingle: Story = {
+	name: 'sv-SE One Calendar',
+	render: () =>
+		html`<cosmoz-calendar
+			.value="2026-07-14"
+			locale="sv-SE"
+			number-of-months="1"
+		></cosmoz-calendar>`,
+};
+
+export const EnglishUs: Story = {
+	name: 'en-US Two Calendars',
+	render: () =>
+		html`<cosmoz-calendar
+			.value="2026-07-14"
+			locale="en-US"
+		></cosmoz-calendar>`,
 };
