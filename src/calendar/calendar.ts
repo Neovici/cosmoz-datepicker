@@ -9,6 +9,7 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
+import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import {
@@ -83,15 +84,20 @@ const CosmozCalendar = (host: CalendarProps) => {
 												: ''}"
 										>
 											<div
-												class="
-													date-cell
-												${isSelected(new Date(day.iso), startDate, endDate) ? 'selected-cell' : ''}
-													${day.isToday && day.isCurrentMonth ? 'today-cell' : ''}
-													${!day.isCurrentMonth ? 'other-month-cell' : ''}
-												${!day.isCurrentMonth && numberOfMonths > 1 ? 'hidden-cell' : ''}
-												"
-												tabindex=${day.isToday ? '0' : '-1'}
+												class=${classMap({
+													'date-cell': true,
+													'selected-cell': isSelected(
+														new Date(day.iso),
+														startDate,
+														endDate,
+													),
+													'today-cell': day.isToday && day.isCurrentMonth,
+													'other-month-cell': !day.isCurrentMonth,
+													'hidden-cell':
+														!day.isCurrentMonth && numberOfMonths > 1,
+												})}
 												role="button"
+												tabindex=${day.isToday ? '0' : '-1'}
 												aria-disabled=${ifDefined(
 													ifDisabled(day, minDate, maxDate),
 												)}
