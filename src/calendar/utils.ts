@@ -24,6 +24,9 @@ export const getWeekdayNames = (locale: string) => {
 	return weekdayNames;
 };
 
+export const getMonthName = (date: Date, locale: string) =>
+	Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
+
 const startOfWeek = (date: Date, locale: string) => {
 	const weekStartDay = getWeekStartDay(locale);
 	const weekDay = date.getDay(); // 0-6 Sun - Mon
