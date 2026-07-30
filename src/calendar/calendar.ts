@@ -12,6 +12,7 @@ import {
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
+import { when } from 'lit-html/directives/when.js';
 import {
 	getMonthsDateCellMatrix,
 	ifDisabled,
@@ -67,62 +68,68 @@ const CosmozCalendar = (host: CalendarProps) => {
 		${repeat(
 			monthMatrices,
 			(_, i) => `cal-${i}`,
-			(month) => html`
-				<table>
-					<tbody>
-						${repeat(
-							month,
-							(_, i) => `month-${i}`,
-							(week) => html`
-								<tr>
-									${repeat(
-										week,
-										(day) => day.iso,
-										(day) => html`
-											<td
-												class="${isInRange(
-													new Date(day.iso),
-													startDate,
-													endDate,
-												)
-													? 'in-range'
-													: ''}"
-											>
-												<div
-													class=${classMap({
-														'date-cell': true,
-														'selected-cell': isSelected(
-															new Date(day.iso),
-															startDate,
-															endDate,
-														),
-														'today-cell': day.isToday && day.isCurrentMonth,
-														'other-month-cell': !day.isCurrentMonth,
-														'hidden-cell':
-															!day.isCurrentMonth && numberOfMonths > 1,
-													})}
-													role="button"
-													tabindex=${day.isToday ? '0' : '-1'}
-													aria-disabled=${ifDefined(
-														ifDisabled(day, minDate, maxDate),
-													)}
-													data-disabled=${ifDefined(
-														ifDisabled(day, minDate, maxDate),
-													)}
-													data-start=${ifDefined(ifStart(day, startDate))}
-													data-end=${ifDefined(ifEnd(day, endDate))}
+			(month, i) => [
+				html`
+					<table>
+						<tbody>
+							${repeat(
+								month,
+								(_, i) => `month-${i}`,
+								(week) => html`
+									<tr>
+										${repeat(
+											week,
+											(day) => day.iso,
+											(day) => html`
+												<td
+													class="${isInRange(
+														new Date(day.iso),
+														startDate,
+														endDate,
+													)
+														? 'in-range'
+														: ''}"
 												>
-													${day.day}
-												</div>
-											</td>
-										`,
-									)}
-								</tr>
-							`,
-						)}
-					</tbody>
-				</table>
-			`,
+													<div
+														class=${classMap({
+															'date-cell': true,
+															'selected-cell': isSelected(
+																new Date(day.iso),
+																startDate,
+																endDate,
+															),
+															'today-cell': day.isToday && day.isCurrentMonth,
+															'other-month-cell': !day.isCurrentMonth,
+															'hidden-cell':
+																!day.isCurrentMonth && numberOfMonths > 1,
+														})}
+														role="button"
+														tabindex=${day.isToday ? '0' : '-1'}
+														aria-disabled=${ifDefined(
+															ifDisabled(day, minDate, maxDate),
+														)}
+														data-disabled=${ifDefined(
+															ifDisabled(day, minDate, maxDate),
+														)}
+														data-start=${ifDefined(ifStart(day, startDate))}
+														data-end=${ifDefined(ifEnd(day, endDate))}
+													>
+														${day.day}
+													</div>
+												</td>
+											`,
+										)}
+									</tr>
+								`,
+							)}
+						</tbody>
+					</table>
+				`,
+				when(
+					i < monthMatrices.length - 1,
+					() => html`<div class="separator"></div>`,
+				),
+			],
 		)}
 	</div> `;
 };
@@ -135,6 +142,13 @@ const styles = css`
 	.wrapper {
 		display: flex;
 		gap: calc(var(--cz-spacing) * 6);
+	}
+
+	.separator {
+		width: 1px;
+		align-self: stretch;
+		background: var(--cz-color-border-secondary);
+		flex-shrink: 0;
 	}
 
 	table {
