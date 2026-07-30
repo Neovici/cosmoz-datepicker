@@ -22,7 +22,10 @@ type CalendarProps = HTMLElement & {
 const CosmozCalendar = (host: CalendarProps) => {
 	const { locale: _locale, numberOfMonths: _numberOfMonths } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
-	const numberOfMonths = Number(_numberOfMonths ?? 2);
+	const numberOfMonths = useMemo(
+		() => Number(_numberOfMonths ?? 2),
+		[_numberOfMonths],
+	);
 	const [start] = useProperty<string>('start');
 	const [end] = useProperty<string>('end');
 	const startDate = useMemo(() => ensureDate(start), [start]);
