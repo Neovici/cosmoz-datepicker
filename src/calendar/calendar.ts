@@ -9,18 +9,21 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { getMonthsDateCellMatrix, isSelected } from './utils';
+import { getMonthsDateCellMatrix, ifDisabled, isSelected } from './utils';
 
 type CalendarProps = HTMLElement & {
 	start?: string;
 	end?: string;
 	locale?: string;
 	numberOfMonths?: string;
+	min?: string;
+	max?: string;
 };
 
 const CosmozCalendar = (host: CalendarProps) => {
-	const { locale: _locale, numberOfMonths: _numberOfMonths } = host;
+	const { locale: _locale, numberOfMonths: _numberOfMonths, min, max } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
 	const numberOfMonths = useMemo(
 		() => Number(_numberOfMonths ?? 2),
@@ -30,6 +33,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const [end] = useProperty<string>('end');
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
+	const minDate = useMemo(() => ensureDate(min ?? '2026-07-09'), [min]);
+	const maxDate = useMemo(() => ensureDate(max), [max]);
 	const [selectedMonth, setSelectedMonth] = useState(startDate ?? new Date());
 
 	useEffect(() => {
@@ -74,6 +79,13 @@ const CosmozCalendar = (host: CalendarProps) => {
 													${!day.isCurrentMonth ? 'other-month-cell' : ''}
 												"
 												tabindex=${day.isToday ? '0' : '-1'}
+												role="button"
+												aria-disabled=${ifDefined(
+													ifDisabled(day, minDate, maxDate),
+												)}
+												data-disabled=${ifDefined(
+													ifDisabled(day, minDate, maxDate),
+												)}
 											>
 												${day.day}
 											</div>
@@ -117,29 +129,21 @@ const styles = css`
 		cursor: pointer;
 	}
 
-	.date-cell:hover {
+	.date-cell:not([data-disabled='true']):hover {
 		background: var(--cz-color-bg-primary-hover);
 	}
 
-	.selected-cell {
-		background: var(--cz-color-bg-brand-solid);
-		color: var(--cz-color-text-on-brand);
+	.date-cell[data-disabled='true'] {
+		cursor: not-allowed;
+		color: var(--cz-color-text-placeholder-subtle);
 	}
 
-	.selected-cell:hover {
-		background: var(--cz-color-bg-brand-solid-hover);
-	}
-
-	.today-cell {
+	.date-cell.today-cell {
 		position: relative;
 		background: var(--cz-color-bg-secondary);
 	}
 
-	.today-cell:hover {
-		background: var(--cz-color-bg-secondary-hover);
-	}
-
-	.today-cell::after {
+	.date-cell.today-cell::after {
 		content: '';
 		width: 4px;
 		height: 4px;
@@ -151,12 +155,27 @@ const styles = css`
 		background: var(--cz-color-bg-brand-solid);
 	}
 
-	.other-month-cell {
-		color: transparent;
+	.date-cell.today-cell:hover {
+		background: var(--cz-color-bg-secondary-hover);
 	}
 
-	.is-single-month .other-month-cell {
+	.date-cell.selected-cell {
+		background: var(--cz-color-bg-brand-solid);
+		color: var(--cz-color-text-on-brand);
+	}
+
+	.date-cell.selected-cell:hover {
+		background: var(--cz-color-bg-brand-solid-hover);
+	}
+
+	.date-cell.other-month-cell {
+		cursor: default;
 		color: var(--cz-color-text-placeholder-subtle);
+		opacity: 0;
+	}
+
+	.is-single-month .date-cell.other-month-cell {
+		opacity: 1;
 	}
 `;
 

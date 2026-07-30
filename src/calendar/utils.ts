@@ -1,4 +1,11 @@
-import { format, isSameDay, isToday, startOfMonth } from 'date-fns';
+import {
+	format,
+	isAfter,
+	isBefore,
+	isSameDay,
+	isToday,
+	startOfMonth,
+} from 'date-fns';
 
 const getWeekStartDay = (locale: string) => {
 	const localeInfo = new Intl.Locale(locale);
@@ -74,3 +81,25 @@ export const isSelected = (date: Date, startDate?: Date, endDate?: Date) => {
 
 	return false;
 };
+
+export const isDisabled = (
+	day: DateCell,
+	minDate?: Date,
+	maxDate?: Date,
+): boolean => {
+	if (!day.isCurrentMonth) {
+		return true;
+	}
+
+	if (
+		(minDate && isBefore(new Date(day.date), minDate)) ||
+		(maxDate && isAfter(new Date(day.date), maxDate))
+	) {
+		return true;
+	}
+
+	return false;
+};
+
+export const ifDisabled = (day: DateCell, minDate?: Date, maxDate?: Date) =>
+	isDisabled(day, minDate, maxDate) ? 'true' : undefined;
