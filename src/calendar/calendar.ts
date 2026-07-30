@@ -4,6 +4,7 @@ import {
 	component,
 	css,
 	html,
+	useEffect,
 	useMemo,
 	useProperty,
 	useState,
@@ -26,7 +27,11 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const [end] = useProperty<string>('end');
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
-	const [selectedMonth] = useState(startDate ?? new Date());
+	const [selectedMonth, setSelectedMonth] = useState(startDate ?? new Date());
+
+	useEffect(() => {
+		setSelectedMonth((prev) => startDate ?? prev);
+	}, [startDate, setSelectedMonth]);
 
 	const monthMatrices = useMemo(() => {
 		const matrices = [];
@@ -40,7 +45,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 			matrices.push(getMonthsDateCellMatrix(relDate, locale));
 		}
 		return matrices;
-	}, [selectedMonth, locale]);
+	}, [selectedMonth, locale, numberOfMonths]);
 
 	return html`<div class="calendar-wrapper">
 		${repeat(
