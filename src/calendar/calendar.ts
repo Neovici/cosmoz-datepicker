@@ -63,58 +63,64 @@ const CosmozCalendar = (host: CalendarProps) => {
 		return matrices;
 	}, [selectedMonth, locale, numberOfMonths]);
 
-	return html`<div class="calendar-wrapper">
+	return html`<div class="wrapper">
 		${repeat(
 			monthMatrices,
 			(_, i) => `cal-${i}`,
 			(month) => html`
 				<table>
-					${repeat(
-						month,
-						(_, i) => `month-${i}`,
-						(week) => html`
-							<tr>
-								${repeat(
-									week,
-									(day) => day.iso,
-									(day) => html`
-										<td
-											class="${isInRange(new Date(day.iso), startDate, endDate)
-												? 'in-range'
-												: ''}"
-										>
-											<div
-												class=${classMap({
-													'date-cell': true,
-													'selected-cell': isSelected(
-														new Date(day.iso),
-														startDate,
-														endDate,
-													),
-													'today-cell': day.isToday && day.isCurrentMonth,
-													'other-month-cell': !day.isCurrentMonth,
-													'hidden-cell':
-														!day.isCurrentMonth && numberOfMonths > 1,
-												})}
-												role="button"
-												tabindex=${day.isToday ? '0' : '-1'}
-												aria-disabled=${ifDefined(
-													ifDisabled(day, minDate, maxDate),
-												)}
-												data-disabled=${ifDefined(
-													ifDisabled(day, minDate, maxDate),
-												)}
-												data-start=${ifDefined(ifStart(day, startDate))}
-												data-end=${ifDefined(ifEnd(day, endDate))}
+					<tbody>
+						${repeat(
+							month,
+							(_, i) => `month-${i}`,
+							(week) => html`
+								<tr>
+									${repeat(
+										week,
+										(day) => day.iso,
+										(day) => html`
+											<td
+												class="${isInRange(
+													new Date(day.iso),
+													startDate,
+													endDate,
+												)
+													? 'in-range'
+													: ''}"
 											>
-												${day.day}
-											</div>
-										</td>
-									`,
-								)}
-							</tr>
-						`,
-					)}
+												<div
+													class=${classMap({
+														'date-cell': true,
+														'selected-cell': isSelected(
+															new Date(day.iso),
+															startDate,
+															endDate,
+														),
+														'today-cell': day.isToday && day.isCurrentMonth,
+														'other-month-cell': !day.isCurrentMonth,
+														'hidden-cell':
+															!day.isCurrentMonth && numberOfMonths > 1,
+													})}
+													role="button"
+													tabindex=${day.isToday ? '0' : '-1'}
+													aria-disabled=${ifDefined(
+														ifDisabled(day, minDate, maxDate),
+													)}
+													data-disabled=${ifDefined(
+														ifDisabled(day, minDate, maxDate),
+													)}
+													data-start=${ifDefined(ifStart(day, startDate))}
+													data-end=${ifDefined(ifEnd(day, endDate))}
+												>
+													${day.day}
+												</div>
+											</td>
+										`,
+									)}
+								</tr>
+							`,
+						)}
+					</tbody>
 				</table>
 			`,
 		)}
@@ -126,17 +132,17 @@ const styles = css`
 		--cell-size: calc(var(--cz-spacing) * 10);
 	}
 
-	.calendar-wrapper {
+	.wrapper {
 		display: flex;
+		gap: calc(var(--cz-spacing) * 6);
 	}
 
 	table {
-		border-spacing: 0;
-		padding: calc(var(--cz-spacing) * 6);
+		border-collapse: collapse;
 	}
 
 	tr {
-		margin-bottom: var(--cz-spacing);
+		border-bottom: var(--cz-spacing) solid transparent;
 	}
 
 	td.in-range {
