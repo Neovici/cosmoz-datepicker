@@ -11,7 +11,14 @@ import {
 } from '@pionjs/pion';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { getMonthsDateCellMatrix, ifDisabled, isSelected } from './utils';
+import {
+	getMonthsDateCellMatrix,
+	ifDisabled,
+	ifEnd,
+	ifStart,
+	isInRange,
+	isSelected,
+} from './utils';
 
 type CalendarProps = HTMLElement & {
 	start?: string;
@@ -33,7 +40,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const [end] = useProperty<string>('end');
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
-	const minDate = useMemo(() => ensureDate(min ?? '2026-07-09'), [min]);
+	const minDate = useMemo(() => ensureDate(min), [min]);
 	const maxDate = useMemo(() => ensureDate(max), [max]);
 	const [selectedMonth, setSelectedMonth] = useState(startDate ?? new Date());
 
@@ -68,13 +75,17 @@ const CosmozCalendar = (host: CalendarProps) => {
 							<tr>
 								${repeat(
 									week,
-									(day) => day.date,
+									(day) => day.iso,
 									(day) => html`
-										<td>
+										<td
+											class="${isInRange(new Date(day.iso), startDate, endDate)
+												? 'in-range'
+												: ''}"
+										>
 											<div
 												class="
 													date-cell
-												${isSelected(new Date(day.date), startDate, endDate) ? 'selected-cell' : ''}
+												${isSelected(new Date(day.iso), startDate, endDate) ? 'selected-cell' : ''}
 													${day.isToday && day.isCurrentMonth ? 'today-cell' : ''}
 													${!day.isCurrentMonth ? 'other-month-cell' : ''}
 												"
@@ -86,6 +97,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 												data-disabled=${ifDefined(
 													ifDisabled(day, minDate, maxDate),
 												)}
+												data-start=${ifDefined(ifStart(day, startDate))}
+												data-end=${ifDefined(ifEnd(day, endDate))}
 											>
 												${day.day}
 											</div>
@@ -111,6 +124,7 @@ const styles = css`
 	}
 
 	table {
+		border-spacing: 0;
 		padding: calc(var(--cz-spacing) * 6);
 	}
 
@@ -118,7 +132,23 @@ const styles = css`
 		margin-bottom: var(--cz-spacing);
 	}
 
+	td.in-range {
+		background: var(--cz-color-bg-secondary);
+		border-radius: 0;
+	}
+
+	td.in-range:has(.date-cell[data-start]) {
+		border-top-left-radius: var(--cz-radius-full);
+		border-bottom-left-radius: var(--cz-radius-full);
+	}
+
+	td.in-range:has(.date-cell[data-end]) {
+		border-top-right-radius: var(--cz-radius-full);
+		border-bottom-right-radius: var(--cz-radius-full);
+	}
+
 	.date-cell {
+		position: relative;
 		width: var(--cell-size);
 		height: var(--cell-size);
 		display: flex;
@@ -139,7 +169,6 @@ const styles = css`
 	}
 
 	.date-cell.today-cell {
-		position: relative;
 		background: var(--cz-color-bg-secondary);
 	}
 
@@ -159,9 +188,13 @@ const styles = css`
 		background: var(--cz-color-bg-secondary-hover);
 	}
 
+	.in-range .date-cell:hover {
+		background: var(--cz-color-bg-secondary-hover);
+	}
+
 	.date-cell.selected-cell {
-		background: var(--cz-color-bg-brand-solid);
 		color: var(--cz-color-text-on-brand);
+		background: var(--cz-color-bg-brand-solid);
 	}
 
 	.date-cell.selected-cell:hover {

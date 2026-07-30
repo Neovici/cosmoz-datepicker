@@ -1,9 +1,9 @@
 import {
-	format,
 	isAfter,
 	isBefore,
 	isSameDay,
 	isToday,
+	isWithinInterval,
 	startOfMonth,
 } from 'date-fns';
 
@@ -28,7 +28,7 @@ const startOfWeek = (date: Date, locale: string) => {
 type DateCell = {
 	day: number;
 	month: number;
-	date: string;
+	iso: string;
 	isToday: boolean;
 	isCurrentMonth: boolean;
 };
@@ -57,7 +57,7 @@ export const getMonthsDateCellMatrix = (
 			const cell: DateCell = {
 				month: cellDate.getMonth(),
 				day: cellDate.getDate(),
-				date: format(cellDate, 'yyyy-MM-dd'),
+				iso: cellDate.toISOString(),
 				isToday: isToday(cellDate),
 				isCurrentMonth: monthStart.getMonth() === cellDate.getMonth(),
 			};
@@ -71,7 +71,11 @@ export const getMonthsDateCellMatrix = (
 	return cells;
 };
 
-export const isSelected = (date: Date, startDate?: Date, endDate?: Date) => {
+export const isSelected = (
+	date: Date,
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+) => {
 	if (
 		(startDate && isSameDay(date, startDate)) ||
 		(endDate && isSameDay(date, endDate))
@@ -82,18 +86,15 @@ export const isSelected = (date: Date, startDate?: Date, endDate?: Date) => {
 	return false;
 };
 
-export const isDisabled = (
-	day: DateCell,
-	minDate?: Date,
-	maxDate?: Date,
-): boolean => {
-	if (!day.isCurrentMonth) {
-		return true;
-	}
-
+export const isInRange = (
+	date: Date,
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+) => {
 	if (
-		(minDate && isBefore(new Date(day.date), minDate)) ||
-		(maxDate && isAfter(new Date(day.date), maxDate))
+		startDate &&
+		endDate &&
+		isWithinInterval(date, { start: startDate, end: endDate })
 	) {
 		return true;
 	}
@@ -101,5 +102,33 @@ export const isDisabled = (
 	return false;
 };
 
-export const ifDisabled = (day: DateCell, minDate?: Date, maxDate?: Date) =>
-	isDisabled(day, minDate, maxDate) ? 'true' : undefined;
+export const isDisabled = (
+	day: DateCell,
+	minDate: Date | undefined,
+	maxDate: Date | undefined,
+): boolean => {
+	if (!day.isCurrentMonth) {
+		return true;
+	}
+
+	if (
+		(minDate && isBefore(new Date(day.iso), minDate)) ||
+		(maxDate && isAfter(new Date(day.iso), maxDate))
+	) {
+		return true;
+	}
+
+	return false;
+};
+
+export const ifDisabled = (
+	day: DateCell,
+	minDate: Date | undefined,
+	maxDate: Date | undefined,
+) => (isDisabled(day, minDate, maxDate) ? 'true' : undefined);
+
+export const ifStart = (day: DateCell, startDate: Date | undefined) =>
+	startDate && isSameDay(new Date(day.iso), startDate) ? true : undefined;
+
+export const ifEnd = (day: DateCell, endDate: Date | undefined) =>
+	endDate && isSameDay(new Date(day.iso), endDate) ? true : undefined;
