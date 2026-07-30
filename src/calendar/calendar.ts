@@ -85,7 +85,9 @@ const CosmozCalendar = (host: CalendarProps) => {
 										variant="tertiary"
 										class="prev-button"
 										@click=${() =>
-											setSelectedMonth((prev) => subMonths(prev, 1))}
+											setSelectedMonth((prev) =>
+												subMonths(prev, numberOfMonths),
+											)}
 										>${chevronLeftIcon()}</cosmoz-button
 									>
 								`,
@@ -108,7 +110,9 @@ const CosmozCalendar = (host: CalendarProps) => {
 										variant="tertiary"
 										class="next-button"
 										@click=${() =>
-											setSelectedMonth((prev) => addMonths(prev, 1))}
+											setSelectedMonth((prev) =>
+												addMonths(prev, numberOfMonths),
+											)}
 										>${chevronRightIcon()}</cosmoz-button
 									>
 								`,
