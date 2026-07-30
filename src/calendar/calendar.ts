@@ -62,13 +62,9 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const monthMatrices = useMemo(() => {
 		const matrices = [];
 		for (let i = 0; i < numberOfMonths; i++) {
-			const relDate = new Date(
-				selectedMonth.getFullYear(),
-				selectedMonth.getMonth() + i,
-				selectedMonth.getDate(),
+			matrices.push(
+				getMonthsDateCellMatrix(addMonths(selectedMonth, i), locale),
 			);
-
-			matrices.push(getMonthsDateCellMatrix(relDate, locale));
 		}
 		return matrices;
 	}, [selectedMonth, locale, numberOfMonths]);

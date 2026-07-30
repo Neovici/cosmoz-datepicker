@@ -1,10 +1,12 @@
 import {
+	addDays,
 	isAfter,
 	isBefore,
 	isSameDay,
 	isToday,
 	isWithinInterval,
 	startOfMonth,
+	subDays,
 } from 'date-fns';
 
 const getWeekStartDay = (locale: string) => {
@@ -31,11 +33,7 @@ const startOfWeek = (date: Date, locale: string) => {
 	const weekStartDay = getWeekStartDay(locale);
 	const weekDay = date.getDay(); // 0-6 Sun - Mon
 
-	return new Date(
-		date.getFullYear(),
-		date.getMonth(),
-		date.getDate() - (weekDay - weekStartDay),
-	);
+	return subDays(date, weekDay - weekStartDay);
 };
 
 type DateCell = {
@@ -61,11 +59,7 @@ export const getMonthsDateCellMatrix = (
 	for (let i = 0; i < VISIBLE_WEEKS; i++) {
 		const weekOfCells = [];
 		for (let j = 0; j < 7; j++) {
-			const cellDate = new Date(
-				monthStartWeekStart.getFullYear(),
-				monthStartWeekStart.getMonth(),
-				monthStartWeekStart.getDate() + (i * 7 + j),
-			);
+			const cellDate = addDays(monthStartWeekStart, i * 7 + j);
 
 			const cell: DateCell = {
 				month: cellDate.getMonth(),
