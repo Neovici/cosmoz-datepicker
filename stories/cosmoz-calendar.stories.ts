@@ -17,6 +17,8 @@ export const Swedish: Story = {
 	render: () =>
 		html`<cosmoz-calendar
 			.start=${'2026-07-12'}
+			.end=${'2026-07-17'}
+			.min=${'2026-07-09'}
 			locale="sv-SE"
 		></cosmoz-calendar>`,
 };
