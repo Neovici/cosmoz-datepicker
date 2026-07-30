@@ -98,6 +98,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 									),
 									locale,
 								)}
+								${selectedMonth.getFullYear()}
 							</h2>
 							${when(
 								i === monthMatrices.length - 1,
