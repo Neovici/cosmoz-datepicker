@@ -15,6 +15,7 @@ import { repeat } from 'lit-html/directives/repeat.js';
 import { when } from 'lit-html/directives/when.js';
 import {
 	getMonthsDateCellMatrix,
+	getWeekdayNames,
 	ifDisabled,
 	ifEnd,
 	ifStart,
@@ -45,6 +46,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const minDate = useMemo(() => ensureDate(min), [min]);
 	const maxDate = useMemo(() => ensureDate(max), [max]);
 	const [selectedMonth, setSelectedMonth] = useState(startDate ?? new Date());
+	const weekdayNames = useMemo(() => getWeekdayNames(locale), [locale]);
 
 	useEffect(() => {
 		setSelectedMonth((prev) => startDate ?? prev);
@@ -71,6 +73,17 @@ const CosmozCalendar = (host: CalendarProps) => {
 			(month, i) => [
 				html`
 					<table>
+						<thead>
+							<tr>
+								${repeat(
+									weekdayNames,
+									(i) => i,
+									(weekday) => html`
+										<th><div class="weekday">${weekday}</div></th>
+									`,
+								)}
+							</tr>
+						</thead>
 						<tbody>
 							${repeat(
 								month,
@@ -159,6 +172,16 @@ const styles = css`
 		border-bottom: var(--cz-spacing) solid transparent;
 	}
 
+	.weekday {
+		width: var(--cell-size);
+		height: var(--cell-size);
+		font-size: var(--cz-text-sm);
+		line-height: var(--cz-text-sm-line-height);
+		font-weight: var(--cz-font-weight-medium);
+		color: var(--cz-color-text-secondary);
+		text-transform: capitalize;
+	}
+
 	td.in-range {
 		background: var(--cz-color-bg-secondary);
 		border-radius: 0;
@@ -184,10 +207,15 @@ const styles = css`
 		border-radius: var(--cz-radius-full);
 		user-select: none;
 		cursor: pointer;
+		font-size: var(--cz-text-sm);
+		line-height: var(--cz-text-sm-line-height);
+		color: var(--cz-color-text-secondary);
 	}
 
 	.date-cell:not([data-disabled='true']):hover {
 		background: var(--cz-color-bg-primary-hover);
+		color: var(--cz-color-text-primary);
+		font-weight: var(--cz-font-weight-medium);
 	}
 
 	.date-cell[data-disabled='true'] {
@@ -225,6 +253,7 @@ const styles = css`
 	}
 
 	.date-cell.selected-cell:hover {
+		color: var(--cz-color-text-on-brand);
 		background: var(--cz-color-bg-brand-solid-hover);
 	}
 
