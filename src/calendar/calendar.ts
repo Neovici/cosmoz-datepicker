@@ -1,3 +1,8 @@
+import '@neovici/cosmoz-button';
+import {
+	chevronLeftIcon,
+	chevronRightIcon,
+} from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { ensureDate } from '@neovici/cosmoz-utils/date';
 import {
@@ -14,6 +19,7 @@ import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { when } from 'lit-html/directives/when.js';
 import {
+	getMonthName,
 	getMonthsDateCellMatrix,
 	getWeekdayNames,
 	ifDisabled,
@@ -72,71 +78,106 @@ const CosmozCalendar = (host: CalendarProps) => {
 			(_, i) => `cal-${i}`,
 			(month, i) => [
 				html`
-					<table>
-						<thead>
-							<tr>
-								${repeat(
-									weekdayNames,
-									(i) => i,
-									(weekday) => html`
-										<th><div class="weekday">${weekday}</div></th>
-									`,
-								)}
-							</tr>
-						</thead>
-						<tbody>
-							${repeat(
-								month,
-								(_, i) => `month-${i}`,
-								(week) => html`
-									<tr>
-										${repeat(
-											week,
-											(day) => day.iso,
-											(day) => html`
-												<td
-													class="${isInRange(
-														new Date(day.iso),
-														startDate,
-														endDate,
-													)
-														? 'in-range'
-														: ''}"
-												>
-													<div
-														class=${classMap({
-															'date-cell': true,
-															'selected-cell': isSelected(
-																new Date(day.iso),
-																startDate,
-																endDate,
-															),
-															'today-cell': day.isToday && day.isCurrentMonth,
-															'other-month-cell': !day.isCurrentMonth,
-															'hidden-cell':
-																!day.isCurrentMonth && numberOfMonths > 1,
-														})}
-														role="button"
-														tabindex=${day.isToday ? '0' : '-1'}
-														aria-disabled=${ifDefined(
-															ifDisabled(day, minDate, maxDate),
-														)}
-														data-disabled=${ifDefined(
-															ifDisabled(day, minDate, maxDate),
-														)}
-														data-start=${ifDefined(ifStart(day, startDate))}
-														data-end=${ifDefined(ifEnd(day, endDate))}
-													>
-														${day.day}
-													</div>
-												</td>
-											`,
-										)}
-									</tr>
+					<div class="month-wrapper">
+						<header>
+							${when(
+								i === 0,
+								() => html`
+									<cosmoz-button
+										size="sm"
+										variant="tertiary"
+										class="prev-button"
+										>${chevronLeftIcon()}</cosmoz-button
+									>
 								`,
 							)}
-						</tbody>
-					</table>
+							<h2 class="month-label">
+								${getMonthName(
+									new Date(
+										selectedMonth.getFullYear(),
+										selectedMonth.getMonth() + i,
+									),
+									locale,
+								)}
+							</h2>
+							${when(
+								i === monthMatrices.length - 1,
+								() => html`
+									<cosmoz-button
+										size="sm"
+										variant="tertiary"
+										class="next-button"
+										>${chevronRightIcon()}</cosmoz-button
+									>
+								`,
+							)}
+						</header>
+						<table>
+							<thead>
+								<tr>
+									${repeat(
+										weekdayNames,
+										(i) => i,
+										(weekday) => html`
+											<th><div class="weekday">${weekday}</div></th>
+										`,
+									)}
+								</tr>
+							</thead>
+							<tbody>
+								${repeat(
+									month,
+									(_, i) => `month-${i}`,
+									(week) => html`
+										<tr>
+											${repeat(
+												week,
+												(day) => day.iso,
+												(day) => html`
+													<td
+														class="${isInRange(
+															new Date(day.iso),
+															startDate,
+															endDate,
+														)
+															? 'in-range'
+															: ''}"
+													>
+														<div
+															class=${classMap({
+																'date-cell': true,
+																'selected-cell': isSelected(
+																	new Date(day.iso),
+																	startDate,
+																	endDate,
+																),
+																'today-cell': day.isToday && day.isCurrentMonth,
+																'other-month-cell': !day.isCurrentMonth,
+																'hidden-cell':
+																	!day.isCurrentMonth && numberOfMonths > 1,
+															})}
+															role="button"
+															tabindex=${day.isToday ? '0' : '-1'}
+															aria-disabled=${ifDefined(
+																ifDisabled(day, minDate, maxDate),
+															)}
+															data-disabled=${ifDefined(
+																ifDisabled(day, minDate, maxDate),
+															)}
+															data-start=${ifDefined(ifStart(day, startDate))}
+															data-end=${ifDefined(ifEnd(day, endDate))}
+														>
+															${day.day}
+														</div>
+													</td>
+												`,
+											)}
+										</tr>
+									`,
+								)}
+							</tbody>
+						</table>
+					</div>
 				`,
 				when(
 					i < monthMatrices.length - 1,
@@ -162,6 +203,41 @@ const styles = css`
 		align-self: stretch;
 		background: var(--cz-color-border-secondary);
 		flex-shrink: 0;
+	}
+
+	.month-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: calc(var(--cz-spacing) * 3);
+	}
+
+	header {
+		display: grid;
+		align-items: center;
+		grid-template-columns: 36px 1fr 36px;
+		grid-template-areas: 'a b c';
+	}
+
+	.month-label {
+		grid-area: b;
+		text-align: center;
+		font-size: var(--cz-text-sm);
+		line-height: var(--cz-text-sm-line-height);
+		font-weight: var(--cz-font-weight-semibold);
+		color: var(--cz-color-text-secondary);
+		text-transform: capitalize;
+	}
+
+	.prev-button {
+		grid-area: a;
+	}
+
+	.next-button {
+		grid-area: c;
+	}
+
+	cosmoz-button::part(button) {
+		padding: calc(var(--cz-spacing) * 2);
 	}
 
 	table {
