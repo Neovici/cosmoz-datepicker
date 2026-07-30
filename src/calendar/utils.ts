@@ -14,6 +14,16 @@ const getWeekStartDay = (locale: string) => {
 	return weekStartDay % 7; // 0-6 Sun - Mon
 };
 
+export const getWeekdayNames = (locale: string) => {
+	const weekStartDay = getWeekStartDay(locale);
+	const fmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+	const weekdayNames = Array.from(
+		{ length: 7 },
+		(_, i) => fmt.format(new Date(2023, 0, 1 + i + weekStartDay)), // 2023-1-1 is a Sunday
+	);
+	return weekdayNames;
+};
+
 const startOfWeek = (date: Date, locale: string) => {
 	const weekStartDay = getWeekStartDay(locale);
 	const weekDay = date.getDay(); // 0-6 Sun - Mon
