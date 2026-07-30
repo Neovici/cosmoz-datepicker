@@ -1,4 +1,4 @@
-import { format, isToday, startOfMonth } from 'date-fns';
+import { format, isSameDay, isToday, startOfMonth } from 'date-fns';
 
 const getWeekStartDay = (locale: string) => {
 	const localeInfo = new Intl.Locale(locale);
@@ -62,4 +62,15 @@ export const getMonthsDateCellMatrix = (
 	}
 
 	return cells;
+};
+
+export const isSelected = (date: Date, startDate?: Date, endDate?: Date) => {
+	if (
+		(startDate && isSameDay(date, startDate)) ||
+		(endDate && isSameDay(date, endDate))
+	) {
+		return true;
+	}
+
+	return false;
 };

@@ -1,11 +1,19 @@
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { ensureDate } from '@neovici/cosmoz-utils/date';
-import { component, css, html, useMemo, useProperty } from '@pionjs/pion';
+import {
+	component,
+	css,
+	html,
+	useMemo,
+	useProperty,
+	useState,
+} from '@pionjs/pion';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { getMonthsDateCellMatrix } from './utils';
+import { getMonthsDateCellMatrix, isSelected } from './utils';
 
 type CalendarProps = HTMLElement & {
-	value?: string;
+	start?: string;
+	end?: string;
 	locale?: string;
 	numberOfMonths?: string;
 };
@@ -14,22 +22,25 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const { locale: _locale, numberOfMonths: _numberOfMonths } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
 	const numberOfMonths = Number(_numberOfMonths ?? 2);
-	const [value] = useProperty<string>('value');
-	const date = useMemo(() => ensureDate(value) ?? new Date(), [value]);
+	const [start] = useProperty<string>('start');
+	const [end] = useProperty<string>('end');
+	const startDate = useMemo(() => ensureDate(start), [start]);
+	const endDate = useMemo(() => ensureDate(end), [end]);
+	const [selectedMonth] = useState(startDate ?? new Date());
 
 	const monthMatrices = useMemo(() => {
 		const matrices = [];
 		for (let i = 0; i < numberOfMonths; i++) {
 			const relDate = new Date(
-				date.getFullYear(),
-				date.getMonth() + i,
-				date.getDate(),
+				selectedMonth.getFullYear(),
+				selectedMonth.getMonth() + i,
+				selectedMonth.getDate(),
 			);
 
 			matrices.push(getMonthsDateCellMatrix(relDate, locale));
 		}
 		return matrices;
-	}, [date, locale]);
+	}, [selectedMonth, locale]);
 
 	return html`<div class="calendar-wrapper">
 		${repeat(
@@ -50,6 +61,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 											<div
 												class="
 													date-cell
+												${isSelected(new Date(day.date), startDate, endDate) ? 'selected-cell' : ''}
 													${day.isToday && day.isCurrentMonth ? 'today-cell' : ''}
 													${!day.isCurrentMonth ? 'other-month-cell' : ''}
 												"
@@ -97,9 +109,38 @@ const styles = css`
 		cursor: pointer;
 	}
 
-	.today-cell {
+	.date-cell:hover {
+		background: var(--cz-color-bg-primary-hover);
+	}
+
+	.selected-cell {
 		background: var(--cz-color-bg-brand-solid);
 		color: var(--cz-color-text-on-brand);
+	}
+
+	.selected-cell:hover {
+		background: var(--cz-color-bg-brand-solid-hover);
+	}
+
+	.today-cell {
+		position: relative;
+		background: var(--cz-color-bg-secondary);
+	}
+
+	.today-cell:hover {
+		background: var(--cz-color-bg-secondary-hover);
+	}
+
+	.today-cell::after {
+		content: '';
+		width: 4px;
+		height: 4px;
+		border-radius: var(--cz-radius-full);
+		position: absolute;
+		bottom: 4px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--cz-color-bg-brand-solid);
 	}
 
 	.other-month-cell {
