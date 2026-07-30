@@ -75,7 +75,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 			(_, i) => `cal-${i}`,
 			(month, i) => [
 				html`
-					<div class="month-wrapper">
+					<div class="month-wrapper ${numberOfMonths > 1 ? 'padded' : ''}">
 						<header>
 							${when(
 								i === 0,
@@ -159,6 +159,15 @@ const CosmozCalendar = (host: CalendarProps) => {
 															})}
 															role="button"
 															tabindex=${day.isToday ? '0' : '-1'}
+															aria-label=${new Date(day.iso).toLocaleString(
+																locale,
+																{
+																	weekday: 'long',
+																	year: 'numeric',
+																	month: 'long',
+																	day: 'numeric',
+																},
+															)}
 															aria-disabled=${ifDefined(
 																ifDisabled(day, minDate, maxDate),
 															)}
@@ -196,7 +205,6 @@ const styles = css`
 
 	.wrapper {
 		display: flex;
-		gap: calc(var(--cz-spacing) * 6);
 	}
 
 	.separator {
@@ -210,6 +218,10 @@ const styles = css`
 		display: flex;
 		flex-direction: column;
 		gap: calc(var(--cz-spacing) * 3);
+	}
+
+	.month-wrapper.padded {
+		padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 6);
 	}
 
 	header {
