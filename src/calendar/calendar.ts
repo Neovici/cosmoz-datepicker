@@ -14,6 +14,7 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
+import { addMonths, subMonths } from 'date-fns';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -87,6 +88,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 										size="sm"
 										variant="tertiary"
 										class="prev-button"
+										@click=${() =>
+											setSelectedMonth((prev) => subMonths(prev, 1))}
 										>${chevronLeftIcon()}</cosmoz-button
 									>
 								`,
@@ -107,6 +110,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 										size="sm"
 										variant="tertiary"
 										class="next-button"
+										@click=${() =>
+											setSelectedMonth((prev) => addMonths(prev, 1))}
 										>${chevronRightIcon()}</cosmoz-button
 									>
 								`,
