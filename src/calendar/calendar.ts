@@ -67,7 +67,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 			monthMatrices,
 			(_, i) => `cal-${i}`,
 			(month) => html`
-				<table class="${numberOfMonths === 1 ? 'is-single-month' : ''}">
+				<table>
 					${repeat(
 						month,
 						(_, i) => `month-${i}`,
@@ -88,6 +88,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 												${isSelected(new Date(day.iso), startDate, endDate) ? 'selected-cell' : ''}
 													${day.isToday && day.isCurrentMonth ? 'today-cell' : ''}
 													${!day.isCurrentMonth ? 'other-month-cell' : ''}
+												${!day.isCurrentMonth && numberOfMonths > 1 ? 'hidden-cell' : ''}
 												"
 												tabindex=${day.isToday ? '0' : '-1'}
 												role="button"
@@ -204,11 +205,10 @@ const styles = css`
 	.date-cell.other-month-cell {
 		cursor: default;
 		color: var(--cz-color-text-placeholder-subtle);
-		opacity: 0;
 	}
 
-	.is-single-month .date-cell.other-month-cell {
-		opacity: 1;
+	.date-cell.hidden-cell {
+		visibility: hidden;
 	}
 `;
 
