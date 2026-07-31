@@ -1,4 +1,3 @@
-import '@neovici/cosmoz-button';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { component, html } from '@pionjs/pion';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -28,7 +27,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 	} = useCalendar(host);
 
 	return html`<div
-		class="wrapper"
+		class="calendar"
 		@focus=${() => setIsFocused(true)}
 		@blur=${() => setIsFocused(false)}
 	>
@@ -42,7 +41,6 @@ const CosmozCalendar = (host: CalendarProps) => {
 							renderHeader({
 								index: i,
 								locale,
-								monthCount: monthMatrices.length,
 								numberOfMonths,
 								selectedMonth,
 								setSelectedMonth,
@@ -65,10 +63,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 						]}
 					</div>
 				`,
-				when(
-					i < monthMatrices.length - 1,
-					() => html`<div class="separator"></div>`,
-				),
+				when(i < numberOfMonths - 1, () => html`<div class="separator"></div>`),
 			],
 		)}
 	</div> `;

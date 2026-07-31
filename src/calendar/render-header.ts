@@ -1,3 +1,4 @@
+import '@neovici/cosmoz-button';
 import {
 	chevronLeftIcon,
 	chevronRightIcon,
@@ -10,7 +11,6 @@ import { getMonthName } from './utils';
 type RenderHeaderOptions = {
 	index: number;
 	locale: string;
-	monthCount: number;
 	numberOfMonths: number;
 	selectedMonth: Date;
 	setSelectedMonth: (value: Date | ((prev: Date) => Date)) => void;
@@ -19,7 +19,6 @@ type RenderHeaderOptions = {
 export const renderHeader = ({
 	index,
 	locale,
-	monthCount,
 	numberOfMonths,
 	selectedMonth,
 	setSelectedMonth,
@@ -43,7 +42,7 @@ export const renderHeader = ({
 			${selectedMonth.getFullYear()}
 		</h2>
 		${when(
-			index === monthCount - 1,
+			index === numberOfMonths - 1,
 			() => html`
 				<cosmoz-button
 					size="sm"
