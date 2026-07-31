@@ -15,7 +15,15 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
-import { addMonths, format, isBefore, isSameDay, subMonths } from 'date-fns';
+import {
+	addMonths,
+	endOfMonth,
+	format,
+	isBefore,
+	isSameDay,
+	startOfMonth,
+	subMonths,
+} from 'date-fns';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -139,11 +147,21 @@ const CosmozCalendar = (host: CalendarProps) => {
 	);
 
 	useEffect(() => {
-		if (
-			isBeforeVisibleMonths(focusedDate, selectedMonth) ||
-			isAfterVisibleMonths(focusedDate, selectedMonth, numberOfMonths)
-		) {
-			const newDate = getValidDate(selectedMonth, minDate, maxDate);
+		if (isBeforeVisibleMonths(focusedDate, selectedMonth)) {
+			const newDate = getValidDate(
+				startOfMonth(selectedMonth),
+				minDate,
+				maxDate,
+			);
+			setFocusedDate(newDate);
+		}
+
+		if (isAfterVisibleMonths(focusedDate, selectedMonth, numberOfMonths)) {
+			const newDate = getValidDate(
+				endOfMonth(addMonths(selectedMonth, numberOfMonths - 1)),
+				minDate,
+				maxDate,
+			);
 			setFocusedDate(newDate);
 		}
 	}, [
