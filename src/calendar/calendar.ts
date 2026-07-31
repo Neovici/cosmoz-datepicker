@@ -93,13 +93,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 								`,
 							)}
 							<h2 class="month-label">
-								${getMonthName(
-									new Date(
-										selectedMonth.getFullYear(),
-										selectedMonth.getMonth() + i,
-									),
-									locale,
-								)}
+								${getMonthName(addMonths(selectedMonth, i), locale)}
 								${selectedMonth.getFullYear()}
 							</h2>
 							${when(
