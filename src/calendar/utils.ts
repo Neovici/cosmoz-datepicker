@@ -42,7 +42,7 @@ const startOfWeek = (date: Date, locale: string) => {
 	return subDays(date, getDaysSinceWeekStart(date, locale));
 };
 
-type DateCell = {
+export type DateCell = {
 	day: number;
 	month: number;
 	iso: string;
@@ -50,7 +50,7 @@ type DateCell = {
 	isCurrentMonth: boolean;
 };
 
-type DateCellMatrix = DateCell[][];
+export type DateCellMatrix = DateCell[][];
 
 export const getMonthsDateCellMatrix = (
 	date: Date,
