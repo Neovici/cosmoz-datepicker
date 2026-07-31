@@ -9,11 +9,18 @@ import {
 	subDays,
 } from 'date-fns';
 
-const getWeekStartDay = (locale: string) => {
+export const getWeekStartDay = (locale: string) => {
 	const localeInfo = new Intl.Locale(locale);
 	const weekInfo = localeInfo.getWeekInfo?.();
 	const weekStartDay = weekInfo?.firstDay ?? 1; // 1-7 Mon - Sun
 	return weekStartDay % 7; // 0-6 Sun - Mon
+};
+
+export const getDaysSinceWeekStart = (date: Date, locale: string) => {
+	const weekStartDay = getWeekStartDay(locale);
+	const weekDay = date.getDay(); // 0-6 Sun - Mon
+
+	return (weekDay - weekStartDay + 7) % 7;
 };
 
 export const getWeekdayNames = (locale: string) => {
@@ -30,10 +37,7 @@ export const getMonthName = (date: Date, locale: string) =>
 	Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
 
 const startOfWeek = (date: Date, locale: string) => {
-	const weekStartDay = getWeekStartDay(locale);
-	const weekDay = date.getDay(); // 0-6 Sun - Mon
-
-	return subDays(date, weekDay - weekStartDay);
+	return subDays(date, getDaysSinceWeekStart(date, locale));
 };
 
 type DateCell = {
