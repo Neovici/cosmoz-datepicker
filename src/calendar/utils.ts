@@ -103,11 +103,20 @@ export const isInRange = (
 	date: Date,
 	startDate: Date | undefined,
 	endDate: Date | undefined,
+	focusedDate: Date | undefined,
 ) => {
 	if (
-		startDate &&
 		endDate &&
+		startDate &&
 		isWithinInterval(date, { start: startDate, end: endDate })
+	) {
+		return true;
+	}
+	if (
+		!endDate &&
+		focusedDate &&
+		startDate &&
+		isWithinInterval(date, { start: startDate, end: focusedDate })
 	) {
 		return true;
 	}

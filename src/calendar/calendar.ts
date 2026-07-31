@@ -246,7 +246,12 @@ const CosmozCalendar = (host: CalendarProps) => {
 
 													return html`
 														<td
-															class="${isInRange(date, startDate, endDate)
+															class="${isInRange(
+																date,
+																startDate,
+																endDate,
+																focusedDate,
+															)
 																? 'in-range'
 																: ''}"
 														>
@@ -258,6 +263,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 																		startDate,
 																		endDate,
 																	),
+																	'focused-highlighed-cell':
+																		!endDate && isSameDay(date, focusedDate),
 																	'today-cell':
 																		day.isToday && day.isCurrentMonth,
 																	'other-month-cell': !day.isCurrentMonth,
@@ -460,12 +467,14 @@ const styles = css`
 		background: var(--cz-color-bg-secondary-hover);
 	}
 
-	.date-cell.selected-cell {
+	.date-cell.selected-cell,
+	.date-cell.focused-highlighed-cell {
 		color: var(--cz-color-text-on-brand);
 		background: var(--cz-color-bg-brand-solid);
 	}
 
-	.date-cell.selected-cell:hover {
+	.date-cell.selected-cell:hover,
+	.date-cell.focused-highlighed-cell:hover {
 		color: var(--cz-color-text-on-brand);
 		background: var(--cz-color-bg-brand-solid-hover);
 	}
