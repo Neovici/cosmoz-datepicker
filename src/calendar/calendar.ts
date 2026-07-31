@@ -75,7 +75,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 
 			focusedCell?.focus();
 		}
-	}, [focusedDate]);
+	}, [focusedDate, host, isFocused]);
 
 	const monthMatrices = useMemo(() => {
 		const matrices = [];
@@ -128,7 +128,14 @@ const CosmozCalendar = (host: CalendarProps) => {
 
 			setFocusedDate(nextDate);
 		},
-		[minDate, maxDate, numberOfMonths, selectedMonth, setSelectedMonth],
+		[
+			minDate,
+			maxDate,
+			numberOfMonths,
+			selectedMonth,
+			setFocusedDate,
+			setSelectedMonth,
+		],
 	);
 
 	useEffect(() => {
@@ -139,7 +146,14 @@ const CosmozCalendar = (host: CalendarProps) => {
 			const newDate = getValidDate(selectedMonth, minDate, maxDate);
 			setFocusedDate(newDate);
 		}
-	}, [selectedMonth]);
+	}, [
+		focusedDate,
+		maxDate,
+		minDate,
+		numberOfMonths,
+		selectedMonth,
+		setFocusedDate,
+	]);
 
 	const onKeyDown = useCallback(
 		(e: KeyboardEvent) => {
@@ -170,7 +184,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 			e.preventDefault();
 			focusDate(nextDate);
 		},
-		[focusDate, locale, onClick],
+		[focusDate, onClick],
 	);
 
 	return html`<div
