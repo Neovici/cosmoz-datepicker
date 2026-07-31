@@ -1,5 +1,7 @@
 import {
 	addDays,
+	addMonths,
+	endOfMonth,
 	isAfter,
 	isBefore,
 	isSameDay,
@@ -9,14 +11,14 @@ import {
 	subDays,
 } from 'date-fns';
 
-export const getWeekStartDay = (locale: string) => {
+const getWeekStartDay = (locale: string) => {
 	const localeInfo = new Intl.Locale(locale);
 	const weekInfo = localeInfo.getWeekInfo?.();
 	const weekStartDay = weekInfo?.firstDay ?? 1; // 1-7 Mon - Sun
 	return weekStartDay % 7; // 0-6 Sun - Mon
 };
 
-export const getDaysSinceWeekStart = (date: Date, locale: string) => {
+const getDaysSinceWeekStart = (date: Date, locale: string) => {
 	const weekStartDay = getWeekStartDay(locale);
 	const weekDay = date.getDay(); // 0-6 Sun - Mon
 
@@ -143,3 +145,39 @@ export const ifStart = (day: DateCell, startDate: Date | undefined) =>
 
 export const ifEnd = (day: DateCell, endDate: Date | undefined) =>
 	endDate && isSameDay(new Date(day.iso), endDate) ? true : undefined;
+
+export const isBeforeVisibleMonths = (date: Date, selectedMonth: Date) =>
+	isBefore(date, startOfMonth(selectedMonth));
+
+export const isAfterVisibleMonths = (
+	date: Date,
+	selectedMonth: Date,
+	numberOfMonths: number,
+) => isAfter(date, endOfMonth(addMonths(selectedMonth, numberOfMonths - 1)));
+
+export const getValidDate = (
+	date: Date,
+	minDate: Date | undefined,
+	maxDate: Date | undefined,
+) => {
+	if (minDate && isBefore(date, minDate)) {
+		return minDate;
+	}
+
+	if (maxDate && isAfter(date, maxDate)) {
+		return maxDate;
+	}
+
+	return date;
+};
+
+export const getKeyboardDate = (e: KeyboardEvent, date: Date) => {
+	const keyboardDates: Record<string, Date> = {
+		ArrowLeft: subDays(date, 1),
+		ArrowRight: addDays(date, 1),
+		ArrowUp: subDays(date, 7),
+		ArrowDown: addDays(date, 7),
+	};
+
+	return keyboardDates[e.key];
+};
