@@ -38,8 +38,8 @@ export const styles = css`
 		color: inherit;
 	}
 
-	cosmoz-input:focus-within::part(input)::placeholder {
-		color: inherit;
+	cosmoz-input:focus-within {
+		--cz-color-text-placeholder: currentColor;
 	}
 
 	cosmoz-input::part(input)::selection {
