@@ -39,7 +39,7 @@ export const renderHeader = ({
 		)}
 		<h2 class="month-label">
 			${getMonthName(addMonths(selectedMonth, index), locale)}
-			${selectedMonth.getFullYear()}
+			${addMonths(selectedMonth, index).getFullYear()}
 		</h2>
 		${when(
 			index === numberOfMonths - 1,
