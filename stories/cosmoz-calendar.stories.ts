@@ -20,19 +20,20 @@ export const Swedish: Story = {
 			.end=${'2026-07-17'}
 			.min=${'2026-07-09'}
 			locale="sv-SE"
+			number-of-months="2"
 		></cosmoz-calendar>`,
 };
 
 export const SwedishSingle: Story = {
 	name: 'sv-SE One Calendar',
-	render: () =>
-		html`<cosmoz-calendar
-			locale="sv-SE"
-			number-of-months="1"
-		></cosmoz-calendar>`,
+	render: () => html`<cosmoz-calendar locale="sv-SE"></cosmoz-calendar>`,
 };
 
 export const EnglishUs: Story = {
 	name: 'en-US Two Calendars',
-	render: () => html`<cosmoz-calendar locale="en-US"></cosmoz-calendar>`,
+	render: () =>
+		html`<cosmoz-calendar
+			locale="en-US"
+			number-of-months="2"
+		></cosmoz-calendar>`,
 };
