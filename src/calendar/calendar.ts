@@ -9,12 +9,13 @@ import {
 	component,
 	css,
 	html,
+	useCallback,
 	useEffect,
 	useMemo,
 	useProperty,
 	useState,
 } from '@pionjs/pion';
-import { addMonths, subMonths } from 'date-fns';
+import { addMonths, format, isBefore, subMonths } from 'date-fns';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -46,8 +47,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 		() => Number(_numberOfMonths ?? 1),
 		[_numberOfMonths],
 	);
-	const [start] = useProperty<string>('start');
-	const [end] = useProperty<string>('end');
+	const [start, setStart] = useProperty<string>('start');
+	const [end, setEnd] = useProperty<string>('end');
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
 	const minDate = useMemo(() => ensureDate(min), [min]);
@@ -68,6 +69,33 @@ const CosmozCalendar = (host: CalendarProps) => {
 		}
 		return matrices;
 	}, [selectedMonth, locale, numberOfMonths]);
+
+	const onClick = useCallback(
+		(date: Date) => {
+			const dateString = format(date, 'yyyy-MM-dd');
+			if (!startDate && !endDate) {
+				setStart(dateString);
+				return;
+			}
+
+			if (startDate && !endDate && isBefore(date, startDate)) {
+				setStart(dateString);
+				setEnd(format(startDate, 'yyyy-MM-dd'));
+				return;
+			}
+
+			if (startDate && !endDate) {
+				setEnd(dateString);
+				return;
+			}
+
+			if (startDate && endDate) {
+				setStart(dateString);
+				setEnd(undefined);
+			}
+		},
+		[startDate, endDate, setStart, setEnd],
+	);
 
 	return html`<div class="wrapper">
 		${repeat(
@@ -175,6 +203,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 															)}
 															data-start=${ifDefined(ifStart(day, startDate))}
 															data-end=${ifDefined(ifEnd(day, endDate))}
+															@click=${() => onClick(new Date(day.iso))}
 														>
 															${day.day}
 														</div>
@@ -270,7 +299,7 @@ const styles = css`
 		text-transform: capitalize;
 	}
 
-	td.in-range {
+	td.in-range:not(:has(.hidden-cell)) {
 		background: var(--cz-color-bg-secondary);
 		border-radius: 0;
 	}
