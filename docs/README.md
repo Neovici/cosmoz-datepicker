@@ -30,7 +30,7 @@ import '@neovici/cosmoz-datepicker';
 Use in HTML:
 
 ```html
-<cosmoz-datepicker greeting="Hi"></cosmoz-datepicker>
+<cosmoz-datepicker></cosmoz-datepicker>
 ```
 
 ## Development
