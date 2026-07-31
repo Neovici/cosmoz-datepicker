@@ -160,12 +160,6 @@ export const getPlaceholder = (type: DateType) => {
 	}
 };
 
-export const getCharacterCount = (date: DateObject, type: DateType) => {
-	return date[type].length > 0
-		? date[type].length
-		: getPlaceholder(type).length;
-};
-
 export const dateObjectToDateString = ({ day, month, year }: DateObject) =>
 	format(new Date(Number(year), Number(month) - 1, Number(day)), 'yyyy-MM-dd');
 

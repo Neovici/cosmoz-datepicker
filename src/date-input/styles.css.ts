@@ -19,21 +19,33 @@ export const styles = css`
 		box-shadow: var(--cz-focus-ring);
 	}
 
-	cosmoz-input {
-		margin: 0;
+	.date-input-part {
+		display: grid;
 		padding: 0 calc(var(--cz-spacing) * 1);
 	}
 
-	cosmoz-input:focus-within {
+	.date-input-part:focus-within {
 		background: var(--cz-color-bg-brand-solid);
 		color: var(--cz-color-text-on-brand);
 		border-radius: var(--cz-radius-sm);
 	}
 
+	.date-input-part > * {
+		grid-area: 1 / 1;
+	}
+
+	.date-input-sizer {
+		font: inherit;
+		visibility: hidden;
+	}
+
+	cosmoz-input {
+		margin: 0;
+		padding: 0;
+	}
+
 	cosmoz-input::part(input) {
 		padding: 0;
-		min-width: var(--min-chars);
-		field-sizing: content;
 		caret-color: transparent;
 		color: inherit;
 	}
