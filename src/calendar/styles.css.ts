@@ -5,7 +5,7 @@ export const styles = css`
 		--cell-size: calc(var(--cz-spacing) * 10);
 	}
 
-	.wrapper {
+	.calendar {
 		display: flex;
 	}
 
