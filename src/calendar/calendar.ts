@@ -15,18 +15,23 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
-import { addMonths, format, isBefore, subMonths } from 'date-fns';
+import { addMonths, format, isBefore, isSameDay, subMonths } from 'date-fns';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { when } from 'lit-html/directives/when.js';
 import {
+	getKeyboardDate,
 	getMonthName,
 	getMonthsDateCellMatrix,
+	getValidDate,
 	getWeekdayNames,
 	ifDisabled,
 	ifEnd,
 	ifStart,
+	isAfterVisibleMonths,
+	isBeforeVisibleMonths,
+	isDisabled,
 	isInRange,
 	isSelected,
 } from './utils';
@@ -53,12 +58,24 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const endDate = useMemo(() => ensureDate(end), [end]);
 	const minDate = useMemo(() => ensureDate(min), [min]);
 	const maxDate = useMemo(() => ensureDate(max), [max]);
-	const [selectedMonth, setSelectedMonth] = useState(startDate ?? new Date());
+	const initialFocusedDate = useMemo(
+		() => getValidDate(startDate ?? new Date(), minDate, maxDate),
+		[startDate, minDate, maxDate],
+	);
+	const [selectedMonth, setSelectedMonth] = useState(initialFocusedDate);
+	const [isFocused, setIsFocused] = useState(false);
+	const [focusedDate, setFocusedDate] = useState(initialFocusedDate);
 	const weekdayNames = useMemo(() => getWeekdayNames(locale), [locale]);
 
 	useEffect(() => {
-		setSelectedMonth((prev) => startDate ?? prev);
-	}, [startDate, setSelectedMonth]);
+		if (isFocused) {
+			const focusedCell = host.shadowRoot?.querySelector<HTMLElement>(
+				`[data-date="${format(focusedDate, 'yyyy-MM-dd')}"]`,
+			);
+
+			focusedCell?.focus();
+		}
+	}, [focusedDate]);
 
 	const monthMatrices = useMemo(() => {
 		const matrices = [];
@@ -97,7 +114,70 @@ const CosmozCalendar = (host: CalendarProps) => {
 		[startDate, endDate, setStart, setEnd],
 	);
 
-	return html`<div class="wrapper">
+	const focusDate = useCallback(
+		(date: Date) => {
+			const nextDate = getValidDate(date, minDate, maxDate);
+
+			if (isBeforeVisibleMonths(nextDate, selectedMonth)) {
+				setSelectedMonth((prev) => subMonths(prev, numberOfMonths));
+			}
+
+			if (isAfterVisibleMonths(nextDate, selectedMonth, numberOfMonths)) {
+				setSelectedMonth((prev) => addMonths(prev, numberOfMonths));
+			}
+
+			setFocusedDate(nextDate);
+		},
+		[minDate, maxDate, numberOfMonths, selectedMonth, setSelectedMonth],
+	);
+
+	useEffect(() => {
+		if (
+			isBeforeVisibleMonths(focusedDate, selectedMonth) ||
+			isAfterVisibleMonths(focusedDate, selectedMonth, numberOfMonths)
+		) {
+			const newDate = getValidDate(selectedMonth, minDate, maxDate);
+			setFocusedDate(newDate);
+		}
+	}, [selectedMonth]);
+
+	const onKeyDown = useCallback(
+		(e: KeyboardEvent) => {
+			if (!(e.target instanceof Element)) {
+				return;
+			}
+
+			const dateCell = e.target.closest<HTMLElement>('[data-date]');
+
+			if (!dateCell?.dataset.date || dateCell.dataset.disabled === 'true') {
+				return;
+			}
+
+			const date = ensureDate(dateCell.dataset.date) as Date;
+
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				onClick(date);
+				return;
+			}
+
+			const nextDate = getKeyboardDate(e, date);
+
+			if (!nextDate) {
+				return;
+			}
+
+			e.preventDefault();
+			focusDate(nextDate);
+		},
+		[focusDate, locale, onClick],
+	);
+
+	return html`<div
+		class="wrapper"
+		@focus=${() => setIsFocused(true)}
+		@blur=${() => setIsFocused(false)}
+	>
 		${repeat(
 			monthMatrices,
 			(_, i) => `cal-${i}`,
@@ -113,8 +193,8 @@ const CosmozCalendar = (host: CalendarProps) => {
 										variant="tertiary"
 										class="prev-button"
 										@click=${() =>
-											setSelectedMonth((prev) =>
-												subMonths(prev, numberOfMonths),
+											setSelectedMonth(
+												subMonths(selectedMonth, numberOfMonths),
 											)}
 										>${chevronLeftIcon()}</cosmoz-button
 									>
@@ -132,15 +212,15 @@ const CosmozCalendar = (host: CalendarProps) => {
 										variant="tertiary"
 										class="next-button"
 										@click=${() =>
-											setSelectedMonth((prev) =>
-												addMonths(prev, numberOfMonths),
+											setSelectedMonth(
+												addMonths(selectedMonth, numberOfMonths),
 											)}
 										>${chevronRightIcon()}</cosmoz-button
 									>
 								`,
 							)}
 						</header>
-						<table>
+						<table @keydown=${onKeyDown}>
 							<thead>
 								<tr>
 									${repeat(
@@ -161,54 +241,65 @@ const CosmozCalendar = (host: CalendarProps) => {
 											${repeat(
 												week,
 												(day) => day.iso,
-												(day) => html`
-													<td
-														class="${isInRange(
-															new Date(day.iso),
-															startDate,
-															endDate,
-														)
-															? 'in-range'
-															: ''}"
-													>
-														<div
-															class=${classMap({
-																'date-cell': true,
-																'selected-cell': isSelected(
-																	new Date(day.iso),
-																	startDate,
-																	endDate,
-																),
-																'today-cell': day.isToday && day.isCurrentMonth,
-																'other-month-cell': !day.isCurrentMonth,
-																'hidden-cell':
-																	!day.isCurrentMonth && numberOfMonths > 1,
-															})}
-															role="button"
-															tabindex=${day.isToday ? '0' : '-1'}
-															aria-label=${new Date(day.iso).toLocaleString(
-																locale,
-																{
+												(day) => {
+													const date = new Date(day.iso);
+
+													return html`
+														<td
+															class="${isInRange(date, startDate, endDate)
+																? 'in-range'
+																: ''}"
+														>
+															<div
+																class=${classMap({
+																	'date-cell': true,
+																	'selected-cell': isSelected(
+																		date,
+																		startDate,
+																		endDate,
+																	),
+																	'today-cell':
+																		day.isToday && day.isCurrentMonth,
+																	'other-month-cell': !day.isCurrentMonth,
+																	'hidden-cell':
+																		!day.isCurrentMonth && numberOfMonths > 1,
+																})}
+																role="button"
+																tabindex=${isSameDay(date, focusedDate)
+																	? '0'
+																	: '-1'}
+																aria-label=${date.toLocaleString(locale, {
 																	weekday: 'long',
 																	year: 'numeric',
 																	month: 'long',
 																	day: 'numeric',
-																},
-															)}
-															aria-disabled=${ifDefined(
-																ifDisabled(day, minDate, maxDate),
-															)}
-															data-disabled=${ifDefined(
-																ifDisabled(day, minDate, maxDate),
-															)}
-															data-start=${ifDefined(ifStart(day, startDate))}
-															data-end=${ifDefined(ifEnd(day, endDate))}
-															@click=${() => onClick(new Date(day.iso))}
-														>
-															${day.day}
-														</div>
-													</td>
-												`,
+																})}
+																aria-disabled=${ifDefined(
+																	ifDisabled(day, minDate, maxDate),
+																)}
+																data-date=${ifDefined(
+																	day.isCurrentMonth
+																		? format(date, 'yyyy-MM-dd')
+																		: undefined,
+																)}
+																data-disabled=${ifDefined(
+																	ifDisabled(day, minDate, maxDate),
+																)}
+																data-start=${ifDefined(ifStart(day, startDate))}
+																data-end=${ifDefined(ifEnd(day, endDate))}
+																@click=${() =>
+																	!isDisabled(day, minDate, maxDate) &&
+																	onClick(date)}
+																@focus=${() => {
+																	setFocusedDate(date);
+																	setIsFocused(true);
+																}}
+															>
+																${day.day}
+															</div>
+														</td>
+													`;
+												},
 											)}
 										</tr>
 									`,
@@ -338,6 +429,11 @@ const styles = css`
 	.date-cell[data-disabled='true'] {
 		cursor: not-allowed;
 		color: var(--cz-color-text-placeholder-subtle);
+	}
+
+	.date-cell:focus-within {
+		outline: none;
+		box-shadow: var(--cz-focus-ring);
 	}
 
 	.date-cell.today-cell {
