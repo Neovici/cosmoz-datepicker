@@ -43,7 +43,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const { locale: _locale, numberOfMonths: _numberOfMonths, min, max } = host;
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
 	const numberOfMonths = useMemo(
-		() => Number(_numberOfMonths ?? 2),
+		() => Number(_numberOfMonths ?? 1),
 		[_numberOfMonths],
 	);
 	const [start] = useProperty<string>('start');
