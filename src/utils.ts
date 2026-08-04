@@ -1,5 +1,7 @@
 import { ensureDate } from '@neovici/cosmoz-utils/date';
+import { StateUpdater } from '@pionjs/pion';
 import { t } from 'i18next';
+import { RangePreset } from './presets';
 
 export const getTriggerText = (
 	start: string | undefined,
@@ -19,4 +21,13 @@ export const getTriggerText = (
 	}
 
 	return t('Select dates');
+};
+
+export const liftPreset = (
+	{ start, end }: RangePreset,
+	setStart: StateUpdater<string | undefined>,
+	setEnd: StateUpdater<string | undefined>,
+) => {
+	setStart(start);
+	setEnd(end);
 };

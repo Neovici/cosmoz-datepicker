@@ -3,12 +3,14 @@ import '@neovici/cosmoz-dropdown';
 import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
-import { component, css, html, lift } from '@pionjs/pion';
+import { component, css, html, lift, useMemo } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { repeat } from 'lit-html/directives/repeat.js';
 import './calendar';
 import './date-input';
-import { getTriggerText } from './utils';
+import { getRangePresets } from './presets';
+import { getTriggerText, liftPreset } from './utils';
 
 interface Props {
 	locale?: string;
@@ -22,6 +24,7 @@ const CosmozDatepicker = (host: Props) => {
 	const locale = _locale ?? navigator.language;
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
+	const rangePresets = useMemo(getRangePresets, []);
 
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
@@ -31,7 +34,18 @@ const CosmozDatepicker = (host: Props) => {
 
 			<div class="content">
 				<div class="range-presets">
-					<cosmoz-button variant="tertiary" full-width>Today</cosmoz-button>
+					${repeat(
+						rangePresets,
+						(i) => i.label,
+						(preset) => html`
+							<cosmoz-button
+								variant="tertiary"
+								full-width
+								@click=${() => liftPreset(preset, setStart, setEnd)}
+								>${preset.label}</cosmoz-button
+							>
+						`,
+					)}
 				</div>
 				<div class="main">
 					<cosmoz-calendar
