@@ -135,6 +135,10 @@ export const styles = css`
 		background: var(--cz-color-bg-brand-solid);
 	}
 
+	.date-cell.selected-cell.today-cell::after {
+		background: var(--cz-color-text-on-brand);
+	}
+
 	.date-cell.today-cell:hover {
 		background: var(--cz-color-bg-secondary-hover);
 	}
