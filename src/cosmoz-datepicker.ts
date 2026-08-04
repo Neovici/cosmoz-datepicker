@@ -6,22 +6,26 @@ import { component, css, html, lift } from '@pionjs/pion';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import './calendar';
 import './date-input';
+import { getTriggerText } from './utils';
 
 interface Props {
-	value?: string;
+	locale?: string;
 	min?: string;
 	max?: string;
 	disabled?: boolean;
 }
 
 const CosmozDatepicker = (host: Props) => {
-	const { min, max, disabled } = host;
-	const [start, setStart] = useProperty('start');
-	const [end, setEnd] = useProperty('end');
+	const { locale: _locale, min, max, disabled } = host;
+	const locale = _locale ?? navigator.language;
+	const [start, setStart] = useProperty<string>('start');
+	const [end, setEnd] = useProperty<string>('end');
 
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
-			<cosmoz-button slot="button" variant="secondary">Open</cosmoz-button>
+			<cosmoz-button slot="button" variant="secondary"
+				>${getTriggerText(start, end, locale)}</cosmoz-button
+			>
 
 			<div class="content">
 				<div class="range-presets">
@@ -29,7 +33,7 @@ const CosmozDatepicker = (host: Props) => {
 				</div>
 				<div class="main">
 					<cosmoz-calendar
-						locale="sv-SE"
+						locale=${locale}
 						number-of-months="2"
 						.min=${ifDefined(min)}
 						.max=${ifDefined(max)}
@@ -42,13 +46,13 @@ const CosmozDatepicker = (host: Props) => {
 					<footer>
 						<div class="footer-left">
 							<cosmoz-date-input
-								locale="sv-SE"
+								locale=${locale}
 								.value=${start}
 								@value-changed=${lift(setStart)}
 							></cosmoz-date-input>
 							<span>–</span>
 							<cosmoz-date-input
-								locale="sv-SE"
+								locale=${locale}
 								.value=${end}
 								@value-changed=${lift(setEnd)}
 							></cosmoz-date-input>
@@ -107,7 +111,7 @@ const styles = css`
 customElements.define(
 	'cosmoz-datepicker',
 	component(CosmozDatepicker, {
-		observedAttributes: ['min', 'max', 'disabled'],
+		observedAttributes: ['locale', 'min', 'max', 'disabled'],
 		styleSheets: [normalize, styles],
 		shadowRootInit: { delegatesFocus: true, mode: 'open' },
 	}),
