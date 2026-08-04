@@ -10,20 +10,7 @@ import {
 	startOfMonth,
 	subDays,
 } from 'date-fns';
-
-const getWeekStartDay = (locale: string) => {
-	const localeInfo = new Intl.Locale(locale);
-	const weekInfo = localeInfo.getWeekInfo?.();
-	const weekStartDay = weekInfo?.firstDay ?? 1; // 1-7 Mon - Sun
-	return weekStartDay % 7; // 0-6 Sun - Mon
-};
-
-const getDaysSinceWeekStart = (date: Date, locale: string) => {
-	const weekStartDay = getWeekStartDay(locale);
-	const weekDay = date.getDay(); // 0-6 Sun - Mon
-
-	return (weekDay - weekStartDay + 7) % 7;
-};
+import { getWeekStartDay, startOfWeek } from '../utils';
 
 export const getWeekdayNames = (locale: string) => {
 	const weekStartDay = getWeekStartDay(locale);
@@ -37,10 +24,6 @@ export const getWeekdayNames = (locale: string) => {
 
 export const getMonthName = (date: Date, locale: string) =>
 	Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
-
-const startOfWeek = (date: Date, locale: string) => {
-	return subDays(date, getDaysSinceWeekStart(date, locale));
-};
 
 export type DateCell = {
 	day: number;
