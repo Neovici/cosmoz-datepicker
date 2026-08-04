@@ -9,22 +9,23 @@ import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import './calendar';
 import './date-input';
-import { getRangePresets } from './presets';
+import { getRangePresets, RangePreset } from './presets';
 import { getTriggerText, liftPreset } from './utils';
 
 interface Props {
 	locale?: string;
 	min?: string;
 	max?: string;
+	presets?: RangePreset[];
 	disabled?: boolean;
 }
 
 const CosmozDatepicker = (host: Props) => {
-	const { locale: _locale, min, max, disabled } = host;
+	const { locale: _locale, min, max, disabled, presets } = host;
 	const locale = _locale ?? navigator.language;
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
-	const rangePresets = useMemo(() => getRangePresets(locale), []);
+	const rangePresets = useMemo(() => presets ?? getRangePresets(locale), []);
 
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
@@ -108,6 +109,7 @@ const styles = css`
 	.range-presets cosmoz-button::part(button) {
 		justify-content: flex-start;
 		font-weight: var(--cz-font-weight-medium);
+		overflow: hidden;
 	}
 
 	footer {

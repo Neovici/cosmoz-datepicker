@@ -14,8 +14,8 @@ import { startOfWeek } from './utils';
 
 export type RangePreset = {
 	label: string;
-	start: () => string;
-	end: () => string;
+	start: string | (() => string);
+	end: string | (() => string);
 };
 
 export const getRangePresets = (locale: string): RangePreset[] => [
