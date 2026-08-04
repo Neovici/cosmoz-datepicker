@@ -112,6 +112,8 @@ const styles = css`
 		padding: calc(var(--cz-spacing) * 3);
 		flex-shrink: 0;
 		border-right: 1px solid var(--cz-color-border-secondary);
+		overflow: auto;
+		contain: size;
 	}
 
 	.range-presets cosmoz-button::part(button) {
