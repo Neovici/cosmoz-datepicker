@@ -4,6 +4,7 @@ import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
 import { component, css, html, lift } from '@pionjs/pion';
+import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import './calendar';
 import './date-input';
@@ -64,7 +65,7 @@ const CosmozDatepicker = (host: Props) => {
 									e.target?.dispatchEvent(
 										new Event('select', { bubbles: true }),
 									)}
-								>OK</cosmoz-button
+								>${t('Apply')}</cosmoz-button
 							>
 						</div>
 					</footer>
