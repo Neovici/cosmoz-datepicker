@@ -27,7 +27,10 @@ const CosmozDatepicker = (host: Props) => {
 	const locale = _locale ?? navigator.language;
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
-	const rangePresets = useMemo(() => presets ?? getRangePresets(locale), []);
+	const rangePresets = useMemo(
+		() => presets ?? getRangePresets(locale),
+		[locale, presets],
+	);
 
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
