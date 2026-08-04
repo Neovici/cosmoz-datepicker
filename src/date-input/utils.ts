@@ -166,7 +166,7 @@ export const dateObjectToDateString = ({ day, month, year }: DateObject) =>
 export const isValidDateInput = (date: DateObject) =>
 	date.year.length === 4 &&
 	Number(date.year) >= 1 &&
-	Number(date.year) >= 9999 &&
+	Number(date.year) <= 9999 &&
 	Number(date.month) >= 1 &&
 	Number(date.month) <= 12 &&
 	Number(date.day) >= 1 &&
