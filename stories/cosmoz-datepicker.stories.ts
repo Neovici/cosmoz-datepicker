@@ -58,3 +58,14 @@ export const EnglishUsPresets: Story = {
 			]}
 		></cosmoz-datepicker>`,
 };
+
+export const EnglishUsNoPresets: Story = {
+	name: 'en-US No Presets',
+	render: () =>
+		html`<cosmoz-datepicker
+			.start=${'2026-08-01'}
+			.end=${'2026-08-04'}
+			locale="en-US"
+			no-presets
+		></cosmoz-datepicker>`,
+};

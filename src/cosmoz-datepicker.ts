@@ -7,6 +7,7 @@ import { component, css, html, lift, useMemo } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
+import { when } from 'lit-html/directives/when.js';
 import './calendar';
 import './date-input';
 import { getRangePresets, RangePreset } from './presets';
@@ -18,10 +19,11 @@ interface Props {
 	max?: string;
 	presets?: RangePreset[];
 	disabled?: boolean;
+	noPresets?: boolean;
 }
 
 const CosmozDatepicker = (host: Props) => {
-	const { locale: _locale, min, max, disabled, presets } = host;
+	const { locale: _locale, min, max, disabled, presets, noPresets } = host;
 	const locale = _locale ?? navigator.language;
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
@@ -34,20 +36,26 @@ const CosmozDatepicker = (host: Props) => {
 			>
 
 			<div class="content">
-				<div class="range-presets">
-					${repeat(
-						rangePresets,
-						(i) => i.label,
-						(preset) => html`
-							<cosmoz-button
-								variant="tertiary"
-								full-width
-								@click=${() => liftPreset(preset, setStart, setEnd)}
-								>${preset.label}</cosmoz-button
-							>
-						`,
-					)}
-				</div>
+				${when(
+					!noPresets,
+					() => html`
+						<div class="range-presets">
+							${repeat(
+								rangePresets,
+								(i) => i.label,
+								(preset) => html`
+									<cosmoz-button
+										variant="tertiary"
+										full-width
+										@click=${() => liftPreset(preset, setStart, setEnd)}
+										>${preset.label}</cosmoz-button
+									>
+								`,
+							)}
+						</div>
+					`,
+				)}
+
 				<div class="main">
 					<cosmoz-calendar
 						locale=${locale}
@@ -129,7 +137,7 @@ const styles = css`
 customElements.define(
 	'cosmoz-datepicker',
 	component(CosmozDatepicker, {
-		observedAttributes: ['locale', 'min', 'max', 'disabled'],
+		observedAttributes: ['locale', 'min', 'max', 'disabled', 'no-presets'],
 		styleSheets: [normalize, styles],
 		shadowRootInit: { delegatesFocus: true, mode: 'open' },
 	}),
