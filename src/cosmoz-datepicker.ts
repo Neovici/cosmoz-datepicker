@@ -1,5 +1,6 @@
 import '@neovici/cosmoz-button';
 import '@neovici/cosmoz-dropdown';
+import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
 import { component, css, html, lift } from '@pionjs/pion';
@@ -24,7 +25,7 @@ const CosmozDatepicker = (host: Props) => {
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
 			<cosmoz-button slot="button" variant="secondary"
-				>${getTriggerText(start, end, locale)}</cosmoz-button
+				>${calendarIcon()} ${getTriggerText(start, end, locale)}</cosmoz-button
 			>
 
 			<div class="content">
