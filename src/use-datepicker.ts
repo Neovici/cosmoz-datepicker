@@ -57,7 +57,7 @@ export const useDatepicker = (host: Props) => {
 		cosmoz-calendar {
 			display: flex;
 			justify-content: center;
-			padding: calc(var(--cz-spacing) * 4) calc(var(--cz-spacing) * 8);
+			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
 		}
 
 		footer {
