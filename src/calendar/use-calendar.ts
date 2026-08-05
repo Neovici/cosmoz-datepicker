@@ -35,11 +35,8 @@ export type CalendarProps = HTMLElement & {
 // eslint-disable-next-line max-statements
 export const useCalendar = (host: CalendarProps) => {
 	const { locale: _locale, numberOfMonths: _numberOfMonths, min, max } = host;
-	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
-	const numberOfMonths = useMemo(
-		() => Number(_numberOfMonths ?? 1),
-		[_numberOfMonths],
-	);
+	const locale = _locale ?? navigator.language;
+	const numberOfMonths = Number(_numberOfMonths ?? 1);
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
 	const startDate = useMemo(() => ensureDate(start), [start]);
