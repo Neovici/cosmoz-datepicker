@@ -119,6 +119,12 @@ const styles = css`
 		contain: size;
 	}
 
+	@media (max-width: 1023px) {
+		.range-presets {
+			display: none;
+		}
+	}
+
 	.range-presets cosmoz-button::part(button) {
 		justify-content: flex-start;
 		font-weight: var(--cz-font-weight-medium);
