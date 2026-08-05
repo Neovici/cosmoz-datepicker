@@ -147,22 +147,6 @@ export const isAfterVisibleMonths = (
 	numberOfMonths: number,
 ) => isAfter(date, endOfMonth(addMonths(selectedMonth, numberOfMonths - 1)));
 
-export const getValidDate = (
-	date: Date,
-	minDate: Date | undefined,
-	maxDate: Date | undefined,
-) => {
-	if (minDate && isBefore(date, minDate)) {
-		return minDate;
-	}
-
-	if (maxDate && isAfter(date, maxDate)) {
-		return maxDate;
-	}
-
-	return date;
-};
-
 export const getKeyboardDate = (e: KeyboardEvent, date: Date) => {
 	const keyboardDates: Record<string, Date> = {
 		ArrowLeft: subDays(date, 1),

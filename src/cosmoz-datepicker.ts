@@ -3,7 +3,7 @@ import '@neovici/cosmoz-dropdown';
 import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
-import { component, css, html, lift, useMemo } from '@pionjs/pion';
+import { component, css, html, lift, useCallback, useMemo } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -12,7 +12,12 @@ import './calendar';
 import './date-input';
 import { getRangePresets, RangePreset } from './presets';
 import { useMediaMatch } from './use-media-match';
-import { closeDropdown, getTriggerText, liftPreset } from './utils';
+import {
+	closeDropdown,
+	getTriggerText,
+	getValidDateString,
+	liftPreset,
+} from './utils';
 
 interface Props {
 	locale?: string;
@@ -35,6 +40,18 @@ const CosmozDatepicker = (host: Props) => {
 		[locale, presets],
 	);
 
+	const onStartInput = useCallback(
+		(e: CustomEvent<{ value: string }>) =>
+			setStart(getValidDateString(e.detail.value, min, max)),
+		[min, max],
+	);
+
+	const onEndInput = useCallback(
+		(e: CustomEvent<{ value: string }>) =>
+			setEnd(getValidDateString(e.detail.value, min, max)),
+		[min, max],
+	);
+
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
 			<cosmoz-button slot="button" variant="secondary"
@@ -53,7 +70,8 @@ const CosmozDatepicker = (host: Props) => {
 									<cosmoz-button
 										variant="tertiary"
 										full-width
-										@click=${() => liftPreset(preset, setStart, setEnd)}
+										@click=${() =>
+											liftPreset(preset, setStart, setEnd, min, max)}
 										>${preset.label}</cosmoz-button
 									>
 								`,
@@ -79,13 +97,13 @@ const CosmozDatepicker = (host: Props) => {
 							<cosmoz-date-input
 								locale=${locale}
 								.value=${start}
-								@value-changed=${lift(setStart)}
+								@value-changed=${onStartInput}
 							></cosmoz-date-input>
 							<span>–</span>
 							<cosmoz-date-input
 								locale=${locale}
 								.value=${end}
-								@value-changed=${lift(setEnd)}
+								@value-changed=${onEndInput}
 							></cosmoz-date-input>
 						</div>
 						<div>

@@ -1,6 +1,7 @@
 import { ensureDate } from '@neovici/cosmoz-utils/date';
+import { invoke } from '@neovici/cosmoz-utils/function';
 import { StateUpdater } from '@pionjs/pion';
-import { subDays } from 'date-fns';
+import { format, isAfter, isBefore, subDays } from 'date-fns';
 import { t } from 'i18next';
 import { RangePreset } from './presets';
 
@@ -42,14 +43,43 @@ export const getTriggerText = (
 	return t('Select dates');
 };
 
+export const closeDropdown = (e: MouseEvent) =>
+	e.target?.dispatchEvent(new Event('select', { bubbles: true }));
+
+export const getValidDate = (
+	date: Date,
+	minDate: Date | undefined,
+	maxDate: Date | undefined,
+) => {
+	if (minDate && isBefore(date, minDate)) {
+		return minDate;
+	}
+
+	if (maxDate && isAfter(date, maxDate)) {
+		return maxDate;
+	}
+
+	return date;
+};
+
+export const getValidDateString = (
+	dateStr: string,
+	min: string | undefined,
+	max: string | undefined,
+) => {
+	const date = ensureDate(dateStr) as Date;
+	const minDate = ensureDate(min);
+	const maxDate = ensureDate(max);
+	return format(getValidDate(date, minDate, maxDate), 'yyyy-MM-dd');
+};
+
 export const liftPreset = (
 	{ start, end }: RangePreset,
 	setStart: StateUpdater<string | undefined>,
 	setEnd: StateUpdater<string | undefined>,
+	min: string | undefined,
+	max: string | undefined,
 ) => {
-	setStart(start);
-	setEnd(end);
+	setStart(getValidDateString(invoke(start), min, max));
+	setEnd(getValidDateString(invoke(end), min, max));
 };
-
-export const closeDropdown = (e: MouseEvent) =>
-	e.target?.dispatchEvent(new Event('select', { bubbles: true }));

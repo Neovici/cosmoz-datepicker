@@ -14,10 +14,10 @@ import {
 	startOfMonth,
 	subMonths,
 } from 'date-fns';
+import { getValidDate } from '../utils';
 import {
 	getKeyboardDate,
 	getMonthsDateCellMatrix,
-	getValidDate,
 	getWeekdayNames,
 	isAfterVisibleMonths,
 	isBeforeVisibleMonths,
