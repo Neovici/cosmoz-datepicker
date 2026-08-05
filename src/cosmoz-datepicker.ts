@@ -11,6 +11,7 @@ import { when } from 'lit-html/directives/when.js';
 import './calendar';
 import './date-input';
 import { getRangePresets, RangePreset } from './presets';
+import { useMediaMatch } from './use-media-match';
 import { getTriggerText, liftPreset } from './utils';
 
 interface Props {
@@ -27,6 +28,8 @@ const CosmozDatepicker = (host: Props) => {
 	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
+	const isNarrow = useMediaMatch('(width < 735px)');
+	const numberOfMonths = isNarrow ? 1 : 2;
 	const rangePresets = useMemo(
 		() => presets ?? getRangePresets(locale),
 		[locale, presets],
@@ -62,7 +65,7 @@ const CosmozDatepicker = (host: Props) => {
 				<div class="main">
 					<cosmoz-calendar
 						locale=${locale}
-						number-of-months="2"
+						number-of-months=${numberOfMonths}
 						.min=${ifDefined(min)}
 						.max=${ifDefined(max)}
 						.start=${start}
@@ -87,6 +90,7 @@ const CosmozDatepicker = (host: Props) => {
 						</div>
 						<div>
 							<cosmoz-button
+								?full-width=${isNarrow}
 								@click=${(e: MouseEvent) =>
 									e.target?.dispatchEvent(
 										new Event('select', { bubbles: true }),
@@ -134,8 +138,25 @@ const styles = css`
 	footer {
 		display: flex;
 		justify-content: space-between;
+		gap: calc(var(--cz-spacing) * 3);
 		padding: calc(var(--cz-spacing) * 4);
 		border-top: 1px solid var(--cz-color-border-secondary);
+	}
+
+	@media (max-width: 734px) {
+		cosmoz-calendar {
+			display: flex;
+			justify-content: center;
+			padding: calc(var(--cz-spacing) * 4) calc(var(--cz-spacing) * 8);
+		}
+
+		footer {
+			flex-direction: column;
+		}
+
+		.footer-left {
+			align-self: center;
+		}
 	}
 
 	.footer-left {
