@@ -24,7 +24,7 @@ interface Props {
 
 const CosmozDatepicker = (host: Props) => {
 	const { locale: _locale, min, max, disabled, presets, noPresets } = host;
-	const locale = _locale ?? navigator.language;
+	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
 	const rangePresets = useMemo(
