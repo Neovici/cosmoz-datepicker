@@ -39,7 +39,7 @@ const CosmozDatepicker = (host: Props) => {
 
 			<div class="content">
 				${when(
-					!noPresets,
+					!(noPresets || isSingleCalendar),
 					() => html`
 						<div class="range-presets">
 							${repeat(
