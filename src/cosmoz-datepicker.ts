@@ -4,7 +4,7 @@ import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
 import { useStyleSheet } from '@neovici/cosmoz-utils/hooks/use-stylesheet';
-import { component, css, html, lift, useCallback, useMemo } from '@pionjs/pion';
+import { component, html, lift, useCallback, useMemo } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -12,6 +12,7 @@ import { when } from 'lit-html/directives/when.js';
 import './calendar';
 import './date-input';
 import { getRangePresets, RangePreset } from './presets';
+import { styles } from './styles.css';
 import { useMediaMatch } from './use-media-match';
 import {
 	closeDropdown,
@@ -148,52 +149,6 @@ const CosmozDatepicker = (host: Props) => {
 		</cosmoz-dropdown-next>
 	`;
 };
-
-const styles = css`
-	.content {
-		display: flex;
-		background: var(--cz-color-bg-primary);
-		border: 1px solid var(--cz-color-border-secondary);
-		border-radius: var(--cz-radius-2xl);
-		box-shadow: var(--cz-shadow-xl);
-	}
-
-	.range-presets {
-		width: calc(var(--cz-spacing) * 38);
-		padding: calc(var(--cz-spacing) * 3);
-		flex-shrink: 0;
-		border-right: 1px solid var(--cz-color-border-secondary);
-		overflow: auto;
-		contain: size;
-	}
-
-	@media (max-width: 1023px) {
-		.range-presets {
-			display: none;
-		}
-	}
-
-	.range-presets cosmoz-button::part(button) {
-		justify-content: flex-start;
-		font-weight: var(--cz-font-weight-medium);
-		overflow: hidden;
-	}
-
-	footer {
-		display: flex;
-		justify-content: space-between;
-		gap: calc(var(--cz-spacing) * 3);
-		padding: calc(var(--cz-spacing) * 4);
-		border-top: 1px solid var(--cz-color-border-secondary);
-	}
-
-	.footer-left {
-		display: flex;
-		gap: calc(var(--cz-spacing) * 2);
-		align-items: center;
-		justify-content: space-evenly;
-	}
-`;
 
 customElements.define(
 	'cosmoz-datepicker',

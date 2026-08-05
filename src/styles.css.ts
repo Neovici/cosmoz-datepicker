@@ -1,0 +1,47 @@
+import { css } from '@pionjs/pion';
+
+export const styles = css`
+	.content {
+		display: flex;
+		background: var(--cz-color-bg-primary);
+		border: 1px solid var(--cz-color-border-secondary);
+		border-radius: var(--cz-radius-2xl);
+		box-shadow: var(--cz-shadow-xl);
+	}
+
+	.range-presets {
+		width: calc(var(--cz-spacing) * 38);
+		padding: calc(var(--cz-spacing) * 3);
+		flex-shrink: 0;
+		border-right: 1px solid var(--cz-color-border-secondary);
+		overflow: auto;
+		contain: size;
+	}
+
+	@media (max-width: 1023px) {
+		.range-presets {
+			display: none;
+		}
+	}
+
+	.range-presets cosmoz-button::part(button) {
+		justify-content: flex-start;
+		font-weight: var(--cz-font-weight-medium);
+		overflow: hidden;
+	}
+
+	footer {
+		display: flex;
+		justify-content: space-between;
+		gap: calc(var(--cz-spacing) * 3);
+		padding: calc(var(--cz-spacing) * 4);
+		border-top: 1px solid var(--cz-color-border-secondary);
+	}
+
+	.footer-left {
+		display: flex;
+		gap: calc(var(--cz-spacing) * 2);
+		align-items: center;
+		justify-content: space-evenly;
+	}
+`;
