@@ -37,6 +37,29 @@ export const EnglishUs: Story = {
 		></cosmoz-datepicker>`,
 };
 
+export const EnglishUsMinMax: Story = {
+	name: 'en-US Min Max',
+	render: () =>
+		html`<cosmoz-datepicker
+			.start=${'2026-08-11'}
+			.end=${'2026-08-14'}
+			min="2026-08-04"
+			max="2026-08-24"
+			locale="en-US"
+		></cosmoz-datepicker>`,
+};
+
+export const EnglishUsSingleCalendar: Story = {
+	name: 'en-US Single Calendar',
+	render: () =>
+		html`<cosmoz-datepicker
+			.start=${'2026-08-11'}
+			.end=${'2026-08-14'}
+			locale="en-US"
+			single-calendar
+		></cosmoz-datepicker>`,
+};
+
 export const EnglishUsPresets: Story = {
 	name: 'en-US Custom Presets',
 	render: () =>
