@@ -55,7 +55,7 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 export const useDateInput = () => {
 	const host = useHost<DateInputProps>();
 	const { locale: _locale } = host;
-	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
+	const locale = _locale ?? navigator.language;
 	const [value, setValue] = useProperty<string>('value');
 	const date = useMemo(() => ensureDate(value), [value]);
 	const [inputState, setInputState] = useState(initializeState(date, locale));
