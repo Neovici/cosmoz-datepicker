@@ -50,3 +50,6 @@ export const liftPreset = (
 	setStart(start);
 	setEnd(end);
 };
+
+export const closeDropdown = (e: MouseEvent) =>
+	e.target?.dispatchEvent(new Event('select', { bubbles: true }));

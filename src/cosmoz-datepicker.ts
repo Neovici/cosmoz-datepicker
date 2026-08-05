@@ -12,7 +12,7 @@ import './calendar';
 import './date-input';
 import { getRangePresets, RangePreset } from './presets';
 import { useMediaMatch } from './use-media-match';
-import { getTriggerText, liftPreset } from './utils';
+import { closeDropdown, getTriggerText, liftPreset } from './utils';
 
 interface Props {
 	locale?: string;
@@ -89,12 +89,7 @@ const CosmozDatepicker = (host: Props) => {
 							></cosmoz-date-input>
 						</div>
 						<div>
-							<cosmoz-button
-								?full-width=${isNarrow}
-								@click=${(e: MouseEvent) =>
-									e.target?.dispatchEvent(
-										new Event('select', { bubbles: true }),
-									)}
+							<cosmoz-button ?full-width=${isNarrow} @click=${closeDropdown}
 								>${t('Apply')}</cosmoz-button
 							>
 						</div>
