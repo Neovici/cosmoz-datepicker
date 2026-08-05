@@ -44,4 +44,32 @@ export const styles = css`
 		align-items: center;
 		justify-content: space-evenly;
 	}
+
+	:host([single-calendar]) {
+		.range-presets {
+			display: none;
+		}
+
+		cosmoz-calendar {
+			display: flex;
+			justify-content: center;
+			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
+		}
+
+		footer {
+			flex-direction: column;
+		}
+	}
+
+	@media (max-width: 734px) {
+		cosmoz-calendar {
+			display: flex;
+			justify-content: center;
+			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
+		}
+
+		footer {
+			flex-direction: column;
+		}
+	}
 `;

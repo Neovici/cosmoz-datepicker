@@ -1,7 +1,5 @@
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
-import { useStyleSheet } from '@neovici/cosmoz-utils/hooks/use-stylesheet';
 import { useCallback, useMemo } from '@pionjs/pion';
-import { when } from 'lit-html/directives/when.js';
 import { getRangePresets, RangePreset } from './presets';
 import { useMediaMatch } from './use-media-match';
 import { getValidDateString } from './utils';
@@ -47,24 +45,6 @@ export const useDatepicker = (host: Props) => {
 		(e: CustomEvent<{ value: string }>) =>
 			setEnd(getValidDateString(e.detail.value, min, max)),
 		[min, max],
-	);
-
-	useStyleSheet(
-		when(
-			isSingleCalendar,
-			() =>
-				`
-		cosmoz-calendar {
-			display: flex;
-			justify-content: center;
-			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
-		}
-
-		footer {
-			flex-direction: column;
-		}
-`,
-		),
 	);
 
 	return {
