@@ -89,7 +89,7 @@ const CosmozDatepicker = (host: Props) => {
 							<cosmoz-button
 								?full-width=${isSingleCalendar}
 								@click=${closeDropdown}
-								>${t('Apply')}</cosmoz-button
+								>${t('OK')}</cosmoz-button
 							>
 						</div>
 					</footer>
