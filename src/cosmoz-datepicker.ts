@@ -3,6 +3,7 @@ import '@neovici/cosmoz-dropdown';
 import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
+import { useStyleSheet } from '@neovici/cosmoz-utils/hooks/use-stylesheet';
 import { component, css, html, lift, useCallback, useMemo } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
@@ -26,15 +27,25 @@ interface Props {
 	presets?: RangePreset[];
 	disabled?: boolean;
 	noPresets?: boolean;
+	singleCalendar?: boolean;
 }
 
 const CosmozDatepicker = (host: Props) => {
-	const { locale: _locale, min, max, disabled, presets, noPresets } = host;
-	const locale = useMemo(() => _locale ?? navigator.language, [_locale]);
+	const {
+		locale: _locale,
+		min,
+		max,
+		disabled,
+		presets,
+		noPresets,
+		singleCalendar = false,
+	} = host;
+	const locale = _locale ?? navigator.language;
 	const [start, setStart] = useProperty<string>('start');
 	const [end, setEnd] = useProperty<string>('end');
 	const isNarrow = useMediaMatch('(width < 735px)');
-	const numberOfMonths = isNarrow ? 1 : 2;
+	const isSingleCalendar = singleCalendar || isNarrow;
+	const numberOfMonths = isSingleCalendar ? 1 : 2;
 	const rangePresets = useMemo(
 		() => presets ?? getRangePresets(locale),
 		[locale, presets],
@@ -50,6 +61,24 @@ const CosmozDatepicker = (host: Props) => {
 		(e: CustomEvent<{ value: string }>) =>
 			setEnd(getValidDateString(e.detail.value, min, max)),
 		[min, max],
+	);
+
+	useStyleSheet(
+		when(
+			isSingleCalendar,
+			() =>
+				`
+		cosmoz-calendar {
+			display: flex;
+			justify-content: center;
+			padding: calc(var(--cz-spacing) * 4) calc(var(--cz-spacing) * 8);
+		}
+
+		footer {
+			flex-direction: column;
+		}
+`,
+		),
 	);
 
 	return html`
@@ -107,7 +136,9 @@ const CosmozDatepicker = (host: Props) => {
 							></cosmoz-date-input>
 						</div>
 						<div>
-							<cosmoz-button ?full-width=${isNarrow} @click=${closeDropdown}
+							<cosmoz-button
+								?full-width=${isSingleCalendar}
+								@click=${closeDropdown}
 								>${t('Apply')}</cosmoz-button
 							>
 						</div>
@@ -156,33 +187,25 @@ const styles = css`
 		border-top: 1px solid var(--cz-color-border-secondary);
 	}
 
-	@media (max-width: 734px) {
-		cosmoz-calendar {
-			display: flex;
-			justify-content: center;
-			padding: calc(var(--cz-spacing) * 4) calc(var(--cz-spacing) * 8);
-		}
-
-		footer {
-			flex-direction: column;
-		}
-
-		.footer-left {
-			align-self: center;
-		}
-	}
-
 	.footer-left {
 		display: flex;
 		gap: calc(var(--cz-spacing) * 2);
 		align-items: center;
+		justify-content: space-evenly;
 	}
 `;
 
 customElements.define(
 	'cosmoz-datepicker',
 	component(CosmozDatepicker, {
-		observedAttributes: ['locale', 'min', 'max', 'disabled', 'no-presets'],
+		observedAttributes: [
+			'locale',
+			'min',
+			'max',
+			'disabled',
+			'no-presets',
+			'single-calendar',
+		],
 		styleSheets: [normalize, styles],
 		shadowRootInit: { delegatesFocus: true, mode: 'open' },
 	}),
