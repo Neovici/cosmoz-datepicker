@@ -55,7 +55,7 @@ export const styles = css`
 	}
 
 	cosmoz-input::part(input)::selection {
-		background: transparent;
+		background-color: rgba(0, 0, 0, 0.01);
 	}
 
 	cosmoz-input::part(wrap) {
