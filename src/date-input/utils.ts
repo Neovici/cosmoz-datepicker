@@ -170,5 +170,6 @@ export const isValidDateInput = (date: DateObject) =>
 	Number(date.month) >= 1 &&
 	Number(date.month) <= 12 &&
 	Number(date.day) >= 1 &&
-	Number(date.day) <= getDaysInMonth(dateObjectToDateString(date)) &&
+	Number(date.day) <=
+		getDaysInMonth(new Date(Number(date.year), Number(date.month) - 1)) &&
 	Object.values(date).every((v) => v !== EMPTY_DATE_VALUE);
