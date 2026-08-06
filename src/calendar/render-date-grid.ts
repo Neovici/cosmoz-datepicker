@@ -12,9 +12,8 @@ type RenderDateGridOptions = {
 	month: DateCellMatrix;
 	numberOfMonths: number;
 	onClick: (date: Date) => void;
+	onFocus: (date: Date) => void;
 	onKeyDown: (e: KeyboardEvent) => void;
-	setFocusedDate: (date: Date) => void;
-	setIsFocused: (isFocused: boolean) => void;
 	startDate: Date | undefined;
 	weekdayNames: string[];
 	onPointerEnter: (date: Date) => void;
@@ -29,9 +28,8 @@ export const renderDateGrid = ({
 	month,
 	numberOfMonths,
 	onClick,
+	onFocus,
 	onKeyDown,
-	setFocusedDate,
-	setIsFocused,
 	startDate,
 	weekdayNames,
 	onPointerEnter,
@@ -65,8 +63,7 @@ export const renderDateGrid = ({
 									minDate,
 									numberOfMonths,
 									onClick,
-									setFocusedDate,
-									setIsFocused,
+									onFocus,
 									startDate,
 									onPointerEnter,
 								}),
