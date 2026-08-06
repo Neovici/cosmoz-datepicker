@@ -136,7 +136,7 @@ export const styles = css`
 	}
 
 	.date-cell.selected-cell.today-cell::after,
-	.date-cell.focused-highlighed-cell.today-cell::after {
+	.date-cell.focused-highlighted-cell.today-cell::after {
 		background: var(--cz-color-text-on-brand);
 	}
 
@@ -149,13 +149,13 @@ export const styles = css`
 	}
 
 	.date-cell.selected-cell,
-	.date-cell.focused-highlighed-cell {
+	.date-cell.focused-highlighted-cell {
 		color: var(--cz-color-text-on-brand);
 		background: var(--cz-color-bg-brand-solid);
 	}
 
 	.date-cell.selected-cell:hover,
-	.date-cell.focused-highlighed-cell:hover {
+	.date-cell.focused-highlighted-cell:hover {
 		color: var(--cz-color-text-on-brand);
 		background: var(--cz-color-bg-brand-solid-hover);
 	}
