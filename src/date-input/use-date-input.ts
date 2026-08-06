@@ -7,6 +7,7 @@ import {
 	useProperty,
 	useState,
 } from '@pionjs/pion';
+import { isSameDay } from 'date-fns';
 import {
 	DateObject,
 	dateObjectToDateString,
@@ -65,7 +66,9 @@ export const useDateInput = () => {
 	);
 
 	useEffect(() => {
-		setInputState(initializeState(date, locale));
+		if (!date || !isSameDay(date, dateObjectToDateString(inputState))) {
+			setInputState(initializeState(date, locale));
+		}
 	}, [date, locale, setInputState]);
 
 	useEffect(() => {
