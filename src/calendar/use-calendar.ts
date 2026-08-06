@@ -182,6 +182,16 @@ export const useCalendar = (host: CalendarProps) => {
 		[focusDate, onClick],
 	);
 
+	const onPointerEnter = useCallback(
+		(date: Date) => {
+			if (startDate && !endDate) {
+				setFocusedDate(date);
+				setIsFocused(true);
+			}
+		},
+		[startDate, endDate, setFocusedDate, setIsFocused],
+	);
+
 	return {
 		endDate,
 		focusedDate,
@@ -198,5 +208,6 @@ export const useCalendar = (host: CalendarProps) => {
 		setSelectedMonth,
 		startDate,
 		weekdayNames,
+		onPointerEnter,
 	};
 };

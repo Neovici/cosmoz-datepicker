@@ -17,6 +17,7 @@ type RenderDateGridOptions = {
 	setIsFocused: (isFocused: boolean) => void;
 	startDate: Date | undefined;
 	weekdayNames: string[];
+	onPointerEnter: (date: Date) => void;
 };
 
 export const renderDateGrid = ({
@@ -33,6 +34,7 @@ export const renderDateGrid = ({
 	setIsFocused,
 	startDate,
 	weekdayNames,
+	onPointerEnter,
 }: RenderDateGridOptions) => html`
 	<table @keydown=${onKeyDown}>
 		<thead>
@@ -66,6 +68,7 @@ export const renderDateGrid = ({
 									setFocusedDate,
 									setIsFocused,
 									startDate,
+									onPointerEnter,
 								}),
 						)}
 					</tr>
