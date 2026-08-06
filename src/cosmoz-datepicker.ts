@@ -11,7 +11,12 @@ import './calendar';
 import './date-input';
 import { styles } from './styles.css';
 import { Props, useDatepicker } from './use-datepicker';
-import { closeDropdown, getTriggerText, liftPreset } from './utils';
+import {
+	closeDropdown,
+	getTriggerText,
+	isPresetActive,
+	liftPreset,
+} from './utils';
 
 const CosmozDatepicker = (host: Props) => {
 	const {
@@ -56,6 +61,7 @@ const CosmozDatepicker = (host: Props) => {
 									<cosmoz-button
 										variant="tertiary"
 										full-width
+										?active=${isPresetActive(preset, start, end)}
 										@click=${() =>
 											liftPreset(preset, setStart, setEnd, min, max)}
 										>${preset.label}</cosmoz-button

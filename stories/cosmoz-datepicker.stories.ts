@@ -1,5 +1,6 @@
 import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
+import { addDays, addMonths, format } from 'date-fns';
 import '../src/cosmoz-datepicker';
 
 const meta: Meta = {
@@ -70,13 +71,13 @@ export const EnglishUsPresets: Story = {
 			.presets=${[
 				{
 					label: 'Today tomorrow',
-					start: new Date(),
-					end: new Date().setDate(new Date().getDate() + 1),
+					start: format(new Date(), 'yyyy-MM-dd'),
+					end: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
 				},
 				{
 					label: 'In one month',
-					start: new Date().setMonth(new Date().getMonth() + 1),
-					end: new Date().setMonth(new Date().getMonth() + 1),
+					start: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
+					end: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
 				},
 			]}
 		></cosmoz-datepicker>`,

@@ -30,6 +30,10 @@ export const styles = css`
 		overflow: hidden;
 	}
 
+	.range-presets cosmoz-button[active]::part(button) {
+		background: var(--cz-color-bg-secondary);
+	}
+
 	footer {
 		display: flex;
 		justify-content: space-between;

@@ -83,3 +83,13 @@ export const liftPreset = (
 	setStart(getValidDateString(invoke(start), min, max));
 	setEnd(getValidDateString(invoke(end), min, max));
 };
+
+export const isPresetActive = (
+	preset: RangePreset,
+	start: string | undefined,
+	end: string | undefined,
+) =>
+	!!start &&
+	!!end &&
+	start === invoke(preset.start) &&
+	end === invoke(preset.end);
