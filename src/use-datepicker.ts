@@ -1,6 +1,7 @@
 import { CosmozButtonElement } from '@neovici/cosmoz-button';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
 import { useCallback, useMemo } from '@pionjs/pion';
+import { isAfter, isBefore } from 'date-fns';
 import { getRangePresets, RangePreset } from './presets';
 import { useMediaMatch } from './use-media-match';
 import { getValidDateString } from './utils';
@@ -52,6 +53,18 @@ export const useDatepicker = (host: Props) => {
 		[min, max],
 	);
 
+	const onStartInputBlur = useCallback(() => {
+		if (start && end && isAfter(new Date(start), new Date(end))) {
+			setEnd(start);
+		}
+	}, [start, end]);
+
+	const onEndInputBlur = useCallback(() => {
+		if (start && end && isBefore(new Date(end), new Date(start))) {
+			setStart(end);
+		}
+	}, [start, end]);
+
 	return {
 		end,
 		isSingleCalendar,
@@ -69,5 +82,7 @@ export const useDatepicker = (host: Props) => {
 		max,
 		triggerSize,
 		triggerVariant,
+		onStartInputBlur,
+		onEndInputBlur,
 	};
 };

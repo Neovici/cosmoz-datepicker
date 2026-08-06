@@ -36,6 +36,8 @@ const CosmozDatepicker = (host: Props) => {
 		noPresets,
 		triggerSize,
 		triggerVariant = 'secondary',
+		onStartInputBlur,
+		onEndInputBlur,
 	} = useDatepicker(host);
 
 	return html`
@@ -90,12 +92,14 @@ const CosmozDatepicker = (host: Props) => {
 								locale=${locale}
 								.value=${start}
 								@value-changed=${onStartInput}
+								@blur=${onStartInputBlur}
 							></cosmoz-date-input>
 							<span>–</span>
 							<cosmoz-date-input
 								locale=${locale}
 								.value=${end}
 								@value-changed=${onEndInput}
+								@blur=${onEndInputBlur}
 							></cosmoz-date-input>
 						</div>
 						<div>
