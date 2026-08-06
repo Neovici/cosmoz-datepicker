@@ -51,7 +51,8 @@ export const renderDate = ({
 				class=${classMap({
 					'date-cell': true,
 					'selected-cell': isSelected(date, startDate, endDate),
-					'focused-highlighted-cell': !endDate && isSameDay(date, focusedDate),
+					'focused-highlighted-cell':
+						!endDate && !!startDate && isSameDay(date, focusedDate),
 					'today-cell': day.isToday && day.isCurrentMonth,
 					'other-month-cell': !day.isCurrentMonth,
 					'hidden-cell': !day.isCurrentMonth && numberOfMonths > 1,
