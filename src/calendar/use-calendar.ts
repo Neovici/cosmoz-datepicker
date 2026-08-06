@@ -212,16 +212,17 @@ export const useCalendar = (host: CalendarProps) => {
 		(e: PointerEvent) => {
 			const date = getDateFromEvent(e);
 
-			if (!date) {
-				return;
-			}
-
-			if (startDate && !endDate) {
+			if (
+				date &&
+				startDate &&
+				!endDate &&
+				!isDisabled(date, minDate, maxDate)
+			) {
 				setFocusedDate(date);
 				setIsFocused(true);
 			}
 		},
-		[startDate, endDate, setFocusedDate, setIsFocused],
+		[startDate, endDate, minDate, maxDate, setFocusedDate, setIsFocused],
 	);
 
 	const onFocus = useCallback(
