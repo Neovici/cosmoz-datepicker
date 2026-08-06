@@ -1,3 +1,4 @@
+import { ensureDate } from '@neovici/cosmoz-utils/date';
 import {
 	addDays,
 	addMonths,
@@ -5,6 +6,7 @@ import {
 	isAfter,
 	isBefore,
 	isSameDay,
+	isThisMonth,
 	isToday,
 	isWithinInterval,
 	startOfMonth,
@@ -125,17 +127,17 @@ export const isInRange = (
 };
 
 export const isDisabled = (
-	day: DateCell,
+	date: Date,
 	minDate: Date | undefined,
 	maxDate: Date | undefined,
 ): boolean => {
-	if (!day.isCurrentMonth) {
+	if (!isThisMonth(date)) {
 		return true;
 	}
 
 	if (
-		(minDate && isBefore(new Date(day.iso), minDate)) ||
-		(maxDate && isAfter(new Date(day.iso), maxDate))
+		(minDate && isBefore(date, minDate)) ||
+		(maxDate && isAfter(date, maxDate))
 	) {
 		return true;
 	}
@@ -144,10 +146,10 @@ export const isDisabled = (
 };
 
 export const ifDisabled = (
-	day: DateCell,
+	date: Date,
 	minDate: Date | undefined,
 	maxDate: Date | undefined,
-) => (isDisabled(day, minDate, maxDate) ? 'true' : undefined);
+) => (isDisabled(date, minDate, maxDate) ? 'true' : undefined);
 
 export const ifStart = (day: DateCell, startDate: Date | undefined) =>
 	startDate && isSameDay(new Date(day.iso), startDate) ? true : undefined;
@@ -190,3 +192,6 @@ export const getKeyboardDate = (e: KeyboardEvent, date: Date) => {
 
 	return keyboardDates[e.key];
 };
+
+export const getDateFromEvent = <E extends Event>(e: E) =>
+	ensureDate((e.target as HTMLDivElement).dataset.date);

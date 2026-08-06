@@ -11,12 +11,13 @@ type RenderDateGridOptions = {
 	minDate: Date | undefined;
 	month: DateCellMatrix;
 	numberOfMonths: number;
-	onClick: (date: Date) => void;
-	onFocus: (date: Date) => void;
+	onClick: (e: MouseEvent) => void;
+	onFocus: (e: FocusEvent) => void;
 	onKeyDown: (e: KeyboardEvent) => void;
+	onPointerDown: (e: PointerEvent) => void;
+	onPointerEnter: (e: PointerEvent) => void;
 	startDate: Date | undefined;
 	weekdayNames: string[];
-	onPointerEnter: (date: Date) => void;
 };
 
 export const renderDateGrid = ({
@@ -30,9 +31,10 @@ export const renderDateGrid = ({
 	onClick,
 	onFocus,
 	onKeyDown,
+	onPointerDown,
+	onPointerEnter,
 	startDate,
 	weekdayNames,
-	onPointerEnter,
 }: RenderDateGridOptions) => html`
 	<table @keydown=${onKeyDown}>
 		<thead>
@@ -64,8 +66,9 @@ export const renderDateGrid = ({
 									numberOfMonths,
 									onClick,
 									onFocus,
-									startDate,
+									onPointerDown,
 									onPointerEnter,
+									startDate,
 								}),
 						)}
 					</tr>

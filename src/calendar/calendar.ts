@@ -19,12 +19,13 @@ const CosmozCalendar = (host: CalendarProps) => {
 		onClick,
 		onFocus,
 		onKeyDown,
+		onPointerDown,
+		onPointerEnter,
 		selectedMonth,
 		setIsFocused,
 		setSelectedMonth,
 		startDate,
 		weekdayNames,
-		onPointerEnter,
 	} = useCalendar(host);
 
 	return html`<div
@@ -57,9 +58,10 @@ const CosmozCalendar = (host: CalendarProps) => {
 								onClick,
 								onFocus,
 								onKeyDown,
+								onPointerDown,
+								onPointerEnter,
 								startDate,
 								weekdayNames,
-								onPointerEnter,
 							}),
 						]}
 					</div>
