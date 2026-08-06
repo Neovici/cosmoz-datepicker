@@ -6,7 +6,6 @@ import {
 	isAfter,
 	isBefore,
 	isSameDay,
-	isThisMonth,
 	isToday,
 	isWithinInterval,
 	startOfMonth,
@@ -131,10 +130,6 @@ export const isDisabled = (
 	minDate: Date | undefined,
 	maxDate: Date | undefined,
 ): boolean => {
-	if (!isThisMonth(date)) {
-		return true;
-	}
-
 	if (
 		(minDate && isBefore(date, minDate)) ||
 		(maxDate && isAfter(date, maxDate))
@@ -147,9 +142,11 @@ export const isDisabled = (
 
 export const ifDisabled = (
 	date: Date,
+	isCurrentMonth: boolean,
 	minDate: Date | undefined,
 	maxDate: Date | undefined,
-) => (isDisabled(date, minDate, maxDate) ? 'true' : undefined);
+) =>
+	isCurrentMonth && isDisabled(date, minDate, maxDate) ? 'true' : undefined;
 
 export const ifStart = (day: DateCell, startDate: Date | undefined) =>
 	startDate && isSameDay(new Date(day.iso), startDate) ? true : undefined;

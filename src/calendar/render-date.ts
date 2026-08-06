@@ -66,11 +66,15 @@ export const renderDate = ({
 					month: 'long',
 					day: 'numeric',
 				})}
-				aria-disabled=${ifDefined(ifDisabled(date, minDate, maxDate))}
+				aria-disabled=${ifDefined(
+					ifDisabled(date, day.isCurrentMonth, minDate, maxDate),
+				)}
 				data-date=${ifDefined(
 					day.isCurrentMonth ? format(date, 'yyyy-MM-dd') : undefined,
 				)}
-				data-disabled=${ifDefined(ifDisabled(date, minDate, maxDate))}
+				data-disabled=${ifDefined(
+					ifDisabled(date, day.isCurrentMonth, minDate, maxDate),
+				)}
 				data-start=${ifDefined(ifStart(day, startDate))}
 				data-end=${ifDefined(ifEnd(day, endDate))}
 				@pointerdown=${onPointerDown}
