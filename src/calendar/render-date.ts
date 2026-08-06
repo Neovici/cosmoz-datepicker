@@ -24,6 +24,7 @@ type RenderDateOptions = {
 	setFocusedDate: (date: Date) => void;
 	setIsFocused: (isFocused: boolean) => void;
 	startDate: Date | undefined;
+	onPointerEnter: (date: Date) => void;
 };
 
 export const renderDate = ({
@@ -38,6 +39,7 @@ export const renderDate = ({
 	setFocusedDate,
 	setIsFocused,
 	startDate,
+	onPointerEnter,
 }: RenderDateOptions) => {
 	const date = new Date(day.iso);
 
@@ -78,6 +80,7 @@ export const renderDate = ({
 					}
 				}}
 				@click=${() => !isDisabled(day, minDate, maxDate) && onClick(date)}
+				@pointerenter=${() => onPointerEnter(date)}
 				@focus=${() => {
 					setFocusedDate(date);
 					setIsFocused(true);
