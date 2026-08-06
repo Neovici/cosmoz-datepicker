@@ -7,7 +7,6 @@ import {
 	ifDisabled,
 	ifEnd,
 	ifStart,
-	isDisabled,
 	isInRange,
 	isSelected,
 } from './utils';
@@ -20,10 +19,11 @@ type RenderDateOptions = {
 	maxDate: Date | undefined;
 	minDate: Date | undefined;
 	numberOfMonths: number;
-	onClick: (date: Date) => void;
-	onFocus: (date: Date) => void;
+	onClick: (e: MouseEvent) => void;
+	onFocus: (e: FocusEvent) => void;
+	onPointerDown: (e: PointerEvent) => void;
+	onPointerEnter: (e: PointerEvent) => void;
 	startDate: Date | undefined;
-	onPointerEnter: (date: Date) => void;
 };
 
 export const renderDate = ({
@@ -36,8 +36,9 @@ export const renderDate = ({
 	numberOfMonths,
 	onClick,
 	onFocus,
-	startDate,
+	onPointerDown,
 	onPointerEnter,
+	startDate,
 }: RenderDateOptions) => {
 	const date = new Date(day.iso);
 
@@ -65,21 +66,17 @@ export const renderDate = ({
 					month: 'long',
 					day: 'numeric',
 				})}
-				aria-disabled=${ifDefined(ifDisabled(day, minDate, maxDate))}
+				aria-disabled=${ifDefined(ifDisabled(date, minDate, maxDate))}
 				data-date=${ifDefined(
 					day.isCurrentMonth ? format(date, 'yyyy-MM-dd') : undefined,
 				)}
-				data-disabled=${ifDefined(ifDisabled(day, minDate, maxDate))}
+				data-disabled=${ifDefined(ifDisabled(date, minDate, maxDate))}
 				data-start=${ifDefined(ifStart(day, startDate))}
 				data-end=${ifDefined(ifEnd(day, endDate))}
-				@pointerdown=${(e: PointerEvent) => {
-					if (isDisabled(day, minDate, maxDate)) {
-						e.preventDefault();
-					}
-				}}
-				@click=${() => !isDisabled(day, minDate, maxDate) && onClick(date)}
-				@pointerenter=${() => onPointerEnter(date)}
-				@focus=${() => onFocus(date)}
+				@pointerdown=${onPointerDown}
+				@click=${onClick}
+				@pointerenter=${onPointerEnter}
+				@focus=${onFocus}
 			>
 				${day.day}
 			</div>

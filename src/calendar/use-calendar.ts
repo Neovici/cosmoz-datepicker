@@ -16,11 +16,13 @@ import {
 } from 'date-fns';
 import { getValidDate } from '../utils';
 import {
+	getDateFromEvent,
 	getKeyboardDate,
 	getMonthsDateCellMatrix,
 	getWeekdayNames,
 	isAfterVisibleMonths,
 	isBeforeVisibleMonths,
+	isDisabled,
 } from './utils';
 
 export type CalendarProps = HTMLElement & {
@@ -72,7 +74,7 @@ export const useCalendar = (host: CalendarProps) => {
 		return matrices;
 	}, [selectedMonth, locale, numberOfMonths]);
 
-	const onClick = useCallback(
+	const handleSelect = useCallback(
 		(date: Date) => {
 			const dateString = format(date, 'yyyy-MM-dd');
 			if (!startDate && !endDate) {
@@ -97,6 +99,19 @@ export const useCalendar = (host: CalendarProps) => {
 			}
 		},
 		[startDate, endDate, setStart, setEnd],
+	);
+
+	const onClick = useCallback(
+		(e: MouseEvent) => {
+			const date = getDateFromEvent(e);
+
+			if (!date || isDisabled(date, minDate, maxDate)) {
+				return;
+			}
+
+			handleSelect(date);
+		},
+		[handleSelect, minDate, maxDate],
 	);
 
 	const focusDate = useCallback(
@@ -166,7 +181,7 @@ export const useCalendar = (host: CalendarProps) => {
 
 			if (e.key === 'Enter' || e.key === ' ') {
 				e.preventDefault();
-				onClick(date);
+				handleSelect(date);
 				return;
 			}
 
@@ -179,11 +194,28 @@ export const useCalendar = (host: CalendarProps) => {
 			e.preventDefault();
 			focusDate(nextDate);
 		},
-		[focusDate, onClick],
+		[focusDate, handleSelect],
+	);
+
+	const onPointerDown = useCallback(
+		(e: PointerEvent) => {
+			const date = getDateFromEvent(e);
+
+			if (!date || isDisabled(date, minDate, maxDate)) {
+				e.preventDefault();
+			}
+		},
+		[minDate, maxDate],
 	);
 
 	const onPointerEnter = useCallback(
-		(date: Date) => {
+		(e: PointerEvent) => {
+			const date = getDateFromEvent(e);
+
+			if (!date) {
+				return;
+			}
+
 			if (startDate && !endDate) {
 				setFocusedDate(date);
 				setIsFocused(true);
@@ -193,7 +225,13 @@ export const useCalendar = (host: CalendarProps) => {
 	);
 
 	const onFocus = useCallback(
-		(date: Date) => {
+		(e: FocusEvent) => {
+			const date = getDateFromEvent(e);
+
+			if (!date) {
+				return;
+			}
+
 			setFocusedDate(date);
 			setIsFocused(true);
 		},
@@ -218,5 +256,6 @@ export const useCalendar = (host: CalendarProps) => {
 		weekdayNames,
 		onPointerEnter,
 		onFocus,
+		onPointerDown,
 	};
 };
