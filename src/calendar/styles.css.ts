@@ -73,17 +73,19 @@ export const styles = css`
 		text-transform: capitalize;
 	}
 
-	td.in-range:not(:has(.hidden-cell)) {
+	.date-cell-wrapper.in-range:not(:has(.hidden-cell)) {
 		background: var(--cz-color-bg-secondary);
 		border-radius: 0;
 	}
 
-	td.in-range:has(.date-cell[data-start]) {
+	.date-cell-wrapper.in-range:has(.date-cell[data-start]),
+	td:first-child .date-cell-wrapper.in-range {
 		border-top-left-radius: var(--cz-radius-full);
 		border-bottom-left-radius: var(--cz-radius-full);
 	}
 
-	td.in-range:has(.date-cell[data-end]) {
+	.date-cell-wrapper.in-range:has(.date-cell[data-end]),
+	td:last-child .date-cell-wrapper.in-range {
 		border-top-right-radius: var(--cz-radius-full);
 		border-bottom-right-radius: var(--cz-radius-full);
 	}
