@@ -29,11 +29,18 @@ const CosmozDatepicker = (host: Props) => {
 		max,
 		disabled,
 		noPresets,
+		triggerSize,
+		triggerVariant = 'secondary',
 	} = useDatepicker(host);
 
 	return html`
 		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
-			<cosmoz-button slot="button" variant="secondary"
+			<cosmoz-button
+				slot="button"
+				type="button"
+				exposedparts="button: trigger"
+				variant=${triggerVariant}
+				size=${ifDefined(triggerSize)}
 				>${calendarIcon()} ${getTriggerText(start, end, locale)}</cosmoz-button
 			>
 
@@ -109,6 +116,8 @@ customElements.define(
 			'disabled',
 			'no-presets',
 			'single-calendar',
+			'trigger-size',
+			'trigger-variant',
 		],
 		styleSheets: [normalize, styles],
 		shadowRootInit: { delegatesFocus: true, mode: 'open' },

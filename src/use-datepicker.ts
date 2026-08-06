@@ -1,3 +1,4 @@
+import { CosmozButtonElement } from '@neovici/cosmoz-button';
 import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
 import { useCallback, useMemo } from '@pionjs/pion';
 import { getRangePresets, RangePreset } from './presets';
@@ -12,6 +13,8 @@ export interface Props {
 	disabled?: boolean;
 	noPresets?: boolean;
 	singleCalendar?: boolean;
+	triggerSize?: CosmozButtonElement['size'];
+	triggerVariant?: CosmozButtonElement['variant'];
 }
 
 export const useDatepicker = (host: Props) => {
@@ -23,6 +26,8 @@ export const useDatepicker = (host: Props) => {
 		singleCalendar = false,
 		disabled,
 		noPresets,
+		triggerSize,
+		triggerVariant,
 	} = host;
 	const locale = _locale ?? navigator.language;
 	const [start, setStart] = useProperty<string>('start');
@@ -62,5 +67,7 @@ export const useDatepicker = (host: Props) => {
 		noPresets,
 		min,
 		max,
+		triggerSize,
+		triggerVariant,
 	};
 };
