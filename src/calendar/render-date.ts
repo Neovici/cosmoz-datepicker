@@ -72,6 +72,11 @@ export const renderDate = ({
 				data-disabled=${ifDefined(ifDisabled(day, minDate, maxDate))}
 				data-start=${ifDefined(ifStart(day, startDate))}
 				data-end=${ifDefined(ifEnd(day, endDate))}
+				@pointerdown=${(e: PointerEvent) => {
+					if (isDisabled(day, minDate, maxDate)) {
+						e.preventDefault();
+					}
+				}}
 				@click=${() => !isDisabled(day, minDate, maxDate) && onClick(date)}
 				@focus=${() => {
 					setFocusedDate(date);
