@@ -173,11 +173,18 @@ export const useDateInput = () => {
 		});
 	}, [inputState, setInputState, locale]);
 
+	const onClick = useCallback((e: MouseEvent) => {
+		const target = e.currentTarget as HTMLElement;
+		const input = target.shadowRoot?.querySelector('input');
+		input?.select();
+	}, []);
+
 	return {
 		inputState,
 		onChange,
 		onKeyDown,
 		onBlur,
+		onClick,
 		localeDateParts,
 	};
 };
