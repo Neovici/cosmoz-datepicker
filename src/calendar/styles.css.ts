@@ -73,7 +73,11 @@ export const styles = css`
 		text-transform: capitalize;
 	}
 
-	.date-cell-wrapper.in-range:not(:has(.hidden-cell)) {
+	.date-cell-wrapper {
+		position: relative;
+	}
+
+	td:not([data-hidden]) .date-cell-wrapper.in-range {
 		background: var(--cz-color-bg-secondary);
 		border-radius: 0;
 	}
@@ -88,6 +92,31 @@ export const styles = css`
 	td:last-child .date-cell-wrapper.in-range {
 		border-top-right-radius: var(--cz-radius-full);
 		border-bottom-right-radius: var(--cz-radius-full);
+	}
+
+	td:not([data-hidden]) + td[data-hidden] .date-cell-wrapper.in-range::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+
+		background: linear-gradient(
+			to left,
+			transparent,
+			var(--cz-color-bg-secondary)
+		);
+	}
+
+	td[data-hidden]:has(+ td:not([data-hidden]))
+		.date-cell-wrapper.in-range::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+
+		background: linear-gradient(
+			to right,
+			transparent,
+			var(--cz-color-bg-secondary)
+		);
 	}
 
 	.date-cell {
@@ -105,7 +134,7 @@ export const styles = css`
 		color: var(--cz-color-text-secondary);
 	}
 
-	.date-cell:not([data-disabled='true']):hover {
+	.date-cell:not([data-disabled='true'], .other-month-cell):hover {
 		background: var(--cz-color-bg-primary-hover);
 		color: var(--cz-color-text-primary);
 		font-weight: var(--cz-font-weight-medium);
@@ -167,7 +196,7 @@ export const styles = css`
 		color: var(--cz-color-text-placeholder-subtle);
 	}
 
-	.date-cell.hidden-cell {
+	td[data-hidden] .date-cell {
 		visibility: hidden;
 	}
 `;
