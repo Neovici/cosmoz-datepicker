@@ -1,1 +1,1 @@
-import './calendar.ts';
+export { CosmozCalendar } from './calendar';

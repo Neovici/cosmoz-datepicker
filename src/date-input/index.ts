@@ -1,1 +1,1 @@
-import './date-input';
+export { CosmozDateInput } from './date-input';

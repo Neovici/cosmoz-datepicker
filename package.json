@@ -47,7 +47,9 @@
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./cosmoz-datepicker": "./dist/cosmoz-datepicker.js"
+    "./cosmoz-datepicker": "./dist/cosmoz-datepicker.js",
+    "./calendar": "./dist/calendar/index.js",
+    "./date-input": "./dist/date-input/index.js"
   },
   "dependencies": {
     "@neovici/cosmoz-button": "^1.1.1",

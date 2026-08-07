@@ -79,3 +79,5 @@ customElements.define(
 		styleSheets: [normalize, styles],
 	}),
 );
+
+export { CosmozCalendar };

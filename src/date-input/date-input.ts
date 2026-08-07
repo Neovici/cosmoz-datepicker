@@ -55,3 +55,5 @@ customElements.define(
 		},
 	}),
 );
+
+export { CosmozDateInput };
