@@ -1,72 +1,104 @@
-import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import { waitFor } from 'storybook/test';
 import '../src/cosmoz-datepicker';
+import {
+	currentMonthDate,
+	dateArgType,
+	DatepickerArgs,
+	localeArgType,
+	renderDatepicker,
+} from './helper';
 
-interface StoryArgs {
-	greeting: string;
-}
-
-const meta: Meta<StoryArgs> = {
+const meta: Meta<DatepickerArgs> = {
 	title: 'CosmozDatepicker',
 	component: 'cosmoz-datepicker',
 	tags: ['autodocs'],
 	argTypes: {
-		greeting: { control: 'text', description: 'Greeting text' },
+		locale: localeArgType,
+		start: dateArgType,
+		end: dateArgType,
+		min: dateArgType,
+		max: dateArgType,
+		disabled: {
+			control: 'boolean',
+			description: 'Disables opening the datepicker dropdown.',
+		},
+		noPresets: {
+			control: 'boolean',
+			description: 'Hides the built-in range preset buttons.',
+		},
+		singleCalendar: {
+			control: 'boolean',
+			description: 'Forces a single calendar month layout.',
+		},
+		customPresets: {
+			control: 'boolean',
+			description: 'Uses a small custom presets array.',
+		},
+		triggerSize: {
+			control: 'select',
+			options: ['sm', 'md', 'lg', 'xl'],
+			description: 'Optional cosmoz-button trigger size.',
+		},
+		triggerVariant: {
+			control: 'select',
+			options: ['primary', 'secondary', 'tertiary'],
+			description: 'cosmoz-button trigger variant.',
+		},
 	},
 	args: {
-		greeting: 'Hello',
+		start: currentMonthDate(1),
+		end: currentMonthDate(4),
+		min: '',
+		max: '',
+		disabled: false,
+		noPresets: false,
+		singleCalendar: false,
+		customPresets: false,
+		triggerSize: '',
+		triggerVariant: 'secondary',
 	},
 };
 
 export default meta;
 
-type Story = StoryObj<StoryArgs>;
+type Story = StoryObj<DatepickerArgs>;
 
-export const Default: Story = {
-	render: (args) =>
-		html`<cosmoz-datepicker greeting=${args.greeting}></cosmoz-datepicker>`,
-	play: async ({ canvas, step, userEvent }) => {
-		await step('Renders with default greeting', async () => {
-			await canvas.findByShadowText(/Hello, World!/u);
-		});
+export const Datepicker: Story = {
+	render: renderDatepicker,
+};
 
-		await step('Clicking increment updates counter', async () => {
-			const button = canvas.getByShadowRole('button', {
-				name: /Increment/u,
-			});
-			await userEvent.click(button);
-			await waitFor(() => {
-				canvas.getByShadowText(/Count: 1/u);
-			});
-		});
-
-		await step('Clicking increment again updates counter', async () => {
-			const button = canvas.getByShadowRole('button', {
-				name: /Increment/u,
-			});
-			await userEvent.click(button);
-			await waitFor(() => {
-				canvas.getByShadowText(/Count: 2/u);
-			});
-		});
+export const Empty: Story = {
+	args: {
+		start: '',
+		end: '',
 	},
 };
 
-export const CustomGreeting: Story = {
-	args: { greeting: 'Hi there' },
-	play: async ({ canvas, step }) => {
-		await step('Renders with custom greeting', async () => {
-			await canvas.findByShadowText(/Hi there, World!/u);
-		});
+export const MinMax: Story = {
+	args: {
+		start: currentMonthDate(11),
+		end: currentMonthDate(14),
+		min: currentMonthDate(4),
+		max: currentMonthDate(24),
 	},
 };
 
-export const NoGreeting: Story = {
-	args: { greeting: '' },
-	play: async ({ canvas, step }) => {
-		await step('Renders with empty greeting', async () => {
-			await canvas.findByShadowText(/, World!/u);
-		});
+export const SingleCalendar: Story = {
+	args: {
+		start: currentMonthDate(11),
+		end: currentMonthDate(14),
+		singleCalendar: true,
+	},
+};
+
+export const CustomPresets: Story = {
+	args: {
+		customPresets: true,
+	},
+};
+
+export const NoPresets: Story = {
+	args: {
+		noPresets: true,
 	},
 };
