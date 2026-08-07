@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import '../src/cosmoz-datepicker';
 import {
+	currentMonthDate,
 	dateArgType,
 	DatepickerArgs,
 	localeArgType,
@@ -35,7 +36,7 @@ const meta: Meta<DatepickerArgs> = {
 		},
 		triggerSize: {
 			control: 'select',
-			options: ['', 'sm', 'md', 'lg', 'xl'],
+			options: ['sm', 'md', 'lg', 'xl'],
 			description: 'Optional cosmoz-button trigger size.',
 		},
 		triggerVariant: {
@@ -45,8 +46,8 @@ const meta: Meta<DatepickerArgs> = {
 		},
 	},
 	args: {
-		start: '2026-08-01',
-		end: '2026-08-04',
+		start: currentMonthDate(1),
+		end: currentMonthDate(4),
 		min: '',
 		max: '',
 		disabled: false,
@@ -75,17 +76,17 @@ export const Empty: Story = {
 
 export const MinMax: Story = {
 	args: {
-		start: '2026-08-11',
-		end: '2026-08-14',
-		min: '2026-08-04',
-		max: '2026-08-24',
+		start: currentMonthDate(11),
+		end: currentMonthDate(14),
+		min: currentMonthDate(4),
+		max: currentMonthDate(24),
 	},
 };
 
 export const SingleCalendar: Story = {
 	args: {
-		start: '2026-08-11',
-		end: '2026-08-14',
+		start: currentMonthDate(11),
+		end: currentMonthDate(14),
 		singleCalendar: true,
 	},
 };

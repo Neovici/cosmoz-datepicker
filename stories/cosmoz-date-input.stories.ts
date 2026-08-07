@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import '../src/date-input';
 import {
+	currentMonthDate,
 	dateArgType,
 	DateInputArgs,
 	localeArgType,
@@ -16,7 +17,7 @@ const meta: Meta<DateInputArgs> = {
 		value: dateArgType,
 	},
 	args: {
-		value: '2026-08-01',
+		value: currentMonthDate(1),
 	},
 };
 
