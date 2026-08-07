@@ -12,6 +12,7 @@ const meta: Meta<DatepickerArgs> = {
 	title: 'CosmozDatepicker',
 	component: 'cosmoz-datepicker',
 	tags: ['autodocs'],
+	render: renderDatepicker,
 	argTypes: {
 		locale: localeArgType,
 		start: dateArgType,
@@ -63,9 +64,7 @@ export default meta;
 
 type Story = StoryObj<DatepickerArgs>;
 
-export const Datepicker: Story = {
-	render: renderDatepicker,
-};
+export const Datepicker: Story = {};
 
 export const Empty: Story = {
 	args: {
