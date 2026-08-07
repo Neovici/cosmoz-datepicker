@@ -1,6 +1,5 @@
 import { CosmozButtonElement } from '@neovici/cosmoz-button';
-import { useProperty } from '@neovici/cosmoz-utils/hooks/use-property';
-import { useCallback, useMemo } from '@pionjs/pion';
+import { useCallback, useMemo, useProperty } from '@pionjs/pion';
 import { isAfter, isBefore } from 'date-fns';
 import { getRangePresets, RangePreset } from './presets';
 import { useMediaMatch } from './use-media-match';
