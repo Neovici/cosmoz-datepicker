@@ -4,12 +4,16 @@ import { component, html } from '@pionjs/pion';
 import { live } from 'lit-html/directives/live.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { styles } from './styles.css';
-import { useDateInput, ValueChangedEvent } from './use-date-input';
+import {
+	DateInputProps,
+	useDateInput,
+	ValueChangedEvent,
+} from './use-date-input';
 import { getPlaceholder, isDateType } from './utils';
 
-const CosmozDateInput = () => {
+const CosmozDateInput = (host: DateInputProps) => {
 	const { inputState, onChange, onKeyDown, onBlur, onClick, localeDateParts } =
-		useDateInput();
+		useDateInput(host);
 
 	return repeat(
 		localeDateParts,

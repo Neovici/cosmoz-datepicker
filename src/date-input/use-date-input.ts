@@ -2,7 +2,6 @@ import { ensureDate } from '@neovici/cosmoz-utils/date';
 import {
 	useCallback,
 	useEffect,
-	useHost,
 	useMemo,
 	useProperty,
 	useState,
@@ -27,7 +26,7 @@ import {
 
 export type ValueChangedEvent = CustomEvent<{ value: string }>;
 
-type DateInputProps = HTMLElement & {
+export type DateInputProps = HTMLElement & {
 	value?: string;
 	locale?: string;
 };
@@ -53,8 +52,7 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 				day: EMPTY_DATE_VALUE,
 			};
 
-export const useDateInput = () => {
-	const host = useHost<DateInputProps>();
+export const useDateInput = (host: DateInputProps) => {
 	const { locale: _locale } = host;
 	const locale = _locale ?? navigator.language;
 	const [value, setValue] = useProperty<string>('value');
