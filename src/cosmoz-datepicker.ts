@@ -41,13 +41,14 @@ const CosmozDatepicker = (host: Props) => {
 	} = useDatepicker(host);
 
 	return html`
-		<cosmoz-dropdown-next ?disabled=${ifDefined(disabled)}>
+		<cosmoz-dropdown-next ?disabled=${disabled}>
 			<cosmoz-button
 				slot="button"
 				type="button"
 				exposedparts="button: trigger"
 				variant=${triggerVariant}
 				size=${ifDefined(triggerSize)}
+				?disabled=${disabled}
 				>${calendarIcon()} ${getTriggerText(start, end, locale)}</cosmoz-button
 			>
 
