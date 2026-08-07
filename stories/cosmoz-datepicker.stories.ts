@@ -1,95 +1,104 @@
-import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import { addDays, addMonths, format } from 'date-fns';
 import '../src/cosmoz-datepicker';
+import {
+	dateArgType,
+	DatepickerArgs,
+	localeArgType,
+	renderDatepicker,
+} from './helper';
 
-const meta: Meta = {
+const meta: Meta<DatepickerArgs> = {
 	title: 'CosmozDatepicker',
 	component: 'cosmoz-datepicker',
 	tags: ['autodocs'],
+	argTypes: {
+		locale: localeArgType,
+		start: dateArgType,
+		end: dateArgType,
+		min: dateArgType,
+		max: dateArgType,
+		disabled: {
+			control: 'boolean',
+			description: 'Disables opening the datepicker dropdown.',
+		},
+		noPresets: {
+			control: 'boolean',
+			description: 'Hides the built-in range preset buttons.',
+		},
+		singleCalendar: {
+			control: 'boolean',
+			description: 'Forces a single calendar month layout.',
+		},
+		customPresets: {
+			control: 'boolean',
+			description: 'Uses a small custom presets array.',
+		},
+		triggerSize: {
+			control: 'select',
+			options: ['', 'sm', 'md', 'lg', 'xl'],
+			description: 'Optional cosmoz-button trigger size.',
+		},
+		triggerVariant: {
+			control: 'select',
+			options: ['primary', 'secondary', 'tertiary'],
+			description: 'cosmoz-button trigger variant.',
+		},
+	},
+	args: {
+		locale: 'US',
+		start: '2026-08-01',
+		end: '2026-08-04',
+		min: '',
+		max: '',
+		disabled: false,
+		noPresets: false,
+		singleCalendar: false,
+		customPresets: false,
+		triggerSize: '',
+		triggerVariant: 'secondary',
+	},
 };
 
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<DatepickerArgs>;
 
-export const Swedish: Story = {
-	name: 'sv-SE',
-	render: () =>
-		html`<cosmoz-datepicker
-			.start=${'2026-08-01'}
-			.end=${'2026-08-04'}
-			locale="sv-SE"
-		></cosmoz-datepicker>`,
+export const Datepicker: Story = {
+	render: renderDatepicker,
 };
 
-export const EnglishEmpty: Story = {
-	name: 'en-US no value',
-	render: () => html`<cosmoz-datepicker locale="en-US"></cosmoz-datepicker>`,
+export const Empty: Story = {
+	args: {
+		start: '',
+		end: '',
+	},
 };
 
-export const EnglishUs: Story = {
-	name: 'en-US',
-	render: () =>
-		html`<cosmoz-datepicker
-			.start=${'2026-08-01'}
-			.end=${'2026-08-04'}
-			locale="en-US"
-		></cosmoz-datepicker>`,
+export const MinMax: Story = {
+	args: {
+		start: '2026-08-11',
+		end: '2026-08-14',
+		min: '2026-08-04',
+		max: '2026-08-24',
+	},
 };
 
-export const EnglishUsMinMax: Story = {
-	name: 'en-US Min Max',
-	render: () =>
-		html`<cosmoz-datepicker
-			.start=${'2026-08-11'}
-			.end=${'2026-08-14'}
-			min="2026-08-04"
-			max="2026-08-24"
-			locale="en-US"
-		></cosmoz-datepicker>`,
+export const SingleCalendar: Story = {
+	args: {
+		start: '2026-08-11',
+		end: '2026-08-14',
+		singleCalendar: true,
+	},
 };
 
-export const EnglishUsSingleCalendar: Story = {
-	name: 'en-US Single Calendar',
-	render: () =>
-		html`<cosmoz-datepicker
-			.start=${'2026-08-11'}
-			.end=${'2026-08-14'}
-			locale="en-US"
-			single-calendar
-		></cosmoz-datepicker>`,
+export const CustomPresets: Story = {
+	args: {
+		customPresets: true,
+	},
 };
 
-export const EnglishUsPresets: Story = {
-	name: 'en-US Custom Presets',
-	render: () =>
-		html`<cosmoz-datepicker
-			.start=${'2026-08-01'}
-			.end=${'2026-08-04'}
-			locale="en-US"
-			.presets=${[
-				{
-					label: 'Today tomorrow',
-					start: format(new Date(), 'yyyy-MM-dd'),
-					end: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
-				},
-				{
-					label: 'In one month',
-					start: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
-					end: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
-				},
-			]}
-		></cosmoz-datepicker>`,
-};
-
-export const EnglishUsNoPresets: Story = {
-	name: 'en-US No Presets',
-	render: () =>
-		html`<cosmoz-datepicker
-			.start=${'2026-08-01'}
-			.end=${'2026-08-04'}
-			locale="en-US"
-			no-presets
-		></cosmoz-datepicker>`,
+export const NoPresets: Story = {
+	args: {
+		noPresets: true,
+	},
 };

@@ -1,28 +1,30 @@
-import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import '../src/date-input';
+import {
+	dateArgType,
+	DateInputArgs,
+	localeArgType,
+	renderDateInput,
+} from './helper';
 
-const meta: Meta = {
+const meta: Meta<DateInputArgs> = {
 	title: 'CosmozDateInput',
 	component: 'cosmoz-date-input',
 	tags: ['autodocs'],
+	argTypes: {
+		locale: localeArgType,
+		value: dateArgType,
+	},
+	args: {
+		locale: 'US',
+		value: '2026-08-01',
+	},
 };
 
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<DateInputArgs>;
 
-export const Swedish: Story = {
-	name: 'sv-SE',
-	render: () => html`<cosmoz-date-input locale="sv-SE"></cosmoz-date-input>`,
-};
-
-export const EnglishUs: Story = {
-	name: 'en-US',
-	render: () => html`<cosmoz-date-input locale="en-US"></cosmoz-date-input>`,
-};
-
-export const German: Story = {
-	name: 'de-DE',
-	render: () => html`<cosmoz-date-input locale="de-DE"></cosmoz-date-input>`,
+export const DateInput: Story = {
+	render: renderDateInput,
 };
