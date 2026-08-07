@@ -43,7 +43,7 @@ export const renderDate = ({
 	const date = new Date(day.iso);
 
 	return html`
-		<td>
+		<td ?data-hidden=${!day.isCurrentMonth && numberOfMonths > 1}>
 			<div
 				class="date-cell-wrapper ${isInRange(
 					date,
@@ -62,7 +62,6 @@ export const renderDate = ({
 							!endDate && !!startDate && isSameDay(date, focusedDate),
 						'today-cell': day.isToday && day.isCurrentMonth,
 						'other-month-cell': !day.isCurrentMonth,
-						'hidden-cell': !day.isCurrentMonth && numberOfMonths > 1,
 					})}
 					role="button"
 					tabindex=${isSameDay(date, focusedDate) ? '0' : '-1'}
