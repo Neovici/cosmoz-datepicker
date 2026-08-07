@@ -6,6 +6,11 @@ i18next.init({ lng: 'en', resources: {} });
 
 export default {
 	parameters: {
+		options: {
+			storySort: {
+				order: ['CosmozDatepicker', 'CosmozCalendar', 'CosmozDateInput'],
+			},
+		},
 		docs: {
 			source: {
 				excludeDecorators: true,
