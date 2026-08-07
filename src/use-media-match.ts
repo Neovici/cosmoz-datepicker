@@ -10,7 +10,7 @@ export const useMediaMatch = (query: string) => {
 
 		match.addEventListener('change', onMatch);
 		return () => match.removeEventListener('change', onMatch);
-	});
+	}, [match]);
 
 	return isMatch;
 };
