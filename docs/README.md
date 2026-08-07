@@ -1,97 +1,148 @@
-# cosmoz-datepicker
+# @neovici/cosmoz-datepicker
 
-Datepicker web component for Neovici applications using pionjs and lit-html.
+Date picker web component for Neovici applications.
+
+Part of the [Neovici](https://neovici.se) design system.
 
 ## Installation
 
 ```bash
-npm install
+npm install @neovici/cosmoz-datepicker
 ```
 
-## Available Scripts
-
-- `npm run lint` - Run ESLint and TypeScript type checking
-- `npm run build` - Build TypeScript to dist/
-- `npm run test` - Run all tests (unit + storybook)
-- `npm run test:unit` - Run unit tests only (fast, jsdom)
-- `npm run test:storybook` - Run storybook interaction tests only (browser)
-- `npm run test:watch` - Run tests in watch mode
-- `npm run storybook:start` - Start Storybook development server
-- `npm run storybook:build` - Build static Storybook
-
 ## Usage
-
-Import the component:
 
 ```javascript
 import '@neovici/cosmoz-datepicker';
 ```
 
-Use in HTML:
-
 ```html
 <cosmoz-datepicker></cosmoz-datepicker>
 ```
 
+Set and observe the selected range with the `start` and `end` properties. Dates use `yyyy-MM-dd` strings.
+
+```html
+<cosmoz-datepicker id="datepicker"></cosmoz-datepicker>
+
+<script type="module">
+	const datepicker = document.querySelector('#datepicker');
+
+	datepicker.start = '2026-08-01';
+	datepicker.end = '2026-08-07';
+
+	datepicker.addEventListener('start-changed', (e) => {
+		console.log('start', e.detail.value);
+	});
+
+	datepicker.addEventListener('end-changed', (e) => {
+		console.log('end', e.detail.value);
+	});
+</script>
+```
+
+## Properties And Attributes
+
+| Property         | Attribute         | Type                             | Default              | Description                                                      |
+| ---------------- | ----------------- | -------------------------------- | -------------------- | ---------------------------------------------------------------- |
+| `start`          | -                 | `string \| undefined`            | `undefined`          | Start date as a `yyyy-MM-dd` string.                             |
+| `end`            | -                 | `string \| undefined`            | `undefined`          | End date as a `yyyy-MM-dd` string.                               |
+| `locale`         | `locale`          | `string`                         | `navigator.language` | Locale used for formatting dates and determining week start day. |
+| `min`            | `min`             | `string \| undefined`            | `undefined`          | Earliest selectable date as a `yyyy-MM-dd` string.               |
+| `max`            | `max`             | `string \| undefined`            | `undefined`          | Latest selectable date as a `yyyy-MM-dd` string.                 |
+| `presets`        | -                 | `RangePreset[]`                  | built-in presets     | Custom range preset buttons.                                     |
+| `disabled`       | `disabled`        | `boolean`                        | `false`              | Disables opening the datepicker dropdown.                        |
+| `noPresets`      | `no-presets`      | `boolean`                        | `false`              | Hides range preset buttons.                                      |
+| `singleCalendar` | `single-calendar` | `boolean`                        | `false`              | Forces a single-month calendar layout.                           |
+| `triggerSize`    | `trigger-size`    | `CosmozButtonElement['size']`    | `undefined`          | Optional size for the trigger button.                            |
+| `triggerVariant` | `trigger-variant` | `CosmozButtonElement['variant']` | `'secondary'`        | Variant for the trigger button.                                  |
+
+## Range Presets
+
+By default, the datepicker shows presets for today, yesterday, this week, last week, this month, last month, and this year.
+
+Provide `presets` to replace them. Each preset has a `label`, `start`, and `end`. The dates can be fixed `yyyy-MM-dd` strings or functions that return `yyyy-MM-dd` strings, which is useful for dynamic ranges relative to the current date.
+
+```javascript
+datepicker.presets = [
+	{
+		label: 'Tomorrow',
+		start: () => {
+			const date = new Date();
+			date.setDate(date.getDate() + 1);
+			return date.toISOString().slice(0, 10);
+		},
+		end: () => {
+			const date = new Date();
+			date.setDate(date.getDate() + 1);
+			return date.toISOString().slice(0, 10);
+		},
+	},
+	{
+		label: 'Project launch window',
+		start: '2026-09-01',
+		end: '2026-09-30',
+	},
+];
+```
+
+Use `no-presets` to hide preset buttons:
+
+```html
+<cosmoz-datepicker no-presets></cosmoz-datepicker>
+```
+
+## Min/Max Bounds
+
+```html
+<cosmoz-datepicker min="2026-08-01" max="2026-08-31"></cosmoz-datepicker>
+```
+
+Selected dates and preset values are clamped to the configured bounds.
+
+## Events
+
+| Event           | Detail              | Description                        |
+| --------------- | ------------------- | ---------------------------------- |
+| `start-changed` | `{ value: string }` | Fired when the start date changes. |
+| `end-changed`   | `{ value: string }` | Fired when the end date changes.   |
+
+## Styling
+
+The trigger button exposes the `trigger` part for external styling:
+
+```css
+cosmoz-datepicker::part(trigger) {
+	min-width: 16rem;
+}
+```
+
+## Design Tokens
+
+This component uses CSS custom properties from `@neovici/cosmoz-tokens`. The tokens are automatically applied but can be customized at the application level.
+
+## Accessibility
+
+The datepicker supports keyboard navigation in the calendar and uses localized date input order based on `locale` or `navigator.language`.
+
+Use the `disabled` attribute when the datepicker should not be interactive.
+
 ## Development
 
-1. Clone the repository
-2. Run `npm install`
-3. Start development with `npm run storybook:start`
-4. Make changes and verify with tests
+```bash
+# Install dependencies
+npm install
 
-## Testing
+# Start Storybook
+npm run storybook:start
 
-This template uses Vitest with two test projects:
+# Run tests
+npm run test
 
-### Unit Tests (`test:unit`)
-
-Fast tests that run in jsdom. Use for testing:
-
-- Utility functions
-- Pure logic
-- Data transformations
-
-**Note**: Unit tests cannot import Pion/Lit components or use `renderHook` from `@neovici/testing` due to ESM resolution issues in jsdom. For testing hooks and components, use Storybook interaction tests instead.
-
-```typescript
-// test/example.test.ts
-import { describe, expect, it } from 'vitest';
-import { myFunction } from '../src/utils';
-
-describe('myFunction', () => {
-	it('does something', () => {
-		expect(myFunction()).toBe(expected);
-	});
-});
+# Build
+npm run build
 ```
 
-### Storybook Tests (`test:storybook`)
+## License
 
-Browser-based tests using Playwright. Use for testing:
-
-- Component rendering
-- User interactions
-- Visual behavior
-
-Tests are written as `play` functions in story files.
-
-### Important: Imports in Story Files
-
-**Never import from `'vitest'` in story files:**
-
-```typescript
-import { expect } from 'vitest'; // Crashes deployed Storybook
-```
-
-**Use `'storybook/test'` instead:**
-
-```typescript
-import { expect } from 'storybook/test'; // Works everywhere
-```
-
-Vitest's `expect` requires an active test context and crashes when stories run in the deployed Storybook UI.
-
-## Publishing
-
-This package uses Changesets for automated versioning and publishing. Add a changeset with `npm run changeset`, then open a release PR to publish.
+Apache-2.0
