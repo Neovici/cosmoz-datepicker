@@ -16,7 +16,6 @@ const meta: Meta<DateInputArgs> = {
 		value: dateArgType,
 	},
 	args: {
-		locale: 'US',
 		value: '2026-08-01',
 	},
 };

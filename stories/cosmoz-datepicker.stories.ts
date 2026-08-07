@@ -45,7 +45,6 @@ const meta: Meta<DatepickerArgs> = {
 		},
 	},
 	args: {
-		locale: 'US',
 		start: '2026-08-01',
 		end: '2026-08-04',
 		min: '',

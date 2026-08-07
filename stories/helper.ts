@@ -2,18 +2,24 @@ import { html } from '@pionjs/pion';
 import { addDays, addMonths, format } from 'date-fns';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 
-export const localeOptions = ['US', 'Sweden', 'Germany'] as const;
+export const localeOptions = [
+	'US (en-US)',
+	'Sweden (sv-SE)',
+	'Germany (de-DE)',
+	'Romania (ro-RO)',
+] as const;
 
 export type LocaleOption = (typeof localeOptions)[number];
 
 export const localeCodes: Record<LocaleOption, string> = {
-	US: 'en-US',
-	Sweden: 'sv-SE',
-	Germany: 'de-DE',
+	'US (en-US)': 'en-US',
+	'Sweden (sv-SE)': 'sv-SE',
+	'Germany (de-DE)': 'de-DE',
+	'Romania (ro-RO)': 'ro-RO',
 };
 
 export interface DateRangeArgs {
-	locale: LocaleOption;
+	locale?: LocaleOption;
 	start?: string;
 	end?: string;
 	min?: string;
@@ -21,7 +27,7 @@ export interface DateRangeArgs {
 }
 
 export interface DateInputArgs {
-	locale: LocaleOption;
+	locale?: LocaleOption;
 	value?: string;
 }
 
@@ -58,7 +64,8 @@ export const currentMonthDate = (day: number) => {
 
 const emptyToUndefined = (value?: string) => value || undefined;
 
-const getLocale = (locale: LocaleOption) => localeCodes[locale];
+const getLocale = (locale?: LocaleOption) =>
+	locale ? localeCodes[locale] : undefined;
 
 const customPresets = [
 	{
@@ -75,14 +82,14 @@ const customPresets = [
 
 export const renderDateInput = (args: DateInputArgs) => html`
 	<cosmoz-date-input
-		locale=${getLocale(args.locale)}
+		locale=${ifDefined(getLocale(args.locale))}
 		.value=${emptyToUndefined(args.value)}
 	></cosmoz-date-input>
 `;
 
 export const renderCalendar = (args: CalendarArgs) => html`
 	<cosmoz-calendar
-		locale=${getLocale(args.locale)}
+		locale=${ifDefined(getLocale(args.locale))}
 		number-of-months=${args.numberOfMonths}
 		.start=${emptyToUndefined(args.start)}
 		.end=${emptyToUndefined(args.end)}
@@ -93,7 +100,7 @@ export const renderCalendar = (args: CalendarArgs) => html`
 
 export const renderDatepicker = (args: DatepickerArgs) => html`
 	<cosmoz-datepicker
-		locale=${ifDefined(emptyToUndefined(getLocale(args.locale)))}
+		locale=${ifDefined(getLocale(args.locale))}
 		trigger-size=${ifDefined(emptyToUndefined(args.triggerSize))}
 		trigger-variant=${ifDefined(emptyToUndefined(args.triggerVariant))}
 		.start=${emptyToUndefined(args.start)}

@@ -19,13 +19,11 @@ const meta: Meta<CalendarArgs> = {
 		min: dateArgType,
 		max: dateArgType,
 		numberOfMonths: {
-			control: 'select',
-			options: [1, 2],
+			control: 'number',
 			description: 'Number of visible calendar months.',
 		},
 	},
 	args: {
-		locale: 'US',
 		start: currentMonthDate(12),
 		end: currentMonthDate(17),
 		min: '',
