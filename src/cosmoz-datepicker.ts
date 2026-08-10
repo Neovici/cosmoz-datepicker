@@ -2,7 +2,7 @@ import '@neovici/cosmoz-button';
 import '@neovici/cosmoz-dropdown';
 import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
-import { component, html, lift } from '@pionjs/pion';
+import { component, html } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -27,9 +27,9 @@ const CosmozDatepicker = (host: Props) => {
 		onEndInput,
 		onStartInput,
 		rangePresets,
-		setEnd,
-		setStart,
+		setValue,
 		start,
+		value,
 		min,
 		max,
 		disabled,
@@ -65,8 +65,7 @@ const CosmozDatepicker = (host: Props) => {
 										variant="tertiary"
 										full-width
 										?active=${isPresetActive(preset, start, end)}
-										@click=${() =>
-											liftPreset(preset, setStart, setEnd, min, max)}
+										@click=${() => liftPreset(preset, setValue, min, max)}
 										>${preset.label}</cosmoz-button
 									>
 								`,
@@ -81,10 +80,9 @@ const CosmozDatepicker = (host: Props) => {
 						number-of-months=${numberOfMonths}
 						.min=${ifDefined(min)}
 						.max=${ifDefined(max)}
-						.start=${start}
-						.end=${end}
-						@start-changed=${lift(setStart)}
-						@end-changed=${lift(setEnd)}
+						.value=${value}
+						@value-changed=${(e: CustomEvent<{ value: Props['value'] }>) =>
+							setValue(e.detail.value ?? {})}
 					></cosmoz-calendar>
 
 					<footer>

@@ -5,7 +5,13 @@ import { getRangePresets, RangePreset } from './presets';
 import { useMediaMatch } from './use-media-match';
 import { getValidDateString } from './utils';
 
+export type DateRange = {
+	start?: string;
+	end?: string;
+};
+
 export interface Props {
+	value?: DateRange;
 	locale?: string;
 	min?: string;
 	max?: string;
@@ -30,8 +36,8 @@ export const useDatepicker = (host: Props) => {
 		triggerVariant,
 	} = host;
 	const locale = _locale ?? navigator.language;
-	const [start, setStart] = useProperty<string>('start');
-	const [end, setEnd] = useProperty<string>('end');
+	const [value, setValue] = useProperty<DateRange>('value');
+	const { start, end } = value ?? {};
 	const isNarrow = useMediaMatch('(width < 735px)');
 	const isSingleCalendar = singleCalendar || isNarrow;
 	const numberOfMonths = isSingleCalendar ? 1 : 2;
@@ -39,30 +45,35 @@ export const useDatepicker = (host: Props) => {
 		() => presets ?? getRangePresets(locale),
 		[locale, presets],
 	);
-
 	const onStartInput = useCallback(
 		(e: CustomEvent<{ value: string }>) =>
-			setStart(getValidDateString(e.detail.value, min, max)),
-		[min, max],
+			setValue({
+				start: getValidDateString(e.detail.value, min, max),
+				end,
+			}),
+		[min, max, end, setValue],
 	);
 
 	const onEndInput = useCallback(
 		(e: CustomEvent<{ value: string }>) =>
-			setEnd(getValidDateString(e.detail.value, min, max)),
-		[min, max],
+			setValue({
+				start,
+				end: getValidDateString(e.detail.value, min, max),
+			}),
+		[min, max, start, setValue],
 	);
 
 	const onStartInputBlur = useCallback(() => {
 		if (start && end && isAfter(new Date(start), new Date(end))) {
-			setEnd(start);
+			setValue({ start, end: start });
 		}
-	}, [start, end]);
+	}, [start, end, setValue]);
 
 	const onEndInputBlur = useCallback(() => {
 		if (start && end && isBefore(new Date(end), new Date(start))) {
-			setStart(end);
+			setValue({ start: end, end });
 		}
-	}, [start, end]);
+	}, [start, end, setValue]);
 
 	return {
 		end,
@@ -72,9 +83,9 @@ export const useDatepicker = (host: Props) => {
 		onEndInput,
 		onStartInput,
 		rangePresets,
-		setEnd,
-		setStart,
+		setValue,
 		start,
+		value,
 		disabled,
 		noPresets,
 		min,

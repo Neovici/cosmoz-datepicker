@@ -20,7 +20,7 @@ import '@neovici/cosmoz-datepicker';
 <cosmoz-datepicker></cosmoz-datepicker>
 ```
 
-Set and observe the selected range with the `start` and `end` properties. Dates use `yyyy-MM-dd` strings.
+Set and observe the selected range with the `value` property. Dates use `yyyy-MM-dd` strings.
 
 ```html
 <cosmoz-datepicker id="datepicker"></cosmoz-datepicker>
@@ -28,15 +28,13 @@ Set and observe the selected range with the `start` and `end` properties. Dates 
 <script type="module">
 	const datepicker = document.querySelector('#datepicker');
 
-	datepicker.start = '2026-08-01';
-	datepicker.end = '2026-08-07';
+	datepicker.value = {
+		start: '2026-08-01',
+		end: '2026-08-07',
+	};
 
-	datepicker.addEventListener('start-changed', (e) => {
-		console.log('start', e.detail.value);
-	});
-
-	datepicker.addEventListener('end-changed', (e) => {
-		console.log('end', e.detail.value);
+	datepicker.addEventListener('value-changed', (e) => {
+		console.log('range', e.detail.value);
 	});
 </script>
 ```
@@ -45,8 +43,7 @@ Set and observe the selected range with the `start` and `end` properties. Dates 
 
 | Property         | Attribute         | Type                             | Default              | Description                                                      |
 | ---------------- | ----------------- | -------------------------------- | -------------------- | ---------------------------------------------------------------- |
-| `start`          | -                 | `string \| undefined`            | `undefined`          | Start date as a `yyyy-MM-dd` string.                             |
-| `end`            | -                 | `string \| undefined`            | `undefined`          | End date as a `yyyy-MM-dd` string.                               |
+| `value`          | -                 | `DateRange \| undefined`         | `undefined`          | Selected range with `start` and `end` `yyyy-MM-dd` strings.      |
 | `locale`         | `locale`          | `string`                         | `navigator.language` | Locale used for formatting dates and determining week start day. |
 | `min`            | `min`             | `string \| undefined`            | `undefined`          | Earliest selectable date as a `yyyy-MM-dd` string.               |
 | `max`            | `max`             | `string \| undefined`            | `undefined`          | Latest selectable date as a `yyyy-MM-dd` string.                 |
@@ -102,10 +99,9 @@ Selected dates and preset values are clamped to the configured bounds.
 
 ## Events
 
-| Event           | Detail              | Description                        |
-| --------------- | ------------------- | ---------------------------------- |
-| `start-changed` | `{ value: string }` | Fired when the start date changes. |
-| `end-changed`   | `{ value: string }` | Fired when the end date changes.   |
+| Event           | Detail                                        | Description                            |
+| --------------- | --------------------------------------------- | -------------------------------------- |
+| `value-changed` | `{ value: { start?: string, end?: string } }` | Fired when the selected range changes. |
 
 ## Styling
 

@@ -1,9 +1,9 @@
 import { ensureDate } from '@neovici/cosmoz-utils/date';
 import { invoke } from '@neovici/cosmoz-utils/function';
-import { StateUpdater } from '@pionjs/pion';
 import { format, isAfter, isBefore, subDays } from 'date-fns';
 import { t } from 'i18next';
 import { RangePreset } from './presets';
+import type { DateRange } from './use-datepicker';
 
 export const getWeekStartDay = (locale: string) => {
 	const localeInfo = new Intl.Locale(locale);
@@ -75,13 +75,14 @@ export const getValidDateString = (
 
 export const liftPreset = (
 	{ start, end }: RangePreset,
-	setStart: StateUpdater<string | undefined>,
-	setEnd: StateUpdater<string | undefined>,
+	setValue: (value: DateRange) => void,
 	min: string | undefined,
 	max: string | undefined,
 ) => {
-	setStart(getValidDateString(invoke(start), min, max));
-	setEnd(getValidDateString(invoke(end), min, max));
+	setValue({
+		start: getValidDateString(invoke(start), min, max),
+		end: getValidDateString(invoke(end), min, max),
+	});
 };
 
 export const isPresetActive = (

@@ -4,6 +4,7 @@ import {
 	CalendarArgs,
 	currentMonthDate,
 	dateArgType,
+	dateRangeArgType,
 	localeArgType,
 	renderCalendar,
 } from './helper';
@@ -15,8 +16,7 @@ const meta: Meta<CalendarArgs> = {
 	render: renderCalendar,
 	argTypes: {
 		locale: localeArgType,
-		start: dateArgType,
-		end: dateArgType,
+		value: dateRangeArgType,
 		min: dateArgType,
 		max: dateArgType,
 		numberOfMonths: {
@@ -25,8 +25,10 @@ const meta: Meta<CalendarArgs> = {
 		},
 	},
 	args: {
-		start: currentMonthDate(12),
-		end: currentMonthDate(17),
+		value: {
+			start: currentMonthDate(12),
+			end: currentMonthDate(17),
+		},
 		min: '',
 		max: '',
 		numberOfMonths: 2,

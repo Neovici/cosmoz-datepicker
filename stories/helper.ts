@@ -20,8 +20,10 @@ export const localeCodes: Record<LocaleOption, string> = {
 
 export interface DateRangeArgs {
 	locale?: LocaleOption;
-	start?: string;
-	end?: string;
+	value?: {
+		start?: string;
+		end?: string;
+	};
 	min?: string;
 	max?: string;
 }
@@ -53,6 +55,11 @@ export const localeArgType = {
 export const dateArgType = {
 	control: 'text',
 	description: 'Date string in yyyy-MM-dd format. Leave empty for no value.',
+};
+
+export const dateRangeArgType = {
+	control: 'object',
+	description: 'Date range object with start and end yyyy-MM-dd values.',
 };
 
 export const currentMonthDate = (day: number) => {
@@ -91,8 +98,7 @@ export const renderCalendar = (args: CalendarArgs) => html`
 	<cosmoz-calendar
 		locale=${ifDefined(getLocale(args.locale))}
 		number-of-months=${args.numberOfMonths}
-		.start=${emptyToUndefined(args.start)}
-		.end=${emptyToUndefined(args.end)}
+		.value=${args.value}
 		.min=${emptyToUndefined(args.min)}
 		.max=${emptyToUndefined(args.max)}
 	></cosmoz-calendar>
@@ -103,8 +109,7 @@ export const renderDatepicker = (args: DatepickerArgs) => html`
 		locale=${ifDefined(getLocale(args.locale))}
 		trigger-size=${ifDefined(emptyToUndefined(args.triggerSize))}
 		trigger-variant=${ifDefined(emptyToUndefined(args.triggerVariant))}
-		.start=${emptyToUndefined(args.start)}
-		.end=${emptyToUndefined(args.end)}
+		.value=${args.value}
 		.min=${emptyToUndefined(args.min)}
 		.max=${emptyToUndefined(args.max)}
 		.presets=${args.customPresets ? customPresets : undefined}

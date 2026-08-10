@@ -4,6 +4,7 @@ import {
 	currentMonthDate,
 	dateArgType,
 	DatepickerArgs,
+	dateRangeArgType,
 	localeArgType,
 	renderDatepicker,
 } from './helper';
@@ -15,8 +16,7 @@ const meta: Meta<DatepickerArgs> = {
 	render: renderDatepicker,
 	argTypes: {
 		locale: localeArgType,
-		start: dateArgType,
-		end: dateArgType,
+		value: dateRangeArgType,
 		min: dateArgType,
 		max: dateArgType,
 		disabled: {
@@ -47,8 +47,10 @@ const meta: Meta<DatepickerArgs> = {
 		},
 	},
 	args: {
-		start: currentMonthDate(1),
-		end: currentMonthDate(4),
+		value: {
+			start: currentMonthDate(1),
+			end: currentMonthDate(4),
+		},
 		min: '',
 		max: '',
 		disabled: false,
@@ -68,15 +70,16 @@ export const Datepicker: Story = {};
 
 export const Empty: Story = {
 	args: {
-		start: '',
-		end: '',
+		value: {},
 	},
 };
 
 export const MinMax: Story = {
 	args: {
-		start: currentMonthDate(11),
-		end: currentMonthDate(14),
+		value: {
+			start: currentMonthDate(11),
+			end: currentMonthDate(14),
+		},
 		min: currentMonthDate(4),
 		max: currentMonthDate(24),
 	},
@@ -84,8 +87,10 @@ export const MinMax: Story = {
 
 export const SingleCalendar: Story = {
 	args: {
-		start: currentMonthDate(11),
-		end: currentMonthDate(14),
+		value: {
+			start: currentMonthDate(11),
+			end: currentMonthDate(14),
+		},
 		singleCalendar: true,
 	},
 };

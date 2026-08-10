@@ -14,6 +14,7 @@ import {
 	startOfMonth,
 	subMonths,
 } from 'date-fns';
+import type { DateRange } from '../use-datepicker';
 import { getValidDate } from '../utils';
 import {
 	getDateFromEvent,
@@ -26,8 +27,7 @@ import {
 } from './utils';
 
 export type CalendarProps = HTMLElement & {
-	start?: string;
-	end?: string;
+	value?: DateRange;
 	locale?: string;
 	numberOfMonths?: string;
 	min?: string;
@@ -39,8 +39,8 @@ export const useCalendar = (host: CalendarProps) => {
 	const { locale: _locale, numberOfMonths: _numberOfMonths, min, max } = host;
 	const locale = _locale ?? navigator.language;
 	const numberOfMonths = Number(_numberOfMonths ?? 1);
-	const [start, setStart] = useProperty<string>('start');
-	const [end, setEnd] = useProperty<string>('end');
+	const [value, setValue] = useProperty<DateRange>('value');
+	const { start, end } = value ?? {};
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
 	const minDate = useMemo(() => ensureDate(min), [min]);
@@ -78,27 +78,28 @@ export const useCalendar = (host: CalendarProps) => {
 		(date: Date) => {
 			const dateString = format(date, 'yyyy-MM-dd');
 			if (!startDate && !endDate) {
-				setStart(dateString);
+				setValue({ start: dateString, end: undefined });
 				return;
 			}
 
 			if (startDate && !endDate && isBefore(date, startDate)) {
-				setStart(dateString);
-				setEnd(format(startDate, 'yyyy-MM-dd'));
+				setValue({
+					start: dateString,
+					end: format(startDate, 'yyyy-MM-dd'),
+				});
 				return;
 			}
 
 			if (startDate && !endDate) {
-				setEnd(dateString);
+				setValue({ start, end: dateString });
 				return;
 			}
 
 			if (startDate && endDate) {
-				setStart(dateString);
-				setEnd(undefined);
+				setValue({ start: dateString, end: undefined });
 			}
 		},
-		[startDate, endDate, setStart, setEnd],
+		[startDate, endDate, start, setValue],
 	);
 
 	const focusDate = useCallback(
