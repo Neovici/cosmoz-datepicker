@@ -26,4 +26,4 @@ export default meta;
 
 type Story = StoryObj<DateInputArgs>;
 
-export const DateInput: Story = {};
+export const Basic: Story = {};

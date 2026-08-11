@@ -2,10 +2,12 @@ import type { Meta, StoryObj } from '@storybook/web-components';
 import '../src/cosmoz-datepicker';
 import {
 	currentMonthDate,
+	customPresets,
 	dateArgType,
 	DatepickerArgs,
 	dateRangeArgType,
 	localeArgType,
+	modeArgType,
 	renderDatepicker,
 } from './helper';
 
@@ -16,6 +18,7 @@ const meta: Meta<DatepickerArgs> = {
 	render: renderDatepicker,
 	argTypes: {
 		locale: localeArgType,
+		mode: modeArgType,
 		value: dateRangeArgType,
 		min: dateArgType,
 		max: dateArgType,
@@ -31,9 +34,14 @@ const meta: Meta<DatepickerArgs> = {
 			control: 'boolean',
 			description: 'Forces a single calendar month layout.',
 		},
-		customPresets: {
-			control: 'boolean',
-			description: 'Uses a small custom presets array.',
+		presets: {
+			control: 'object',
+			description: 'Consumer-provided range presets replacing the defaults.',
+			table: {
+				type: {
+					summary: 'RangePreset[]',
+				},
+			},
 		},
 		triggerSize: {
 			control: 'select',
@@ -47,6 +55,7 @@ const meta: Meta<DatepickerArgs> = {
 		},
 	},
 	args: {
+		mode: 'range',
 		value: {
 			start: currentMonthDate(1),
 			end: currentMonthDate(4),
@@ -56,7 +65,7 @@ const meta: Meta<DatepickerArgs> = {
 		disabled: false,
 		noPresets: false,
 		singleCalendar: false,
-		customPresets: false,
+		presets: undefined,
 		triggerSize: '',
 		triggerVariant: 'secondary',
 	},
@@ -66,15 +75,24 @@ export default meta;
 
 type Story = StoryObj<DatepickerArgs>;
 
-export const Datepicker: Story = {};
-
-export const Empty: Story = {
-	args: {
-		value: {},
+export const Basic: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic date range picker.',
+			},
+		},
 	},
 };
 
 export const MinMax: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Minimum and maximum allowed date boundaries set.',
+			},
+		},
+	},
 	args: {
 		value: {
 			start: currentMonthDate(11),
@@ -86,6 +104,13 @@ export const MinMax: Story = {
 };
 
 export const SingleCalendar: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Single calendar layout for ranges.',
+			},
+		},
+	},
 	args: {
 		value: {
 			start: currentMonthDate(11),
@@ -95,13 +120,54 @@ export const SingleCalendar: Story = {
 	},
 };
 
-export const CustomPresets: Story = {
+export const SingleDate: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Single date selection mode.',
+			},
+		},
+	},
 	args: {
-		customPresets: true,
+		mode: 'single',
+		value: currentMonthDate(12),
+	},
+};
+
+export const EmptyState: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'No selected dates set.',
+			},
+		},
+	},
+	args: {
+		value: {},
+	},
+};
+
+export const CustomPresets: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Custom range presets configured.',
+			},
+		},
+	},
+	args: {
+		presets: customPresets,
 	},
 };
 
 export const NoPresets: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Range preset buttons hidden.',
+			},
+		},
+	},
 	args: {
 		noPresets: true,
 	},

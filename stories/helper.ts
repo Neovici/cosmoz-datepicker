@@ -1,6 +1,8 @@
 import { html } from '@pionjs/pion';
 import { addDays, addMonths, format } from 'date-fns';
+import { lastDayOfMonth, startOfMonth } from 'date-fns/fp';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { RangePreset } from '../src/presets';
 
 export const localeOptions = [
 	'US (en-US)',
@@ -20,10 +22,13 @@ export const localeCodes: Record<LocaleOption, string> = {
 
 export interface DateRangeArgs {
 	locale?: LocaleOption;
-	value?: {
-		start?: string;
-		end?: string;
-	};
+	mode?: 'single' | 'range';
+	value?:
+		| string
+		| {
+				start?: string;
+				end?: string;
+		  };
 	min?: string;
 	max?: string;
 }
@@ -41,7 +46,7 @@ export interface DatepickerArgs extends DateRangeArgs {
 	disabled: boolean;
 	noPresets: boolean;
 	singleCalendar: boolean;
-	customPresets: boolean;
+	presets?: RangePreset[];
 	triggerSize?: string;
 	triggerVariant: string;
 }
@@ -81,16 +86,16 @@ const emptyToUndefined = (value?: string) => value || undefined;
 const getLocale = (locale?: LocaleOption) =>
 	locale ? localeCodes[locale] : undefined;
 
-const customPresets = [
+export const customPresets: RangePreset[] = [
 	{
 		label: 'Today tomorrow',
 		start: format(new Date(), 'yyyy-MM-dd'),
 		end: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
 	},
 	{
-		label: 'In one month',
-		start: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
-		end: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
+		label: 'Next month',
+		start: format(startOfMonth(addMonths(new Date(), 1)), 'yyyy-MM-dd'),
+		end: format(lastDayOfMonth(addMonths(new Date(), 1)), 'yyyy-MM-dd'),
 	},
 ];
 
@@ -103,6 +108,7 @@ export const renderDateInput = (args: DateInputArgs) => html`
 
 export const renderCalendar = (args: CalendarArgs) => html`
 	<cosmoz-calendar
+		mode=${ifDefined(args.mode)}
 		locale=${ifDefined(getLocale(args.locale))}
 		number-of-months=${args.numberOfMonths}
 		.value=${args.value}
@@ -113,13 +119,14 @@ export const renderCalendar = (args: CalendarArgs) => html`
 
 export const renderDatepicker = (args: DatepickerArgs) => html`
 	<cosmoz-datepicker
+		mode=${ifDefined(args.mode)}
 		locale=${ifDefined(getLocale(args.locale))}
 		trigger-size=${ifDefined(emptyToUndefined(args.triggerSize))}
 		trigger-variant=${ifDefined(emptyToUndefined(args.triggerVariant))}
 		.value=${args.value}
 		.min=${emptyToUndefined(args.min)}
 		.max=${emptyToUndefined(args.max)}
-		.presets=${args.customPresets ? customPresets : undefined}
+		.presets=${args.presets}
 		?disabled=${args.disabled}
 		?no-presets=${args.noPresets}
 		?single-calendar=${args.singleCalendar}

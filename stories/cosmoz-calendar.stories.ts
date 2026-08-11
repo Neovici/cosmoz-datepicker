@@ -6,6 +6,7 @@ import {
 	dateArgType,
 	dateRangeArgType,
 	localeArgType,
+	modeArgType,
 	renderCalendar,
 } from './helper';
 
@@ -16,6 +17,7 @@ const meta: Meta<CalendarArgs> = {
 	render: renderCalendar,
 	argTypes: {
 		locale: localeArgType,
+		mode: modeArgType,
 		value: dateRangeArgType,
 		min: dateArgType,
 		max: dateArgType,
@@ -25,6 +27,7 @@ const meta: Meta<CalendarArgs> = {
 		},
 	},
 	args: {
+		mode: 'range',
 		value: {
 			start: currentMonthDate(12),
 			end: currentMonthDate(17),
@@ -39,17 +42,53 @@ export default meta;
 
 type Story = StoryObj<CalendarArgs>;
 
-export const Calendar: Story = {};
+export const Basic: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic date range calendar.',
+			},
+		},
+	},
+};
 
 export const MinMax: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Minimum and maximum allowed date boundaries set.',
+			},
+		},
+	},
 	args: {
 		min: currentMonthDate(9),
 		max: currentMonthDate(22),
 	},
 };
 
-export const SingleMonth: Story = {
+export const SingleCalendar: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Single visible calendar month.',
+			},
+		},
+	},
 	args: {
 		numberOfMonths: 1,
+	},
+};
+
+export const SingleDate: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Single date selection mode.',
+			},
+		},
+	},
+	args: {
+		mode: 'single',
+		value: currentMonthDate(12),
 	},
 };

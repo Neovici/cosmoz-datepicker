@@ -1,6 +1,6 @@
 # @neovici/cosmoz-datepicker
 
-Date picker web component for Neovici applications.
+Single date or date range picker web component for Neovici applications.
 
 Part of the [Neovici](https://neovici.se) design system.
 
@@ -20,7 +20,7 @@ import '@neovici/cosmoz-datepicker';
 <cosmoz-datepicker></cosmoz-datepicker>
 ```
 
-Set and observe the selected range with the `value` property. Dates use `yyyy-MM-dd` strings.
+Set and observe the selected value with the `value` property. Dates use `yyyy-MM-dd` strings.
 
 ```html
 <cosmoz-datepicker id="datepicker"></cosmoz-datepicker>
@@ -34,31 +34,47 @@ Set and observe the selected range with the `value` property. Dates use `yyyy-MM
 	};
 
 	datepicker.addEventListener('value-changed', (e) => {
-		console.log('range', e.detail.value);
+		console.log('value', e.detail.value);
 	});
 </script>
 ```
 
 ## Properties And Attributes
 
-| Property         | Attribute         | Type                             | Default              | Description                                                      |
-| ---------------- | ----------------- | -------------------------------- | -------------------- | ---------------------------------------------------------------- |
-| `value`          | -                 | `DateRange \| undefined`         | `undefined`          | Selected range with `start` and `end` `yyyy-MM-dd` strings.      |
-| `locale`         | `locale`          | `string`                         | `navigator.language` | Locale used for formatting dates and determining week start day. |
-| `min`            | `min`             | `string \| undefined`            | `undefined`          | Earliest selectable date as a `yyyy-MM-dd` string.               |
-| `max`            | `max`             | `string \| undefined`            | `undefined`          | Latest selectable date as a `yyyy-MM-dd` string.                 |
-| `presets`        | -                 | `RangePreset[]`                  | built-in presets     | Custom range preset buttons.                                     |
-| `disabled`       | `disabled`        | `boolean`                        | `false`              | Disables opening the datepicker dropdown.                        |
-| `noPresets`      | `no-presets`      | `boolean`                        | `false`              | Hides range preset buttons.                                      |
-| `singleCalendar` | `single-calendar` | `boolean`                        | `false`              | Forces a single-month calendar layout.                           |
-| `triggerSize`    | `trigger-size`    | `CosmozButtonElement['size']`    | `undefined`          | Optional size for the trigger button.                            |
-| `triggerVariant` | `trigger-variant` | `CosmozButtonElement['variant']` | `'secondary'`        | Variant for the trigger button.                                  |
+| Property         | Attribute         | Type                               | Default              | Description                                                      |
+| ---------------- | ----------------- | ---------------------------------- | -------------------- | ---------------------------------------------------------------- |
+| `value`          | -                 | `string \| DateRange \| undefined` | `undefined`          | Selected date string in single mode, or selected range object.   |
+| `mode`           | `mode`            | `'single' \| 'range'`              | `'range'`            | Controls whether one date or a date range is selected.           |
+| `locale`         | `locale`          | `string`                           | `navigator.language` | Locale used for formatting dates and determining week start day. |
+| `min`            | `min`             | `string \| undefined`              | `undefined`          | Earliest selectable date as a `yyyy-MM-dd` string.               |
+| `max`            | `max`             | `string \| undefined`              | `undefined`          | Latest selectable date as a `yyyy-MM-dd` string.                 |
+| `presets`        | -                 | `RangePreset[]`                    | built-in presets     | Custom preset buttons for range mode.                            |
+| `disabled`       | `disabled`        | `boolean`                          | `false`              | Disables opening the datepicker dropdown.                        |
+| `noPresets`      | `no-presets`      | `boolean`                          | `false`              | Hides preset buttons in range mode.                              |
+| `singleCalendar` | `single-calendar` | `boolean`                          | `false`              | Forces a single-month calendar layout.                           |
+| `triggerSize`    | `trigger-size`    | `CosmozButtonElement['size']`      | `md`                 | Optional size for the trigger button.                            |
+| `triggerVariant` | `trigger-variant` | `CosmozButtonElement['variant']`   | `'secondary'`        | Variant for the trigger button.                                  |
 
-## Range Presets
+`DateRange` is an object with optional `start` and `end` date strings:
 
-By default, the datepicker shows presets for today, yesterday, this week, last week, this month, last month, and this year.
+```typescript
+type DateRange = {
+	start?: string;
+	end?: string;
+};
+```
 
-Provide `presets` to replace them. Each preset has a `label`, `start`, and `end`. The dates can be fixed `yyyy-MM-dd` strings or functions that return `yyyy-MM-dd` strings, which is useful for dynamic ranges relative to the current date.
+## Single And Range Modes
+
+Use `mode="single"` to select one date, where `value` is a `yyyy-MM-dd` string. Single mode always uses one calendar month and does not support presets.
+
+Use `mode="range"` to select a start and end date, where `value` is a `DateRange` object. `presets`, `noPresets`, and `singleCalendar` are range-mode exclusive properties.
+
+## Presets
+
+By default, the datepicker shows presets for today, yesterday, this week, last week, this month, last month, and this year in range mode.
+
+Provide `presets` to replace the range-mode presets. Each preset has a `label`, `start`, and `end`. The dates can be fixed `yyyy-MM-dd` strings or functions that return `yyyy-MM-dd` strings, which is useful for dynamic ranges relative to the current date.
 
 ```javascript
 datepicker.presets = [
@@ -95,13 +111,13 @@ Use `no-presets` to hide preset buttons:
 <cosmoz-datepicker min="2026-08-01" max="2026-08-31"></cosmoz-datepicker>
 ```
 
-Selected dates and preset values are clamped to the configured bounds.
+Selected date values and preset values are clamped to the configured bounds.
 
 ## Events
 
-| Event           | Detail                                        | Description                            |
-| --------------- | --------------------------------------------- | -------------------------------------- |
-| `value-changed` | `{ value: { start?: string, end?: string } }` | Fired when the selected range changes. |
+| Event           | Detail                                                  | Description                            |
+| --------------- | ------------------------------------------------------- | -------------------------------------- |
+| `value-changed` | `{ value: string \| { start?: string, end?: string } }` | Fired when the selected value changes. |
 
 ## Styling
 
