@@ -276,7 +276,6 @@ export const useCalendar = (host: CalendarProps) => {
 		onClick,
 		onKeyDown,
 		selectedMonth,
-		setFocusedDate,
 		setIsFocused,
 		setSelectedMonth,
 		startDate,
