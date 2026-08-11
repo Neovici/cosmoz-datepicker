@@ -59,7 +59,14 @@ export const dateArgType = {
 
 export const dateRangeArgType = {
 	control: 'object',
-	description: 'Date range object with start and end yyyy-MM-dd values.',
+	description:
+		'String yyyy-MM-dd value in single mode, or an object with start and end yyyy-MM-dd strings in range mode.',
+};
+
+export const modeArgType = {
+	control: 'select',
+	options: ['range', 'single'],
+	description: 'Selection mode.',
 };
 
 export const currentMonthDate = (day: number) => {

@@ -14,7 +14,8 @@ import {
 	startOfMonth,
 	subMonths,
 } from 'date-fns';
-import type { DateRange } from '../use-datepicker';
+import type { DatepickerMode, DatepickerValue } from '../use-datepicker';
+import { useDatepickerValue } from '../use-datepicker-value';
 import { getValidDate } from '../utils';
 import {
 	getDateFromEvent,
@@ -27,7 +28,8 @@ import {
 } from './utils';
 
 export type CalendarProps = HTMLElement & {
-	value?: DateRange;
+	value?: DatepickerValue;
+	mode?: DatepickerMode;
 	locale?: string;
 	numberOfMonths?: string;
 	min?: string;
@@ -36,11 +38,18 @@ export type CalendarProps = HTMLElement & {
 
 // eslint-disable-next-line max-statements
 export const useCalendar = (host: CalendarProps) => {
-	const { locale: _locale, numberOfMonths: _numberOfMonths, min, max } = host;
+	const {
+		locale: _locale,
+		mode = 'range',
+		numberOfMonths: _numberOfMonths,
+		min,
+		max,
+	} = host;
+	const isSingleDateMode = mode === 'single';
 	const locale = _locale ?? navigator.language;
 	const numberOfMonths = Number(_numberOfMonths ?? 1);
-	const [value, setValue] = useProperty<DateRange>('value');
-	const { start, end } = value ?? {};
+	const [value, setValue] = useProperty<DatepickerValue>('value');
+	const { start, end } = useDatepickerValue(value, mode);
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
 	const minDate = useMemo(() => ensureDate(min), [min]);
@@ -77,6 +86,12 @@ export const useCalendar = (host: CalendarProps) => {
 	const handleSelect = useCallback(
 		(date: Date) => {
 			const dateString = format(date, 'yyyy-MM-dd');
+
+			if (isSingleDateMode) {
+				setValue(dateString);
+				return;
+			}
+
 			if (!startDate && !endDate) {
 				setValue({ start: dateString, end: undefined });
 				return;
@@ -99,7 +114,7 @@ export const useCalendar = (host: CalendarProps) => {
 				setValue({ start: dateString, end: undefined });
 			}
 		},
-		[startDate, endDate, start, setValue],
+		[isSingleDateMode, startDate, endDate, start, setValue],
 	);
 
 	const focusDate = useCallback(
@@ -214,6 +229,7 @@ export const useCalendar = (host: CalendarProps) => {
 			const date = getDateFromEvent(e);
 
 			if (
+				!isSingleDateMode &&
 				date &&
 				startDate &&
 				!endDate &&
@@ -223,7 +239,15 @@ export const useCalendar = (host: CalendarProps) => {
 				setIsFocused(true);
 			}
 		},
-		[startDate, endDate, minDate, maxDate, setFocusedDate, setIsFocused],
+		[
+			isSingleDateMode,
+			startDate,
+			endDate,
+			minDate,
+			maxDate,
+			setFocusedDate,
+			setIsFocused,
+		],
 	);
 
 	const onFocus = useCallback(
@@ -243,6 +267,7 @@ export const useCalendar = (host: CalendarProps) => {
 	return {
 		endDate,
 		focusedDate,
+		isSingleDateMode,
 		locale,
 		maxDate,
 		minDate,

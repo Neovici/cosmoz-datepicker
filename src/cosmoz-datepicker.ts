@@ -2,7 +2,7 @@ import '@neovici/cosmoz-button';
 import '@neovici/cosmoz-dropdown';
 import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
-import { component, html } from '@pionjs/pion';
+import { component, html, lift } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -23,6 +23,8 @@ const CosmozDatepicker = (host: Props) => {
 		end,
 		isSingleCalendar,
 		locale,
+		mode,
+		isSingleDateMode,
 		numberOfMonths,
 		onEndInput,
 		onStartInput,
@@ -49,12 +51,13 @@ const CosmozDatepicker = (host: Props) => {
 				variant=${triggerVariant}
 				size=${ifDefined(triggerSize)}
 				?disabled=${disabled}
-				>${calendarIcon()} ${getTriggerText(start, end, locale)}</cosmoz-button
+				>${calendarIcon()}
+				${getTriggerText(start, end, locale, isSingleDateMode)}</cosmoz-button
 			>
 
 			<div class="content">
 				${when(
-					!(noPresets || isSingleCalendar),
+					!(noPresets || isSingleCalendar || isSingleDateMode),
 					() => html`
 						<div class="range-presets">
 							${repeat(
@@ -76,13 +79,13 @@ const CosmozDatepicker = (host: Props) => {
 
 				<div class="main">
 					<cosmoz-calendar
+						mode=${mode}
 						locale=${locale}
 						number-of-months=${numberOfMonths}
 						.min=${ifDefined(min)}
 						.max=${ifDefined(max)}
 						.value=${value}
-						@value-changed=${(e: CustomEvent<{ value: Props['value'] }>) =>
-							setValue(e.detail.value ?? {})}
+						@value-changed=${lift(setValue)}
 					></cosmoz-calendar>
 
 					<footer>
@@ -93,13 +96,18 @@ const CosmozDatepicker = (host: Props) => {
 								@value-changed=${onStartInput}
 								@blur=${onStartInputBlur}
 							></cosmoz-date-input>
-							<span>–</span>
-							<cosmoz-date-input
-								locale=${locale}
-								.value=${end}
-								@value-changed=${onEndInput}
-								@blur=${onEndInputBlur}
-							></cosmoz-date-input>
+							${when(
+								!isSingleDateMode,
+								() => html`
+									<span>–</span>
+									<cosmoz-date-input
+										locale=${locale}
+										.value=${end}
+										@value-changed=${onEndInput}
+										@blur=${onEndInputBlur}
+									></cosmoz-date-input>
+								`,
+							)}
 						</div>
 						<div>
 							<cosmoz-button
@@ -123,6 +131,7 @@ customElements.define(
 			'min',
 			'max',
 			'disabled',
+			'mode',
 			'no-presets',
 			'single-calendar',
 			'trigger-size',

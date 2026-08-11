@@ -49,6 +49,7 @@ export const styles = css`
 		justify-content: space-evenly;
 	}
 
+	:host([mode='single']),
 	:host([single-calendar]) {
 		.range-presets {
 			display: none;
@@ -57,6 +58,12 @@ export const styles = css`
 		cosmoz-calendar {
 			display: flex;
 			justify-content: center;
+			padding: calc(var(--cz-spacing) * 4) calc(var(--cz-spacing) * 3);
+		}
+	}
+
+	:host([single-calendar]) {
+		cosmoz-calendar {
 			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
 		}
 
@@ -66,14 +73,16 @@ export const styles = css`
 	}
 
 	@media (max-width: 734px) {
-		cosmoz-calendar {
-			display: flex;
-			justify-content: center;
-			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
-		}
+		:host(:not([mode='single'])) {
+			cosmoz-calendar {
+				display: flex;
+				justify-content: center;
+				padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
+			}
 
-		footer {
-			flex-direction: column;
+			footer {
+				flex-direction: column;
+			}
 		}
 	}
 `;

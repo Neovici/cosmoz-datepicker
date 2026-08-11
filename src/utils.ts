@@ -3,7 +3,11 @@ import { invoke } from '@neovici/cosmoz-utils/function';
 import { format, isAfter, isBefore, subDays } from 'date-fns';
 import { t } from 'i18next';
 import { RangePreset } from './presets';
-import type { DateRange } from './use-datepicker';
+import type {
+	DatepickerMode,
+	DatepickerValue,
+	DateRange,
+} from './use-datepicker';
 
 export const getWeekStartDay = (locale: string) => {
 	const localeInfo = new Intl.Locale(locale);
@@ -27,16 +31,21 @@ export const getTriggerText = (
 	start: string | undefined,
 	end: string | undefined,
 	locale: string,
+	isSingleDateMode: boolean,
 ) => {
 	const startDate = ensureDate(start);
 	const endDate = ensureDate(end);
+	const formatter = new Intl.DateTimeFormat(locale, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	});
+
+	if (isSingleDateMode) {
+		return startDate ? formatter.format(startDate) : t('Select date');
+	}
 
 	if (startDate && endDate) {
-		const formatter = new Intl.DateTimeFormat(locale, {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		});
 		return `${formatter.format(startDate)} – ${formatter.format(endDate)}`;
 	}
 
@@ -94,3 +103,8 @@ export const isPresetActive = (
 	!!end &&
 	start === invoke(preset.start) &&
 	end === invoke(preset.end);
+
+export const isDateRangeValue = (
+	value: DatepickerValue | undefined,
+	mode: DatepickerMode,
+): value is DateRange => mode !== 'single';
