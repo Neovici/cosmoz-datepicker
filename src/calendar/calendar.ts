@@ -11,6 +11,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 	const {
 		endDate,
 		focusedDate,
+		isSingleDateMode,
 		locale,
 		maxDate,
 		minDate,
@@ -53,6 +54,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 								locale,
 								maxDate,
 								minDate,
+								isSingleDateMode,
 								month,
 								numberOfMonths,
 								onClick,
@@ -75,7 +77,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 customElements.define(
 	'cosmoz-calendar',
 	component(CosmozCalendar, {
-		observedAttributes: ['locale', 'number-of-months'],
+		observedAttributes: ['locale', 'mode', 'number-of-months'],
 		styleSheets: [normalize, styles],
 	}),
 );

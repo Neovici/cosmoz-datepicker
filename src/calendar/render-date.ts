@@ -18,6 +18,7 @@ type RenderDateOptions = {
 	locale: string;
 	maxDate: Date | undefined;
 	minDate: Date | undefined;
+	isSingleDateMode: boolean;
 	numberOfMonths: number;
 	onClick: (e: MouseEvent) => void;
 	onFocus: (e: FocusEvent) => void;
@@ -33,6 +34,7 @@ export const renderDate = ({
 	locale,
 	maxDate,
 	minDate,
+	isSingleDateMode,
 	numberOfMonths,
 	onClick,
 	onFocus,
@@ -41,16 +43,13 @@ export const renderDate = ({
 	startDate,
 }: RenderDateOptions) => {
 	const date = new Date(day.iso);
+	const isRangeMode = !isSingleDateMode;
 
 	return html`
 		<td ?data-hidden=${!day.isCurrentMonth && numberOfMonths > 1}>
 			<div
-				class="date-cell-wrapper ${isInRange(
-					date,
-					startDate,
-					endDate,
-					focusedDate,
-				)
+				class="date-cell-wrapper ${isRangeMode &&
+				isInRange(date, startDate, endDate, focusedDate)
 					? 'in-range'
 					: ''}"
 			>
@@ -59,7 +58,10 @@ export const renderDate = ({
 						'date-cell': true,
 						'selected-cell': isSelected(date, startDate, endDate),
 						'focused-highlighted-cell':
-							!endDate && !!startDate && isSameDay(date, focusedDate),
+							isRangeMode &&
+							!endDate &&
+							!!startDate &&
+							isSameDay(date, focusedDate),
 						'today-cell': day.isToday && day.isCurrentMonth,
 						'other-month-cell': !day.isCurrentMonth,
 					})}

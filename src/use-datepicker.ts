@@ -2,10 +2,22 @@ import { CosmozButtonElement } from '@neovici/cosmoz-button';
 import { useCallback, useMemo, useProperty } from '@pionjs/pion';
 import { isAfter, isBefore } from 'date-fns';
 import { getRangePresets, RangePreset } from './presets';
+import { useDatepickerValue } from './use-datepicker-value';
 import { useMediaMatch } from './use-media-match';
 import { getValidDateString } from './utils';
 
+export type DateRange = {
+	start?: string;
+	end?: string;
+};
+
+export type DatepickerMode = 'single' | 'range';
+
+export type DatepickerValue = string | DateRange;
+
 export interface Props {
+	value?: DatepickerValue;
+	mode?: DatepickerMode;
 	locale?: string;
 	min?: string;
 	max?: string;
@@ -19,6 +31,7 @@ export interface Props {
 
 export const useDatepicker = (host: Props) => {
 	const {
+		mode = 'range',
 		locale: _locale,
 		min,
 		max,
@@ -29,52 +42,71 @@ export const useDatepicker = (host: Props) => {
 		triggerSize,
 		triggerVariant,
 	} = host;
+	const isSingleDateMode = mode === 'single';
 	const locale = _locale ?? navigator.language;
-	const [start, setStart] = useProperty<string>('start');
-	const [end, setEnd] = useProperty<string>('end');
+	const [value, setValue] = useProperty<DatepickerValue>('value');
+	const { start, end } = useDatepickerValue(value, mode);
 	const isNarrow = useMediaMatch('(width < 735px)');
-	const isSingleCalendar = singleCalendar || isNarrow;
+	const isSingleCalendar = singleCalendar || isNarrow || isSingleDateMode;
 	const numberOfMonths = isSingleCalendar ? 1 : 2;
 	const rangePresets = useMemo(
 		() => presets ?? getRangePresets(locale),
 		[locale, presets],
 	);
-
 	const onStartInput = useCallback(
-		(e: CustomEvent<{ value: string }>) =>
-			setStart(getValidDateString(e.detail.value, min, max)),
-		[min, max],
+		(e: CustomEvent<{ value: string }>) => {
+			if (isSingleDateMode) {
+				setValue(getValidDateString(e.detail.value, min, max));
+				return;
+			}
+
+			setValue({
+				start: getValidDateString(e.detail.value, min, max),
+				end,
+			});
+		},
+		[isSingleDateMode, min, max, end, setValue],
 	);
 
 	const onEndInput = useCallback(
 		(e: CustomEvent<{ value: string }>) =>
-			setEnd(getValidDateString(e.detail.value, min, max)),
-		[min, max],
+			setValue({
+				start,
+				end: getValidDateString(e.detail.value, min, max),
+			}),
+		[min, max, start, setValue],
 	);
 
 	const onStartInputBlur = useCallback(() => {
-		if (start && end && isAfter(new Date(start), new Date(end))) {
-			setEnd(start);
+		if (
+			!isSingleDateMode &&
+			start &&
+			end &&
+			isAfter(new Date(start), new Date(end))
+		) {
+			setValue({ start, end: start });
 		}
-	}, [start, end]);
+	}, [isSingleDateMode, start, end, setValue]);
 
 	const onEndInputBlur = useCallback(() => {
 		if (start && end && isBefore(new Date(end), new Date(start))) {
-			setStart(end);
+			setValue({ start: end, end });
 		}
-	}, [start, end]);
+	}, [start, end, setValue]);
 
 	return {
 		end,
 		isSingleCalendar,
 		locale,
+		mode,
+		isSingleDateMode,
 		numberOfMonths,
 		onEndInput,
 		onStartInput,
 		rangePresets,
-		setEnd,
-		setStart,
+		setValue,
 		start,
+		value,
 		disabled,
 		noPresets,
 		min,

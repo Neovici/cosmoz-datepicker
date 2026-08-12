@@ -28,7 +28,6 @@ export const getMonthName = (date: Date, locale: string) =>
 
 export type DateCell = {
 	day: number;
-	month: number;
 	iso: string;
 	isToday: boolean;
 	isCurrentMonth: boolean;
@@ -52,7 +51,6 @@ export const getMonthsDateCellMatrix = (
 			const cellDate = addDays(monthStartWeekStart, i * 7 + j);
 
 			const cell: DateCell = {
-				month: cellDate.getMonth(),
 				day: cellDate.getDate(),
 				iso: cellDate.toISOString(),
 				isToday: isToday(cellDate),

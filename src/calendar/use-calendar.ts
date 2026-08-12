@@ -14,6 +14,8 @@ import {
 	startOfMonth,
 	subMonths,
 } from 'date-fns';
+import type { DatepickerMode, DatepickerValue } from '../use-datepicker';
+import { useDatepickerValue } from '../use-datepicker-value';
 import { getValidDate } from '../utils';
 import {
 	getDateFromEvent,
@@ -26,8 +28,8 @@ import {
 } from './utils';
 
 export type CalendarProps = HTMLElement & {
-	start?: string;
-	end?: string;
+	value?: DatepickerValue;
+	mode?: DatepickerMode;
 	locale?: string;
 	numberOfMonths?: string;
 	min?: string;
@@ -36,11 +38,18 @@ export type CalendarProps = HTMLElement & {
 
 // eslint-disable-next-line max-statements
 export const useCalendar = (host: CalendarProps) => {
-	const { locale: _locale, numberOfMonths: _numberOfMonths, min, max } = host;
+	const {
+		locale: _locale,
+		mode = 'range',
+		numberOfMonths: _numberOfMonths,
+		min,
+		max,
+	} = host;
+	const isSingleDateMode = mode === 'single';
 	const locale = _locale ?? navigator.language;
 	const numberOfMonths = Number(_numberOfMonths ?? 1);
-	const [start, setStart] = useProperty<string>('start');
-	const [end, setEnd] = useProperty<string>('end');
+	const [value, setValue] = useProperty<DatepickerValue>('value');
+	const { start, end } = useDatepickerValue(value, mode);
 	const startDate = useMemo(() => ensureDate(start), [start]);
 	const endDate = useMemo(() => ensureDate(end), [end]);
 	const minDate = useMemo(() => ensureDate(min), [min]);
@@ -77,28 +86,35 @@ export const useCalendar = (host: CalendarProps) => {
 	const handleSelect = useCallback(
 		(date: Date) => {
 			const dateString = format(date, 'yyyy-MM-dd');
+
+			if (isSingleDateMode) {
+				setValue(dateString);
+				return;
+			}
+
 			if (!startDate && !endDate) {
-				setStart(dateString);
+				setValue({ start: dateString, end: undefined });
 				return;
 			}
 
 			if (startDate && !endDate && isBefore(date, startDate)) {
-				setStart(dateString);
-				setEnd(format(startDate, 'yyyy-MM-dd'));
+				setValue({
+					start: dateString,
+					end: format(startDate, 'yyyy-MM-dd'),
+				});
 				return;
 			}
 
 			if (startDate && !endDate) {
-				setEnd(dateString);
+				setValue({ start, end: dateString });
 				return;
 			}
 
 			if (startDate && endDate) {
-				setStart(dateString);
-				setEnd(undefined);
+				setValue({ start: dateString, end: undefined });
 			}
 		},
-		[startDate, endDate, setStart, setEnd],
+		[isSingleDateMode, startDate, endDate, start, setValue],
 	);
 
 	const focusDate = useCallback(
@@ -213,6 +229,7 @@ export const useCalendar = (host: CalendarProps) => {
 			const date = getDateFromEvent(e);
 
 			if (
+				!isSingleDateMode &&
 				date &&
 				startDate &&
 				!endDate &&
@@ -222,7 +239,15 @@ export const useCalendar = (host: CalendarProps) => {
 				setIsFocused(true);
 			}
 		},
-		[startDate, endDate, minDate, maxDate, setFocusedDate, setIsFocused],
+		[
+			isSingleDateMode,
+			startDate,
+			endDate,
+			minDate,
+			maxDate,
+			setFocusedDate,
+			setIsFocused,
+		],
 	);
 
 	const onFocus = useCallback(
@@ -242,6 +267,7 @@ export const useCalendar = (host: CalendarProps) => {
 	return {
 		endDate,
 		focusedDate,
+		isSingleDateMode,
 		locale,
 		maxDate,
 		minDate,
@@ -250,7 +276,6 @@ export const useCalendar = (host: CalendarProps) => {
 		onClick,
 		onKeyDown,
 		selectedMonth,
-		setFocusedDate,
 		setIsFocused,
 		setSelectedMonth,
 		startDate,

@@ -9,6 +9,7 @@ type RenderDateGridOptions = {
 	locale: string;
 	maxDate: Date | undefined;
 	minDate: Date | undefined;
+	isSingleDateMode: boolean;
 	month: DateCellMatrix;
 	numberOfMonths: number;
 	onClick: (e: MouseEvent) => void;
@@ -26,6 +27,7 @@ export const renderDateGrid = ({
 	locale,
 	maxDate,
 	minDate,
+	isSingleDateMode,
 	month,
 	numberOfMonths,
 	onClick,
@@ -63,6 +65,7 @@ export const renderDateGrid = ({
 									locale,
 									maxDate,
 									minDate,
+									isSingleDateMode,
 									numberOfMonths,
 									onClick,
 									onFocus,
