@@ -1,4 +1,4 @@
-import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,j as D,k as pt,m as mt,p as zt,q as y,s as L,v as B,w as Z,x as M,y as V,z as S}from"./helper-CazH65BF.js";import{d as g,A as yt,w as st,E as wt,t as xt}from"./iframe-Cjs3Qk9h.js";const kt=K`
+import{e as q,f as st,n as ct,u as H,o as z,g as R,h as it,t as $,i as E,j as W,k as D,p as yt,q as wt,s as xt,v as w,w as N,x as G,y as V,z as kt,A,B as K,C as I}from"./helper-D02Nojs0.js";import{d as v,A as $t,w as lt,E as Dt,t as Q}from"./iframe-DR6klARx.js";const Mt=q`
 	position: relative;
 
 	&::before {
@@ -11,7 +11,7 @@ import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,
 		mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
 		-webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
 	}
-`,$t=K`
+`,St=q`
 	:host {
 		display: inline-flex;
 	}
@@ -88,7 +88,7 @@ import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,
 		border-radius: var(--cz-radius-md);
 
 		/* Primary - default variant */
-		${kt}
+		${Mt}
 		background-color: var(--cz-color-bg-brand-solid);
 		color: var(--cz-color-text-on-brand);
 		box-shadow: var(--cz-shadow-xs-skeumorphic);
@@ -247,26 +247,26 @@ import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,
 		height: 20px;
 		flex-shrink: 0;
 	}
-`,Dt=["variant","size","disabled","full-width","type","value","href","target","rel","download"],Mt=t=>{const e=t.hasAttribute("disabled"),o=t.getAttribute("type")||"button",r=t.getAttribute("href");Y(()=>{const a=i=>{t.hasAttribute("disabled")&&i.stopImmediatePropagation()};return t.addEventListener("click",a,{capture:!0}),()=>t.removeEventListener("click",a,{capture:!0})},[]);const n=g`
+`,At=["variant","size","disabled","full-width","type","value","href","target","rel","download"],It=t=>{const e=t.hasAttribute("disabled"),o=t.getAttribute("type")||"button",r=t.getAttribute("href");H(()=>{const s=l=>{t.hasAttribute("disabled")&&l.stopImmediatePropagation()};return t.addEventListener("click",s,{capture:!0}),()=>t.removeEventListener("click",s,{capture:!0})},[]);const a=v`
 		<slot name="prefix"></slot>
 		<slot></slot>
 		<slot name="suffix"></slot>
-	`;if(r!=null){const a=t.getAttribute("target"),i=t.getAttribute("rel"),h=t.getAttribute("download");return g`
+	`;if(r!=null){const s=t.getAttribute("target"),l=t.getAttribute("rel"),b=t.getAttribute("download");return v`
 			<a
 				href=${r}
 				class="button"
 				part="button"
-				aria-disabled=${e?"true":yt}
-				target=${z(a)}
-				rel=${z(i)}
-				download=${z(h)}
-				>${n}</a
+				aria-disabled=${e?"true":$t}
+				target=${z(s)}
+				rel=${z(l)}
+				download=${z(b)}
+				>${a}</a
 			>
-		`}return g`
+		`}return v`
 		<button type=${o} class="button" ?disabled=${e} part="button">
-			${n}
+			${a}
 		</button>
-	`};customElements.define("cosmoz-button",rt(Mt,{observedAttributes:Dt,styleSheets:[at,$t],shadowRootInit:{mode:"open",delegatesFocus:!0}}));const St=({slot:t,title:e,className:o,width:r="24",height:n="24",styles:a}={})=>g`
+	`};customElements.define("cosmoz-button",st(It,{observedAttributes:At,styleSheets:[ct,St],shadowRootInit:{mode:"open",delegatesFocus:!0}}));const Et=({slot:t,title:e,className:o,width:r="24",height:a="24",styles:s}={})=>v`
   <svg
     slot=${z(t)}
     class=${`chevron-left-icon ${o??""}`}
@@ -279,13 +279,13 @@ import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,
     stroke-linecap="round"
     stroke-linejoin="round"
     width=${r}
-    height=${n}
-    style=${z(a)}
+    height=${a}
+    style=${z(s)}
   >
-    ${N(e,()=>st`<title>${e}</title>`)}
+    ${R(e,()=>lt`<title>${e}</title>`)}
     <path d="m15 18-6-6 6-6" />
   </svg>
-`,At=({slot:t,title:e,className:o,width:r="24",height:n="24",styles:a}={})=>g`
+`,Ct=({slot:t,title:e,className:o,width:r="24",height:a="24",styles:s}={})=>v`
   <svg
     slot=${z(t)}
     class=${`chevron-right-icon ${o??""}`}
@@ -298,77 +298,77 @@ import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,
     stroke-linecap="round"
     stroke-linejoin="round"
     width=${r}
-    height=${n}
-    style=${z(a)}
+    height=${a}
+    style=${z(s)}
   >
-    ${N(e,()=>st`<title>${e}</title>`)}
+    ${R(e,()=>lt`<title>${e}</title>`)}
     <path d="m9 18 6-6-6-6" />
   </svg>
-`;function Et(t){return nt(t,Date.now())}function ct(t,e){const o=$(t,e?.in),r=o.getMonth();return o.setFullYear(o.getFullYear(),r+1,0),o.setHours(23,59,59,999),o}function U(t,e){const o=$(t,e?.in);return o.setDate(1),o.setHours(0,0,0,0),o}function q(t,e){return+$(t)>+$(e)}function _(t,e){return+$(t)<+$(e)}function It(t,e){return A(nt(t,t),Et(t))}function J(t,e,o){const r=+$(t,o?.in),[n,a]=[+$(e.start,o?.in),+$(e.end,o?.in)].sort((i,h)=>i-h);return r>=n&&r<=a}function H(t,e,o){return R(t,-e,o)}function it(t,e,o){return D(t,-e,o)}const Ct=pt(class extends mt{constructor(t){if(super(t),t.type!==zt.ATTRIBUTE||t.name!=="class"||t.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(t){return" "+Object.keys(t).filter(e=>t[e]).join(" ")+" "}update(t,[e]){if(this.st===void 0){this.st=new Set,t.strings!==void 0&&(this.nt=new Set(t.strings.join(" ").split(/\s/).filter(r=>r!=="")));for(const r in e)e[r]&&!this.nt?.has(r)&&this.st.add(r);return this.render(e)}const o=t.element.classList;for(const r of this.st)r in e||(o.remove(r),this.st.delete(r));for(const r in e){const n=!!e[r];n===this.st.has(r)||this.nt?.has(r)||(n?(o.add(r),this.st.add(r)):(o.remove(r),this.st.delete(r)))}return wt}}),W=(t,...e)=>typeof t=="function"?t(...e):t,lt=t=>(new Intl.Locale(t).getWeekInfo?.()?.firstDay??1)%7,Tt=(t,e)=>{const o=lt(e);return(t.getDay()-o+7)%7},Ft=(t,e)=>H(t,Tt(t,e)),Xt=(t,e,o)=>{const r=y(t),n=y(e);if(r&&n){const a=new Intl.DateTimeFormat(o,{year:"numeric",month:"short",day:"numeric"});return`${a.format(r)} – ${a.format(n)}`}return xt("Select dates")},Zt=t=>t.target?.dispatchEvent(new Event("select",{bubbles:!0})),F=(t,e,o)=>e&&_(t,e)?e:o&&q(t,o)?o:t,Q=(t,e,o)=>{const r=y(t),n=y(e),a=y(o);return L(F(r,n,a),"yyyy-MM-dd")},Jt=({start:t,end:e},o,r,n,a)=>{o(Q(W(t),n,a)),r(Q(W(e),n,a))},Qt=(t,e,o)=>!!e&&!!o&&e===W(t.start)&&o===W(t.end),Lt=t=>{const e=lt(t),o=new Intl.DateTimeFormat(t,{weekday:"short"});return Array.from({length:7},(n,a)=>o.format(new Date(2023,0,1+a+e)))},Nt=(t,e)=>Intl.DateTimeFormat(e,{month:"long"}).format(t),Ot=(t,e)=>{const o=U(t),r=Ft(o,e),n=6,a=[];for(let i=0;i<n;i++){const h=[];for(let v=0;v<7;v++){const f=R(r,i*7+v),m={month:f.getMonth(),day:f.getDate(),iso:f.toISOString(),isToday:It(f),isCurrentMonth:o.getMonth()===f.getMonth()};h.push(m)}a.push(h)}return a},jt=(t,e,o)=>!!(e&&A(t,e)||o&&A(t,o)),Bt=(t,e,o,r)=>!!(o&&e&&J(t,{start:e,end:o})||!o&&r&&e&&J(t,{start:e,end:r})),P=(t,e,o)=>!!(e&&_(t,e)||o&&q(t,o)),tt=(t,e,o,r)=>e&&P(t,o,r)?"true":void 0,Pt=(t,e)=>e&&A(new Date(t.iso),e)?!0:void 0,Rt=(t,e)=>e&&A(new Date(t.iso),e)?!0:void 0,et=(t,e)=>_(t,U(e)),ot=(t,e,o)=>q(t,ct(D(e,o-1))),Wt=(t,e)=>({ArrowLeft:H(e,1),ArrowRight:R(e,1),ArrowUp:H(e,7),ArrowDown:R(e,7)})[t.key],j=t=>y(t.target.dataset.date),_t=({day:t,endDate:e,focusedDate:o,locale:r,maxDate:n,minDate:a,numberOfMonths:i,onClick:h,onFocus:v,onPointerDown:f,onPointerEnter:m,startDate:d})=>{const u=new Date(t.iso);return g`
-		<td ?data-hidden=${!t.isCurrentMonth&&i>1}>
+`;function Tt(t){return it(t,Date.now())}function dt(t,e){const o=$(t,e?.in),r=o.getMonth();return o.setFullYear(o.getFullYear(),r+1,0),o.setHours(23,59,59,999),o}function X(t,e){return+$(t)>+$(e)}function _(t,e){return+$(t)<+$(e)}function Ft(t,e){return E(it(t,t),Tt(t))}function tt(t,e,o){const r=+$(t,o?.in),[a,s]=[+$(e.start,o?.in),+$(e.end,o?.in)].sort((l,b)=>l-b);return r>=a&&r<=s}function U(t,e,o){return W(t,-e,o)}function ut(t,e,o){return D(t,-e,o)}const Lt=yt(class extends wt{constructor(t){if(super(t),t.type!==xt.ATTRIBUTE||t.name!=="class"||t.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(t){return" "+Object.keys(t).filter(e=>t[e]).join(" ")+" "}update(t,[e]){if(this.st===void 0){this.st=new Set,t.strings!==void 0&&(this.nt=new Set(t.strings.join(" ").split(/\s/).filter(r=>r!=="")));for(const r in e)e[r]&&!this.nt?.has(r)&&this.st.add(r);return this.render(e)}const o=t.element.classList;for(const r of this.st)r in e||(o.remove(r),this.st.delete(r));for(const r in e){const a=!!e[r];a===this.st.has(r)||this.nt?.has(r)||(a?(o.add(r),this.st.add(r)):(o.remove(r),this.st.delete(r)))}return Dt}}),Y=(t,...e)=>typeof t=="function"?t(...e):t,ht=t=>(new Intl.Locale(t).getWeekInfo?.()?.firstDay??1)%7,Nt=(t,e)=>{const o=ht(e);return(t.getDay()-o+7)%7},Rt=(t,e)=>U(t,Nt(t,e)),te=(t,e,o,r)=>{const a=w(t),s=w(e),l=new Intl.DateTimeFormat(o,{year:"numeric",month:"short",day:"numeric"});return r?a?l.format(a):Q("Select date"):a&&s?`${l.format(a)} – ${l.format(s)}`:Q("Select dates")},ee=t=>t.target?.dispatchEvent(new Event("select",{bubbles:!0})),L=(t,e,o)=>e&&_(t,e)?e:o&&X(t,o)?o:t,et=(t,e,o)=>{const r=w(t),a=w(e),s=w(o);return N(L(r,a,s),"yyyy-MM-dd")},oe=({start:t,end:e},o,r,a)=>{o({start:et(Y(t),r,a),end:et(Y(e),r,a)})},re=(t,e,o)=>!!e&&!!o&&e===Y(t.start)&&o===Y(t.end),ot=(t,e)=>e!=="single",Bt=t=>{const e=ht(t),o=new Intl.DateTimeFormat(t,{weekday:"short"});return Array.from({length:7},(a,s)=>o.format(new Date(2023,0,1+s+e)))},Ot=(t,e)=>Intl.DateTimeFormat(e,{month:"long"}).format(t),Pt=(t,e)=>{const o=G(t),r=Rt(o,e),a=6,s=[];for(let l=0;l<a;l++){const b=[];for(let u=0;u<7;u++){const m=W(r,l*7+u),f={day:m.getDate(),iso:m.toISOString(),isToday:Ft(m),isCurrentMonth:o.getMonth()===m.getMonth()};b.push(f)}s.push(b)}return s},Vt=(t,e,o)=>!!(e&&E(t,e)||o&&E(t,o)),jt=(t,e,o,r)=>!!(o&&e&&tt(t,{start:e,end:o})||!o&&r&&e&&tt(t,{start:e,end:r})),j=(t,e,o)=>!!(e&&_(t,e)||o&&X(t,o)),rt=(t,e,o,r)=>e&&j(t,o,r)?"true":void 0,Wt=(t,e)=>e&&E(new Date(t.iso),e)?!0:void 0,Yt=(t,e)=>e&&E(new Date(t.iso),e)?!0:void 0,at=(t,e)=>_(t,G(e)),nt=(t,e,o)=>X(t,dt(D(e,o-1))),_t=(t,e)=>({ArrowLeft:U(e,1),ArrowRight:W(e,1),ArrowUp:U(e,7),ArrowDown:W(e,7)})[t.key],P=t=>w(t.target.dataset.date),Kt=({day:t,endDate:e,focusedDate:o,locale:r,maxDate:a,minDate:s,isSingleDateMode:l,numberOfMonths:b,onClick:u,onFocus:m,onPointerDown:f,onPointerEnter:x,startDate:y})=>{const i=new Date(t.iso),g=!l;return v`
+		<td ?data-hidden=${!t.isCurrentMonth&&b>1}>
 			<div
-				class="date-cell-wrapper ${Bt(u,d,e,o)?"in-range":""}"
+				class="date-cell-wrapper ${g&&jt(i,y,e,o)?"in-range":""}"
 			>
 				<div
-					class=${Ct({"date-cell":!0,"selected-cell":jt(u,d,e),"focused-highlighted-cell":!e&&!!d&&A(u,o),"today-cell":t.isToday&&t.isCurrentMonth,"other-month-cell":!t.isCurrentMonth})}
+					class=${Lt({"date-cell":!0,"selected-cell":Vt(i,y,e),"focused-highlighted-cell":g&&!e&&!!y&&E(i,o),"today-cell":t.isToday&&t.isCurrentMonth,"other-month-cell":!t.isCurrentMonth})}
 					role="button"
-					tabindex=${A(u,o)?"0":"-1"}
-					aria-label=${u.toLocaleString(r,{weekday:"long",year:"numeric",month:"long",day:"numeric"})}
-					aria-disabled=${z(tt(u,t.isCurrentMonth,a,n))}
-					data-date=${z(t.isCurrentMonth?L(u,"yyyy-MM-dd"):void 0)}
-					data-disabled=${z(tt(u,t.isCurrentMonth,a,n))}
-					data-start=${z(Pt(t,d))}
-					data-end=${z(Rt(t,e))}
+					tabindex=${E(i,o)?"0":"-1"}
+					aria-label=${i.toLocaleString(r,{weekday:"long",year:"numeric",month:"long",day:"numeric"})}
+					aria-disabled=${z(rt(i,t.isCurrentMonth,s,a))}
+					data-date=${z(t.isCurrentMonth?N(i,"yyyy-MM-dd"):void 0)}
+					data-disabled=${z(rt(i,t.isCurrentMonth,s,a))}
+					data-start=${z(Wt(t,y))}
+					data-end=${z(Yt(t,e))}
 					@pointerdown=${f}
-					@click=${h}
-					@pointerenter=${m}
-					@focus=${v}
+					@click=${u}
+					@pointerenter=${x}
+					@focus=${m}
 				>
 					${t.day}
 				</div>
 			</div>
 		</td>
-	`},Vt=({endDate:t,focusedDate:e,locale:o,maxDate:r,minDate:n,month:a,numberOfMonths:i,onClick:h,onFocus:v,onKeyDown:f,onPointerDown:m,onPointerEnter:d,startDate:u,weekdayNames:b})=>g`
+	`},Ht=({endDate:t,focusedDate:e,locale:o,maxDate:r,minDate:a,isSingleDateMode:s,month:l,numberOfMonths:b,onClick:u,onFocus:m,onKeyDown:f,onPointerDown:x,onPointerEnter:y,startDate:i,weekdayNames:g})=>v`
 	<table @keydown=${f}>
 		<thead>
 			<tr>
-				${B(b,l=>l,l=>g`<th><div class="weekday">${l}</div></th>`)}
+				${V(g,d=>d,d=>v`<th><div class="weekday">${d}</div></th>`)}
 			</tr>
 		</thead>
 		<tbody>
-			${B(a,(l,w)=>`month-${w}`,l=>g`
+			${V(l,(d,h)=>`month-${h}`,d=>v`
 					<tr>
-						${B(l,w=>w.iso,w=>_t({day:w,endDate:t,focusedDate:e,locale:o,maxDate:r,minDate:n,numberOfMonths:i,onClick:h,onFocus:v,onPointerDown:m,onPointerEnter:d,startDate:u}))}
+						${V(d,h=>h.iso,h=>Kt({day:h,endDate:t,focusedDate:e,locale:o,maxDate:r,minDate:a,isSingleDateMode:s,numberOfMonths:b,onClick:u,onFocus:m,onPointerDown:x,onPointerEnter:y,startDate:i}))}
 					</tr>
 				`)}
 		</tbody>
 	</table>
-`,Yt=({index:t,locale:e,numberOfMonths:o,selectedMonth:r,setSelectedMonth:n})=>g`
+`,Ut=({index:t,locale:e,numberOfMonths:o,selectedMonth:r,setSelectedMonth:a})=>v`
 	<header>
-		${N(t===0,()=>g`
+		${R(t===0,()=>v`
 				<cosmoz-button
 					size="sm"
 					variant="tertiary"
 					class="prev-button"
-					@click=${()=>n(it(r,o))}
-					>${St()}</cosmoz-button
+					@click=${()=>a(ut(r,o))}
+					>${Et()}</cosmoz-button
 				>
 			`)}
 		<h2 class="month-label">
-			${Nt(D(r,t),e)}
+			${Ot(D(r,t),e)}
 			${D(r,t).getFullYear()}
 		</h2>
-		${N(t===o-1,()=>g`
+		${R(t===o-1,()=>v`
 				<cosmoz-button
 					size="sm"
 					variant="tertiary"
 					class="next-button"
-					@click=${()=>n(D(r,o))}
-					>${At()}</cosmoz-button
+					@click=${()=>a(D(r,o))}
+					>${Ct()}</cosmoz-button
 				>
 			`)}
 	</header>
-`,Ht=K`
+`,qt=q`
 	:host {
 		--cell-size: calc(var(--cz-spacing) * 10);
 	}
@@ -567,14 +567,14 @@ import{b as K,e as rt,n as at,u as Y,o as z,f as N,g as nt,t as $,i as A,h as R,
 	td[data-hidden] .date-cell {
 		visibility: hidden;
 	}
-`,Kt=t=>{const{locale:e,numberOfMonths:o,min:r,max:n}=t,a=e??navigator.language,i=Number(o??1),[h,v]=Z("start"),[f,m]=Z("end"),d=M(()=>y(h),[h]),u=M(()=>y(f),[f]),b=M(()=>y(r),[r]),l=M(()=>y(n),[n]),w=M(()=>F(d??new Date,b,l),[d,b,l]),[p,E]=V(w),[T,x]=V(!1),[I,k]=V(w),dt=M(()=>Lt(a),[a]);Y(()=>{T&&t.shadowRoot?.querySelector(`[data-date="${L(I,"yyyy-MM-dd")}"]`)?.focus()},[I,t,T]);const ut=M(()=>{const c=[];for(let s=0;s<i;s++)c.push(Ot(D(p,s),a));return c},[p,a,i]),O=S(c=>{const s=L(c,"yyyy-MM-dd");if(!d&&!u){v(s);return}if(d&&!u&&_(c,d)){v(s),m(L(d,"yyyy-MM-dd"));return}if(d&&!u){m(s);return}d&&u&&(v(s),m(void 0))},[d,u,v,m]),G=S(c=>{const s=F(c,b,l);et(s,p)&&E(C=>it(C,i)),ot(s,p,i)&&E(C=>D(C,i)),k(s)},[b,l,i,p,k,E]);Y(()=>{if(et(I,p)){const c=F(U(p),b,l);k(c)}if(ot(I,p,i)){const c=F(ct(D(p,i-1)),b,l);k(c)}},[I,l,b,i,p,k]);const ht=S(c=>{if(!(c.target instanceof Element))return;const s=c.target.closest("[data-date]");if(!s?.dataset.date||s.dataset.disabled==="true")return;const C=y(s.dataset.date);if(c.key==="Enter"||c.key===" "){c.preventDefault(),O(C);return}const X=Wt(c,C);X&&(c.preventDefault(),G(X))},[G,O]),bt=S(c=>{const s=j(c);!s||P(s,b,l)||O(s)},[O,b,l]),gt=S(c=>{const s=j(c);(!s||P(s,b,l))&&c.preventDefault()},[b,l]),vt=S(c=>{const s=j(c);s&&d&&!u&&!P(s,b,l)&&(k(s),x(!0))},[d,u,b,l,k,x]),ft=S(c=>{const s=j(c);s&&(k(s),x(!0))},[d,u,k,x]);return{endDate:u,focusedDate:I,locale:a,maxDate:l,minDate:b,monthMatrices:ut,numberOfMonths:i,onClick:bt,onKeyDown:ht,selectedMonth:p,setFocusedDate:k,setIsFocused:x,setSelectedMonth:E,startDate:d,weekdayNames:dt,onPointerEnter:vt,onFocus:ft,onPointerDown:gt}},Ut=t=>{const{endDate:e,focusedDate:o,locale:r,maxDate:n,minDate:a,monthMatrices:i,numberOfMonths:h,onClick:v,onFocus:f,onKeyDown:m,onPointerDown:d,onPointerEnter:u,selectedMonth:b,setIsFocused:l,setSelectedMonth:w,startDate:p,weekdayNames:E}=Kt(t);return g`<div
+`,Gt=(t,e)=>{const o=ot(t,e)?t?.start:t,r=ot(t,e)?t?.end:void 0;return{start:o,end:r}},Xt=t=>{const{locale:e,mode:o="range",numberOfMonths:r,min:a,max:s}=t,l=o==="single",b=e??navigator.language,u=Number(r??1),[m,f]=kt("value"),{start:x,end:y}=Gt(m,o),i=A(()=>w(x),[x]),g=A(()=>w(y),[y]),d=A(()=>w(a),[a]),h=A(()=>w(s),[s]),B=A(()=>L(i??new Date,d,h),[i,d,h]),[p,M]=K(B),[S,F]=K(!1),[C,k]=K(B),bt=A(()=>Bt(b),[b]);H(()=>{S&&t.shadowRoot?.querySelector(`[data-date="${N(C,"yyyy-MM-dd")}"]`)?.focus()},[C,t,S]);const gt=A(()=>{const c=[];for(let n=0;n<u;n++)c.push(Pt(D(p,n),b));return c},[p,b,u]),O=I(c=>{const n=N(c,"yyyy-MM-dd");if(l){f(n);return}if(!i&&!g){f({start:n,end:void 0});return}if(i&&!g&&_(c,i)){f({start:n,end:N(i,"yyyy-MM-dd")});return}if(i&&!g){f({start:x,end:n});return}i&&g&&f({start:n,end:void 0})},[l,i,g,x,f]),Z=I(c=>{const n=L(c,d,h);at(n,p)&&M(T=>ut(T,u)),nt(n,p,u)&&M(T=>D(T,u)),k(n)},[d,h,u,p,k,M]);H(()=>{if(at(C,p)){const c=L(G(p),d,h);k(c)}if(nt(C,p,u)){const c=L(dt(D(p,u-1)),d,h);k(c)}},[C,h,d,u,p,k]);const vt=I(c=>{if(!(c.target instanceof Element))return;const n=c.target.closest("[data-date]");if(!n?.dataset.date||n.dataset.disabled==="true")return;const T=w(n.dataset.date);if(c.key==="Enter"||c.key===" "){c.preventDefault(),O(T);return}const J=_t(c,T);J&&(c.preventDefault(),Z(J))},[Z,O]),ft=I(c=>{const n=P(c);!n||j(n,d,h)||O(n)},[O,d,h]),pt=I(c=>{const n=P(c);(!n||j(n,d,h))&&c.preventDefault()},[d,h]),mt=I(c=>{const n=P(c);!l&&n&&i&&!g&&!j(n,d,h)&&(k(n),F(!0))},[l,i,g,d,h,k,F]),zt=I(c=>{const n=P(c);n&&(k(n),F(!0))},[i,g,k,F]);return{endDate:g,focusedDate:C,isSingleDateMode:l,locale:b,maxDate:h,minDate:d,monthMatrices:gt,numberOfMonths:u,onClick:ft,onKeyDown:vt,selectedMonth:p,setIsFocused:F,setSelectedMonth:M,startDate:i,weekdayNames:bt,onPointerEnter:mt,onFocus:zt,onPointerDown:pt}},Zt=t=>{const{endDate:e,focusedDate:o,isSingleDateMode:r,locale:a,maxDate:s,minDate:l,monthMatrices:b,numberOfMonths:u,onClick:m,onFocus:f,onKeyDown:x,onPointerDown:y,onPointerEnter:i,selectedMonth:g,setIsFocused:d,setSelectedMonth:h,startDate:B,weekdayNames:p}=Xt(t);return v`<div
 		class="calendar"
-		@focus=${()=>l(!0)}
-		@blur=${()=>l(!1)}
+		@focus=${()=>d(!0)}
+		@blur=${()=>d(!1)}
 	>
-		${B(i,(T,x)=>`cal-${x}`,(T,x)=>[g`
-					<div class="month-wrapper ${h>1?"padded":""}">
-						${[Yt({index:x,locale:r,numberOfMonths:h,selectedMonth:b,setSelectedMonth:w}),Vt({endDate:e,focusedDate:o,locale:r,maxDate:n,minDate:a,month:T,numberOfMonths:h,onClick:v,onFocus:f,onKeyDown:m,onPointerDown:d,onPointerEnter:u,startDate:p,weekdayNames:E})]}
+		${V(b,(M,S)=>`cal-${S}`,(M,S)=>[v`
+					<div class="month-wrapper ${u>1?"padded":""}">
+						${[Ut({index:S,locale:a,numberOfMonths:u,selectedMonth:g,setSelectedMonth:h}),Ht({endDate:e,focusedDate:o,locale:a,maxDate:s,minDate:l,isSingleDateMode:r,month:M,numberOfMonths:u,onClick:m,onFocus:f,onKeyDown:x,onPointerDown:y,onPointerEnter:i,startDate:B,weekdayNames:p})]}
 					</div>
-				`,N(x<h-1,()=>g`<div class="separator"></div>`)])}
-	</div> `};customElements.define("cosmoz-calendar",rt(Ut,{observedAttributes:["locale","number-of-months"],styleSheets:[at,Ht]}));export{Ft as a,U as b,it as c,_ as d,ct as e,Zt as f,Q as g,Xt as h,q as i,Qt as j,Jt as l,H as s};
+				`,R(S<u-1,()=>v`<div class="separator"></div>`)])}
+	</div> `};customElements.define("cosmoz-calendar",st(Zt,{observedAttributes:["locale","mode","number-of-months"],styleSheets:[ct,qt]}));export{Rt as a,ut as b,_ as c,ee as d,dt as e,te as f,et as g,re as h,X as i,oe as l,U as s,Gt as u};
