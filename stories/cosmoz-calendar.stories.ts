@@ -12,6 +12,7 @@ const meta: Meta<CalendarArgs> = {
 	title: 'CosmozCalendar',
 	component: 'cosmoz-calendar',
 	tags: ['autodocs'],
+	render: renderCalendar,
 	argTypes: {
 		locale: localeArgType,
 		start: dateArgType,
@@ -36,9 +37,7 @@ export default meta;
 
 type Story = StoryObj<CalendarArgs>;
 
-export const Calendar: Story = {
-	render: renderCalendar,
-};
+export const Calendar: Story = {};
 
 export const MinMax: Story = {
 	args: {

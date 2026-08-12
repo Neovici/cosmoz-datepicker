@@ -12,6 +12,7 @@ const meta: Meta<DateInputArgs> = {
 	title: 'CosmozDateInput',
 	component: 'cosmoz-date-input',
 	tags: ['autodocs'],
+	render: renderDateInput,
 	argTypes: {
 		locale: localeArgType,
 		value: dateArgType,
@@ -25,6 +26,4 @@ export default meta;
 
 type Story = StoryObj<DateInputArgs>;
 
-export const DateInput: Story = {
-	render: renderDateInput,
-};
+export const DateInput: Story = {};
