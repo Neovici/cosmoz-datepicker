@@ -59,19 +59,19 @@ export const useCalendar = (host: CalendarProps) => {
 		[startDate, minDate, maxDate],
 	);
 	const [selectedMonth, setSelectedMonth] = useState(initialFocusedDate);
-	const [isFocused, setIsFocused] = useState(false);
+	const [isGridFocused, setIsGridFocused] = useState(false);
 	const [focusedDate, setFocusedDate] = useState(initialFocusedDate);
 	const weekdayNames = useMemo(() => getWeekdayNames(locale), [locale]);
 
 	useEffect(() => {
-		if (isFocused) {
+		if (isGridFocused) {
 			const focusedCell = host.shadowRoot?.querySelector<HTMLElement>(
 				`[data-date="${format(focusedDate, 'yyyy-MM-dd')}"]`,
 			);
 
 			focusedCell?.focus();
 		}
-	}, [focusedDate, host, isFocused]);
+	}, [focusedDate, host, isGridFocused]);
 
 	const monthMatrices = useMemo(() => {
 		const matrices = [];
@@ -148,6 +148,7 @@ export const useCalendar = (host: CalendarProps) => {
 				minDate,
 				maxDate,
 			);
+			setIsGridFocused(false);
 			setFocusedDate(newDate);
 		}
 
@@ -157,6 +158,7 @@ export const useCalendar = (host: CalendarProps) => {
 				minDate,
 				maxDate,
 			);
+			setIsGridFocused(false);
 			setFocusedDate(newDate);
 		}
 	}, [
@@ -166,6 +168,7 @@ export const useCalendar = (host: CalendarProps) => {
 		numberOfMonths,
 		selectedMonth,
 		setFocusedDate,
+		setIsGridFocused,
 	]);
 
 	const onKeyDown = useCallback(
@@ -250,9 +253,9 @@ export const useCalendar = (host: CalendarProps) => {
 			}
 
 			setFocusedDate(date);
-			setIsFocused(true);
+			setIsGridFocused(true);
 		},
-		[startDate, endDate, setFocusedDate, setIsFocused],
+		[startDate, endDate, setFocusedDate, setIsGridFocused],
 	);
 
 	return {
@@ -267,7 +270,6 @@ export const useCalendar = (host: CalendarProps) => {
 		onClick,
 		onKeyDown,
 		selectedMonth,
-		setIsFocused,
 		setSelectedMonth,
 		startDate,
 		weekdayNames,

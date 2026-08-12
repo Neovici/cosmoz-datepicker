@@ -79,6 +79,7 @@ const CosmozDatepicker = (host: Props) => {
 
 				<div class="main">
 					<cosmoz-calendar
+						autofocus
 						mode=${mode}
 						locale=${locale}
 						number-of-months=${numberOfMonths}

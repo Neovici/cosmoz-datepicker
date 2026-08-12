@@ -23,13 +23,12 @@ const CosmozCalendar = (host: CalendarProps) => {
 		onPointerDown,
 		onPointerEnter,
 		selectedMonth,
-		setIsFocused,
 		setSelectedMonth,
 		startDate,
 		weekdayNames,
 	} = useCalendar(host);
 
-	return html`<div class="calendar" @focusout=${() => setIsFocused(false)}>
+	return html`<div class="calendar">
 		${repeat(
 			monthMatrices,
 			(_, i) => `cal-${i}`,
@@ -75,6 +74,7 @@ customElements.define(
 	component(CosmozCalendar, {
 		observedAttributes: ['locale', 'mode', 'number-of-months'],
 		styleSheets: [normalize, styles],
+		shadowRootInit: { delegatesFocus: true, mode: 'open' },
 	}),
 );
 
