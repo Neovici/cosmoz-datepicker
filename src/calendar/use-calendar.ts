@@ -236,18 +236,9 @@ export const useCalendar = (host: CalendarProps) => {
 				!isDisabled(date, minDate, maxDate)
 			) {
 				setFocusedDate(date);
-				setIsFocused(true);
 			}
 		},
-		[
-			isSingleDateMode,
-			startDate,
-			endDate,
-			minDate,
-			maxDate,
-			setFocusedDate,
-			setIsFocused,
-		],
+		[isSingleDateMode, startDate, endDate, minDate, maxDate, setFocusedDate],
 	);
 
 	const onFocus = useCallback(

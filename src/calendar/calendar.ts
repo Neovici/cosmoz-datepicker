@@ -29,11 +29,7 @@ const CosmozCalendar = (host: CalendarProps) => {
 		weekdayNames,
 	} = useCalendar(host);
 
-	return html`<div
-		class="calendar"
-		@focus=${() => setIsFocused(true)}
-		@blur=${() => setIsFocused(false)}
-	>
+	return html`<div class="calendar" @focusout=${() => setIsFocused(false)}>
 		${repeat(
 			monthMatrices,
 			(_, i) => `cal-${i}`,
