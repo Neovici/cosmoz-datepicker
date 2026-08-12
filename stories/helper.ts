@@ -1,6 +1,11 @@
 import { html } from '@pionjs/pion';
-import { addDays, addMonths, format } from 'date-fns';
-import { lastDayOfMonth, startOfMonth } from 'date-fns/fp';
+import {
+	addDays,
+	addMonths,
+	format,
+	lastDayOfMonth,
+	startOfMonth,
+} from 'date-fns';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { RangePreset } from '../src/presets';
 
