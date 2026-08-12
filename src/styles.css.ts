@@ -62,7 +62,7 @@ export const styles = css`
 		}
 	}
 
-	:host([single-calendar]) {
+	:host([single-calendar]):not([mode='single']) {
 		cosmoz-calendar {
 			padding: calc(var(--cz-spacing) * 5) calc(var(--cz-spacing) * 8);
 		}
