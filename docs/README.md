@@ -55,12 +55,16 @@ Set and observe the selected value with the `value` property. Dates use `yyyy-MM
 | `triggerSize`    | `trigger-size`    | `CosmozButtonElement['size']`      | `md`                 | Optional size for the trigger button.                            |
 | `triggerVariant` | `trigger-variant` | `CosmozButtonElement['variant']`   | `'secondary'`        | Variant for the trigger button.                                  |
 
-`DateRange` is an object with optional `start` and `end` date strings:
-
 ```typescript
 type DateRange = {
 	start?: string;
 	end?: string;
+};
+
+type RangePreset = {
+	label: string;
+	start: string | (() => string);
+	end: string | (() => string);
 };
 ```
 
