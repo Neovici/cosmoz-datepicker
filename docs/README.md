@@ -141,7 +141,91 @@ This component uses CSS custom properties from `@neovici/cosmoz-tokens`. The tok
 
 The datepicker supports keyboard navigation in the calendar and uses localized date input order based on `locale` or `navigator.language`.
 
+When the dropdown opens, focus is delegated to the calendar. Use arrow keys to move by day or week, and `Enter` or `Space` to select the focused date. The previous and next month buttons have accessible labels, and the visible month heading is announced when it changes.
+
+Calendar dates expose localized accessible names that include state such as today, start date, and end date. Disabled dates are marked with `aria-disabled`, selected dates and ranges are marked with `aria-selected`, preset buttons expose `aria-pressed`, and decorative navigation icons are hidden from assistive technology.
+
+The footer date inputs are segmented spinbuttons for year, month, and day. Their order follows the configured locale, and `ArrowUp` or `ArrowDown` increments or decrements the focused segment.
+
 Use the `disabled` attribute when the datepicker should not be interactive.
+
+## Internationalization
+
+UI text is managed via [`i18next`](https://www.i18next.com/). The English text is used as the translation key, so it works out of the box when no translations are loaded.
+
+Consumers must initialize i18next before using the component:
+
+```js
+import i18next from 'i18next';
+
+i18next.init({
+	lng: 'en',
+	resources: {},
+	interpolation: {
+		prefix: '{',
+		suffix: '}',
+	},
+});
+```
+
+To provide translations, use `i18next.addResourceBundle()` or any i18next backend:
+
+```js
+i18next.addResourceBundle('sv', 'translation', {
+	Today: 'Idag',
+	Yesterday: 'I går',
+	'This week': 'Denna vecka',
+	'Last week': 'Förra veckan',
+	'This month': 'Denna månad',
+	'Last month': 'Förra månaden',
+	'This year': 'Detta år',
+	'Select date': 'Välj datum',
+	'Select dates': 'Välj datum',
+	'Open date picker': 'Öppna datumväljare',
+	'Previous month': 'Föregående månad',
+	'Next month': 'Nästa månad',
+	'Start date': 'Startdatum',
+	'End date': 'Slutdatum',
+	'Selected range: {startDate} to {endDate}':
+		'Valt intervall: {startDate} till {endDate}',
+	Selecting: 'Väljer',
+	Selected: 'Vald',
+	Year: 'År',
+	Month: 'Månad',
+	Day: 'Dag',
+	Empty: 'Tomt',
+	OK: 'OK',
+});
+```
+
+### Translation Keys
+
+| Key                                        | Used in                                    |
+| ------------------------------------------ | ------------------------------------------ |
+| `Today`                                    | Built-in preset label and date aria label  |
+| `Yesterday`                                | Built-in preset label                      |
+| `This week`                                | Built-in preset label                      |
+| `Last week`                                | Built-in preset label                      |
+| `This month`                               | Built-in preset label                      |
+| `Last month`                               | Built-in preset label                      |
+| `This year`                                | Built-in preset label                      |
+| `Select date`                              | Trigger placeholder in single mode         |
+| `Select dates`                             | Trigger placeholder in range mode          |
+| `Open date picker`                         | Trigger button aria label                  |
+| `Previous month`                           | Previous month button aria label           |
+| `Next month`                               | Next month button aria label               |
+| `Start date`                               | Start input aria label and date aria label |
+| `End date`                                 | End input aria label and date aria label   |
+| `Selected range: {startDate} to {endDate}` | Range boundary date aria label             |
+| `Selecting`                                | Date aria label while selecting a range    |
+| `Selected`                                 | Selected date aria label                   |
+| `Year`                                     | Date input year segment aria label         |
+| `Month`                                    | Date input month segment aria label        |
+| `Day`                                      | Date input day segment aria label          |
+| `Empty`                                    | Empty date input segment aria value text   |
+| `OK`                                       | Dropdown confirm button                    |
+
+Month names, weekday names, formatted dates, date input order, and week start day are locale-driven through `Intl` and the `locale` property rather than i18next translation keys.
 
 ## Development
 
