@@ -5,8 +5,8 @@ import {
 } from '@neovici/cosmoz-icons/untitled';
 import { html } from '@pionjs/pion';
 import { addMonths, subMonths } from 'date-fns';
+import { t } from 'i18next';
 import { when } from 'lit-html/directives/when.js';
-import { getMonthName } from './utils';
 
 type RenderHeaderOptions = {
 	index: number;
@@ -31,15 +31,18 @@ export const renderHeader = ({
 					size="sm"
 					variant="tertiary"
 					class="prev-button"
+					aria-label=${t('Previous month')}
 					@click=${() =>
 						setSelectedMonth(subMonths(selectedMonth, numberOfMonths))}
-					>${chevronLeftIcon()}</cosmoz-button
+					><span aria-hidden="true">${chevronLeftIcon()}</span></cosmoz-button
 				>
 			`,
 		)}
-		<h2 class="month-label">
-			${getMonthName(addMonths(selectedMonth, index), locale)}
-			${addMonths(selectedMonth, index).getFullYear()}
+		<h2 class="month-label" aria-live="polite" aria-atomic="true">
+			${addMonths(selectedMonth, index).toLocaleString(locale, {
+				month: 'long',
+				year: 'numeric',
+			})}
 		</h2>
 		${when(
 			index === numberOfMonths - 1,
@@ -48,9 +51,10 @@ export const renderHeader = ({
 					size="sm"
 					variant="tertiary"
 					class="next-button"
+					aria-label=${t('Next month')}
 					@click=${() =>
 						setSelectedMonth(addMonths(selectedMonth, numberOfMonths))}
-					>${chevronRightIcon()}</cosmoz-button
+					><span aria-hidden="true">${chevronRightIcon()}</span></cosmoz-button
 				>
 			`,
 		)}

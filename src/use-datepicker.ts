@@ -1,5 +1,5 @@
 import { CosmozButtonElement } from '@neovici/cosmoz-button';
-import { useCallback, useMemo, useProperty } from '@pionjs/pion';
+import { useCallback, useMemo, useProperty, useState } from '@pionjs/pion';
 import { isAfter, isBefore } from 'date-fns';
 import { getRangePresets, RangePreset } from './presets';
 import { useDatepickerValue } from './use-datepicker-value';
@@ -49,10 +49,12 @@ export const useDatepicker = (host: Props) => {
 	const isNarrow = useMediaMatch('(width < 735px)');
 	const isSingleCalendar = singleCalendar || isNarrow || isSingleDateMode;
 	const numberOfMonths = isSingleCalendar ? 1 : 2;
+	const [isOpen, setIsOpen] = useState(false);
 	const rangePresets = useMemo(
 		() => presets ?? getRangePresets(locale),
 		[locale, presets],
 	);
+
 	const onStartInput = useCallback(
 		(e: CustomEvent<{ value: string }>) => {
 			if (isSingleDateMode) {
@@ -115,5 +117,7 @@ export const useDatepicker = (host: Props) => {
 		triggerVariant,
 		onStartInputBlur,
 		onEndInputBlur,
+		isOpen,
+		setIsOpen,
 	};
 };
