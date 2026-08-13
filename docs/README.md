@@ -181,7 +181,7 @@ i18next.addResourceBundle('sv', 'translation', {
 	'This year': 'Detta år',
 	'Select date': 'Välj datum',
 	'Select dates': 'Välj datum',
-	'Open date picker': 'Öppna datumväljare',
+	'Date picker': 'Datumväljare',
 	'Previous month': 'Föregående månad',
 	'Next month': 'Nästa månad',
 	'Start date': 'Startdatum',
@@ -211,7 +211,7 @@ i18next.addResourceBundle('sv', 'translation', {
 | `This year`                                | Built-in preset label                      |
 | `Select date`                              | Trigger placeholder in single mode         |
 | `Select dates`                             | Trigger placeholder in range mode          |
-| `Open date picker`                         | Trigger button aria label                  |
+| `Date picker`                              | Trigger button aria label                  |
 | `Previous month`                           | Previous month button aria label           |
 | `Next month`                               | Next month button aria label               |
 | `Start date`                               | Start input aria label and date aria label |
