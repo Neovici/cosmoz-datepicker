@@ -39,7 +39,9 @@ Set and observe the selected value with the `value` property. Dates use `yyyy-MM
 </script>
 ```
 
-## Properties And Attributes
+## API
+
+### Properties and Attributes
 
 | Property         | Attribute         | Type                               | Default              | Description                                                      |
 | ---------------- | ----------------- | ---------------------------------- | -------------------- | ---------------------------------------------------------------- |
@@ -49,7 +51,7 @@ Set and observe the selected value with the `value` property. Dates use `yyyy-MM
 | `min`            | `min`             | `string \| undefined`              | `undefined`          | Earliest selectable date as a `yyyy-MM-dd` string.               |
 | `max`            | `max`             | `string \| undefined`              | `undefined`          | Latest selectable date as a `yyyy-MM-dd` string.                 |
 | `presets`        | -                 | `RangePreset[]`                    | built-in presets     | Custom preset buttons for range mode.                            |
-| `disabled`       | `disabled`        | `boolean`                          | `false`              | Disables opening the datepicker dropdown.                        |
+| `disabled`       | `disabled`        | `boolean`                          | `false`              | Disables the datepicker.                                         |
 | `noPresets`      | `no-presets`      | `boolean`                          | `false`              | Hides preset buttons in range mode.                              |
 | `singleCalendar` | `single-calendar` | `boolean`                          | `false`              | Forces a single-month calendar layout.                           |
 | `triggerSize`    | `trigger-size`    | `CosmozButtonElement['size']`      | `md`                 | Optional size for the trigger button.                            |
@@ -67,6 +69,12 @@ type RangePreset = {
 	end: string | (() => string);
 };
 ```
+
+### Events
+
+| Event           | Detail                                                  | Description                            |
+| --------------- | ------------------------------------------------------- | -------------------------------------- |
+| `value-changed` | `{ value: string \| { start?: string, end?: string } }` | Fired when the selected value changes. |
 
 ## Single And Range Modes
 
@@ -117,12 +125,6 @@ Use `no-presets` to hide preset buttons:
 
 Selected date values and preset values are clamped to the configured bounds.
 
-## Events
-
-| Event           | Detail                                                  | Description                            |
-| --------------- | ------------------------------------------------------- | -------------------------------------- |
-| `value-changed` | `{ value: string \| { start?: string, end?: string } }` | Fired when the selected value changes. |
-
 ## Styling
 
 The trigger button exposes the `trigger` part for external styling:
@@ -141,11 +143,7 @@ This component uses CSS custom properties from `@neovici/cosmoz-tokens`. The tok
 
 The datepicker supports keyboard navigation in the calendar and uses localized date input order based on `locale` or `navigator.language`.
 
-When the dropdown opens, focus is delegated to the calendar. Use arrow keys to move by day or week, and `Enter` or `Space` to select the focused date. The previous and next month buttons have accessible labels, and the visible month heading is announced when it changes.
-
-Calendar dates expose localized accessible names that include state such as today, start date, and end date. Disabled dates are marked with `aria-disabled`, selected dates and ranges are marked with `aria-selected`, preset buttons expose `aria-pressed`, and decorative navigation icons are hidden from assistive technology.
-
-The footer date inputs are segmented spinbuttons for year, month, and day. Their order follows the configured locale, and `ArrowUp` or `ArrowDown` increments or decrements the focused segment.
+Use arrow keys to navigate calendar dates and `Enter` or `Space` to select a date. The footer date inputs are segmented by year, month, and day, ordered by locale.
 
 Use the `disabled` attribute when the datepicker should not be interactive.
 
