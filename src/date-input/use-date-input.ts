@@ -10,7 +10,6 @@ import { isSameDay } from 'date-fns';
 import {
 	DateObject,
 	dateObjectToDateString,
-	DateType,
 	EMPTY_DATE_VALUE,
 	getIncrementedDayWithWrapping,
 	getIncrementedMonthWithWrapping,
@@ -24,8 +23,6 @@ import {
 	parseYearInput,
 } from './utils';
 
-export type ValueChangedEvent = CustomEvent<{ value: string }>;
-
 export type DateInputProps = HTMLElement & {
 	value?: string;
 	locale?: string;
@@ -37,6 +34,24 @@ const options: Intl.DateTimeFormatOptions = {
 	day: 'numeric',
 	numberingSystem: 'latn',
 	calendar: 'gregory',
+};
+
+const focusAdjacentInput = (host: DateInputProps, key: string) => {
+	const focused = host.shadowRoot?.activeElement as
+		| HTMLInputElement
+		| undefined;
+	if (!focused) {
+		return;
+	}
+
+	const inputs = [
+		...(host.shadowRoot?.querySelectorAll(
+			'input[data-type]',
+		) as NodeListOf<HTMLInputElement>),
+	];
+	const index = inputs.indexOf(focused);
+	const offset = key === 'ArrowLeft' ? -1 : 1;
+	inputs[index + offset]?.focus();
 };
 
 const initializeState = (date: Date | undefined, locale: string): DateObject =>
@@ -53,7 +68,7 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 			};
 
 export const useDateInput = (host: DateInputProps) => {
-	const { locale: _locale } = host;
+	const { locale: _locale, ariaLabel: hostAriaLabel } = host;
 	const locale = _locale ?? navigator.language;
 	const [value, setValue] = useProperty<string>('value');
 	const date = useMemo(() => ensureDate(value), [value]);
@@ -76,8 +91,11 @@ export const useDateInput = (host: DateInputProps) => {
 	}, [inputState, setValue]);
 
 	const onChange = useCallback(
-		(e: ValueChangedEvent, type: DateType) => {
-			const input = e.detail.value;
+		(e: InputEvent) => {
+			const target = e.target as HTMLInputElement;
+			const input = target.value;
+			const type = (e.target as HTMLInputElement).dataset.type;
+
 			setInputState((prev) => {
 				if (type === 'year') {
 					const year = parseYearInput(input, prev);
@@ -106,7 +124,9 @@ export const useDateInput = (host: DateInputProps) => {
 	);
 
 	const onKeyDown = useCallback(
-		(e: KeyboardEvent, type: DateType) => {
+		(e: KeyboardEvent) => {
+			const type = (e.target as HTMLInputElement).dataset.type;
+
 			if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
 				e.preventDefault();
 				setInputState((prev) => {
@@ -129,28 +149,7 @@ export const useDateInput = (host: DateInputProps) => {
 
 			if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
 				e.preventDefault();
-				const focused = host.shadowRoot?.activeElement as
-					| HTMLInputElement
-					| undefined;
-				if (!focused) {
-					return;
-				}
-
-				const inputs = [
-					...(host.shadowRoot?.querySelectorAll(
-						'cosmoz-input',
-					) as NodeListOf<HTMLInputElement>),
-				];
-
-				const index = inputs.indexOf(focused);
-				if (e.key === 'ArrowLeft' && index - 1 >= 0) {
-					inputs[index - 1].focus();
-					return;
-				}
-
-				if (e.key === 'ArrowRight' && index + 1 < inputs.length) {
-					inputs[index + 1].focus();
-				}
+				focusAdjacentInput(host, e.key);
 			}
 		},
 		[host, locale, setInputState],
@@ -172,9 +171,7 @@ export const useDateInput = (host: DateInputProps) => {
 	}, [inputState, setInputState, locale]);
 
 	const onClick = useCallback((e: MouseEvent) => {
-		const target = e.currentTarget as HTMLElement;
-		const input = target.shadowRoot?.querySelector('input');
-		input?.select();
+		(e.target as HTMLInputElement).select();
 	}, []);
 
 	return {
@@ -184,5 +181,6 @@ export const useDateInput = (host: DateInputProps) => {
 		onBlur,
 		onClick,
 		localeDateParts,
+		hostAriaLabel,
 	};
 };
