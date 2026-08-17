@@ -113,11 +113,12 @@ export const renderDate = ({
 	const isRangeMode = !isSingleDateMode;
 	const isHidden = !day.isCurrentMonth && numberOfMonths > 1;
 	const disabled = ifDisabled(date, day.isCurrentMonth, minDate, maxDate);
+	const ariaDisabled = disabled || !day.isCurrentMonth ? 'true' : undefined;
 
 	const tableCellProps = {
-		role: 'gridCell',
+		role: 'gridcell',
 		ariaHidden: isHidden ? 'true' : undefined,
-		ariaDisabled: disabled || !day.isCurrentMonth,
+		ariaDisabled,
 		ariaSelected: ifInRangeOrSelected(
 			date,
 			startDate,
@@ -139,7 +140,7 @@ export const renderDate = ({
 			locale,
 			isRangeMode,
 		}),
-		ariaDisabled: disabled || !day.isCurrentMonth,
+		ariaDisabled,
 		autofocus: resolveAutofocus(day, startDate),
 	};
 
@@ -168,6 +169,11 @@ export const renderDate = ({
 					})}
 					data-date=${ifDefined(
 						day.isCurrentMonth ? format(date, 'yyyy-MM-dd') : undefined,
+					)}
+					data-testid=${ifDefined(
+						day.isCurrentMonth
+							? `date-${format(date, 'yyyy-MM-dd')}`
+							: undefined,
 					)}
 					data-disabled=${ifDefined(disabled)}
 					data-start=${ifDefined(ifStart(date, startDate))}

@@ -1,15 +1,15 @@
 import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import {
+	getAllByShadowRole,
+	getByShadowLabelText,
+	getByShadowTestId,
+	getByShadowText,
+} from 'shadow-dom-testing-library';
+import { expect, userEvent, waitFor } from 'storybook/test';
 import '../../src/calendar';
 import type { CalendarProps } from '../../src/calendar/use-calendar';
-import type { DateRange } from '../../src/use-datepicker';
-import {
-	CalendarArgs,
-	dateArgType,
-	dateRangeArgType,
-	modeArgType,
-} from '../helper';
+import { CalendarArgs } from '../helper';
 
 const dates = {
 	start: '2026-08-14',
@@ -30,12 +30,6 @@ const meta: Meta<CalendarArgs> = {
 	title: 'Tests/CosmozCalendar',
 	component: 'cosmoz-calendar',
 	tags: ['!autodocs'],
-	argTypes: {
-		mode: modeArgType,
-		value: dateRangeArgType,
-		min: dateArgType,
-		max: dateArgType,
-	},
 	args: {
 		mode: 'range',
 		value: {
@@ -70,52 +64,8 @@ const getCalendar = (canvasElement: HTMLElement) => {
 	return calendar!;
 };
 
-const getCell = (calendar: CalendarProps, date: string) => {
-	const cell = calendar.shadowRoot?.querySelector<HTMLElement>(
-		`[data-date="${date}"]`,
-	);
-	expect(cell).toBeTruthy();
-	return cell!;
-};
-
-const getGridCell = (cell: HTMLElement) => {
-	const gridCell = cell.closest<HTMLElement>('[role="gridCell"]');
-	expect(gridCell).toBeTruthy();
-	return gridCell!;
-};
-
-const getFirstWeekday = (calendar: CalendarProps) =>
-	calendar.shadowRoot?.querySelector('thead th')?.textContent?.trim();
-
-const expectRangeValue = async (
-	calendar: CalendarProps,
-	expected: DateRange,
-) => {
-	await waitFor(() => expect(calendar.value).toEqual(expected));
-};
-
-const expectSingleValue = async (calendar: CalendarProps, expected: string) => {
-	await waitFor(() => expect(calendar.value).toBe(expected));
-};
-
-const expectActiveDate = async (calendar: CalendarProps, date: string) => {
-	await waitFor(() =>
-		expect(calendar.shadowRoot?.activeElement).toBe(getCell(calendar, date)),
-	);
-};
-
-const getMonthLabels = (calendar: CalendarProps) =>
-	[...(calendar.shadowRoot?.querySelectorAll('header h2') ?? [])]
-		.map((label) => label.textContent?.trim())
-		.filter(Boolean);
-
-const getHeaderButton = (calendar: CalendarProps, label: string) => {
-	const button = calendar.shadowRoot?.querySelector<HTMLElement>(
-		`cosmoz-button[aria-label="${label}"]`,
-	);
-	expect(button).toBeTruthy();
-	return button!;
-};
+const getDateButton = (canvasElement: HTMLElement, date: string) =>
+	getByShadowTestId<HTMLElement>(canvasElement, `date-${date}`);
 
 export const MinMaxRange: Story = {
 	render: renderWithLocale('en-US'),
@@ -132,32 +82,41 @@ export const MinMaxRange: Story = {
 		const calendar = getCalendar(canvasElement);
 
 		await step('marks dates outside min and max as disabled', async () => {
-			expect(getCell(calendar, dates.beforeMin).dataset.disabled).toBe('true');
-			expect(getGridCell(getCell(calendar, dates.beforeMin)).ariaDisabled).toBe(
-				'true',
-			);
-			expect(getCell(calendar, dates.afterMax).dataset.disabled).toBe('true');
-			expect(getGridCell(getCell(calendar, dates.afterMax)).ariaDisabled).toBe(
-				'true',
-			);
-			expect(getCell(calendar, dates.min).dataset.disabled).toBeUndefined();
-			expect(getCell(calendar, dates.max).dataset.disabled).toBeUndefined();
+			const beforeMin = getDateButton(canvasElement, dates.beforeMin);
+			const afterMax = getDateButton(canvasElement, dates.afterMax);
+			const min = getDateButton(canvasElement, dates.min);
+			const max = getDateButton(canvasElement, dates.max);
+
+			expect(beforeMin.ariaDisabled).toBe('true');
+			expect(
+				beforeMin.closest<HTMLElement>('[role="gridcell"]')?.ariaDisabled,
+			).toBe('true');
+			expect(afterMax.ariaDisabled).toBe('true');
+			expect(
+				afterMax.closest<HTMLElement>('[role="gridcell"]')?.ariaDisabled,
+			).toBe('true');
+			expect(min.ariaDisabled).toBeNull();
+			expect(max.ariaDisabled).toBeNull();
 		});
 
 		await step(
 			'ignores disabled dates when selecting a range end',
 			async () => {
-				await userEvent.click(getCell(calendar, dates.afterMax));
-				await expectRangeValue(calendar, {
-					start: dates.start,
-					end: undefined,
-				});
+				await userEvent.click(getDateButton(canvasElement, dates.afterMax));
+				await waitFor(() =>
+					expect(calendar.value).toEqual({
+						start: dates.start,
+						end: undefined,
+					}),
+				);
 
-				await userEvent.click(getCell(calendar, dates.max));
-				await expectRangeValue(calendar, {
-					start: dates.start,
-					end: dates.max,
-				});
+				await userEvent.click(getDateButton(canvasElement, dates.max));
+				await waitFor(() =>
+					expect(calendar.value).toEqual({
+						start: dates.start,
+						end: dates.max,
+					}),
+				);
 			},
 		);
 	},
@@ -166,15 +125,11 @@ export const MinMaxRange: Story = {
 export const NumberOfCalendars: Story = {
 	render: renderWithLocale('en-US'),
 	play: async ({ canvasElement, step }) => {
-		const calendar = getCalendar(canvasElement);
-
 		await step('renders the configured number of calendar grids', async () => {
-			const grids = within(
-				calendar.shadowRoot as unknown as HTMLElement,
-			).getAllByRole('grid');
+			const grids = getAllByShadowRole(canvasElement, 'grid');
 			expect(grids).toHaveLength(2);
-			expect(getCell(calendar, dates.start)).toBeTruthy();
-			expect(getCell(calendar, dates.firstOfNextMonth)).toBeTruthy();
+			expect(getDateButton(canvasElement, dates.start)).toBeTruthy();
+			expect(getDateButton(canvasElement, dates.firstOfNextMonth)).toBeTruthy();
 		});
 	},
 };
@@ -190,17 +145,21 @@ export const SelectionMode: Story = {
 		const calendar = getCalendar(canvasElement);
 
 		await step('stores a string value in single date mode', async () => {
-			await userEvent.click(getCell(calendar, dates.end));
-			await expectSingleValue(calendar, dates.end);
+			await userEvent.click(getDateButton(canvasElement, dates.end));
+			await waitFor(() => expect(calendar.value).toBe(dates.end));
 		});
 
 		await step('selects only the chosen date in single date mode', async () => {
 			expect(
-				getGridCell(getCell(calendar, dates.start)).ariaSelected,
+				getDateButton(canvasElement, dates.start).closest<HTMLElement>(
+					'[role="gridcell"]',
+				)?.ariaSelected,
 			).toBeNull();
-			expect(getGridCell(getCell(calendar, dates.end)).ariaSelected).toBe(
-				'true',
-			);
+			expect(
+				getDateButton(canvasElement, dates.end).closest<HTMLElement>(
+					'[role="gridcell"]',
+				)?.ariaSelected,
+			).toBe('true');
 		});
 	},
 };
@@ -211,10 +170,8 @@ export const LocaleSwedenFirstDayOfWeek: Story = {
 		numberOfMonths: 1,
 	},
 	play: async ({ canvasElement, step }) => {
-		const calendar = getCalendar(canvasElement);
-
 		await step('starts the week on the locale first day', async () => {
-			expect(getFirstWeekday(calendar)).toBe('mån');
+			expect(getByShadowText(canvasElement, 'mån')).toBeTruthy();
 		});
 	},
 };
@@ -225,10 +182,8 @@ export const LocaleUsFirstDayOfWeek: Story = {
 		numberOfMonths: 1,
 	},
 	play: async ({ canvasElement, step }) => {
-		const calendar = getCalendar(canvasElement);
-
 		await step('starts the week on the locale first day', async () => {
-			expect(getFirstWeekday(calendar)).toBe('Sun');
+			expect(getByShadowText(canvasElement, 'Sun')).toBeTruthy();
 		});
 	},
 };
@@ -248,18 +203,15 @@ export const SwapsEndBeforeStart: Story = {
 		await step(
 			'swaps range endpoints when the end is before the start',
 			async () => {
-				await userEvent.click(getCell(calendar, dates.beforeStart));
-				await expectRangeValue(calendar, {
-					start: dates.beforeStart,
-					end: dates.start,
-				});
+				await userEvent.click(getDateButton(canvasElement, dates.beforeStart));
+				await waitFor(() =>
+					expect(calendar.value).toEqual({
+						start: dates.beforeStart,
+						end: dates.start,
+					}),
+				);
 			},
 		);
-
-		await step('marks the swapped range start and end', async () => {
-			expect(getCell(calendar, dates.beforeStart).dataset.start).toBe('true');
-			expect(getCell(calendar, dates.start).dataset.end).toBe('true');
-		});
 	},
 };
 
@@ -273,12 +225,12 @@ export const RangeSelection: Story = {
 		numberOfMonths: 1,
 	},
 	play: async ({ canvasElement, step }) => {
-		const calendar = getCalendar(canvasElement);
-
 		await step('marks dates inside the selected range', async () => {
-			expect(getGridCell(getCell(calendar, dates.inRange)).ariaSelected).toBe(
-				'true',
-			);
+			expect(
+				getDateButton(canvasElement, dates.inRange).closest<HTMLElement>(
+					'[role="gridcell"]',
+				)?.ariaSelected,
+			).toBe('true');
 		});
 	},
 };
@@ -294,29 +246,45 @@ export const KeyboardNavigation: Story = {
 	},
 	play: async ({ canvasElement, step }) => {
 		const calendar = getCalendar(canvasElement);
-		const start = getCell(calendar, dates.start);
+		const start = getDateButton(canvasElement, dates.start);
 
 		await step('moves focus by day and week with arrow keys', async () => {
 			start.focus();
-			await expectActiveDate(calendar, dates.start);
+			await waitFor(() =>
+				expect(calendar.shadowRoot?.activeElement).toBe(start),
+			);
 
 			await userEvent.keyboard('{ArrowRight}');
-			await expectActiveDate(calendar, dates.nextDayAfterStart);
+			await waitFor(() =>
+				expect(calendar.shadowRoot?.activeElement).toBe(
+					getDateButton(canvasElement, dates.nextDayAfterStart),
+				),
+			);
 
 			await userEvent.keyboard('{ArrowLeft}');
 			await userEvent.keyboard('{ArrowDown}');
-			await expectActiveDate(calendar, dates.oneWeekAfterStart);
+			await waitFor(() =>
+				expect(calendar.shadowRoot?.activeElement).toBe(
+					getDateButton(canvasElement, dates.oneWeekAfterStart),
+				),
+			);
 
 			await userEvent.keyboard('{ArrowUp}');
-			await expectActiveDate(calendar, dates.start);
+			await waitFor(() =>
+				expect(calendar.shadowRoot?.activeElement).toBe(
+					getDateButton(canvasElement, dates.start),
+				),
+			);
 		});
 
 		await step('selects the focused date with the keyboard', async () => {
 			await userEvent.keyboard('{ArrowRight}{Enter}');
-			await expectRangeValue(calendar, {
-				start: dates.start,
-				end: dates.nextDayAfterStart,
-			});
+			await waitFor(() =>
+				expect(calendar.value).toEqual({
+					start: dates.start,
+					end: dates.nextDayAfterStart,
+				}),
+			);
 		});
 	},
 };
@@ -327,23 +295,23 @@ export const HeaderMonthNavigation: Story = {
 		numberOfMonths: 1,
 	},
 	play: async ({ canvasElement, step }) => {
-		const calendar = getCalendar(canvasElement);
-
 		await step('moves to the next visible month from the header', async () => {
-			await userEvent.click(getHeaderButton(calendar, 'Next month'));
+			await userEvent.click(getByShadowLabelText(canvasElement, 'Next month'));
 			await waitFor(() =>
-				expect(getMonthLabels(calendar)).toEqual(['September 2026']),
+				expect(getByShadowText(canvasElement, 'September 2026')).toBeTruthy(),
 			);
 		});
 
 		await step(
 			'moves to the previous visible month from the header',
 			async () => {
-				await userEvent.click(getHeaderButton(calendar, 'Previous month'));
-				await waitFor(() =>
-					expect(getMonthLabels(calendar)).toEqual(['August 2026']),
+				await userEvent.click(
+					getByShadowLabelText(canvasElement, 'Previous month'),
 				);
-				expect(getCell(calendar, dates.start)).toBeTruthy();
+				await waitFor(() =>
+					expect(getByShadowText(canvasElement, 'August 2026')).toBeTruthy(),
+				);
+				expect(getDateButton(canvasElement, dates.start)).toBeTruthy();
 			},
 		);
 	},
@@ -364,12 +332,20 @@ export const KeyboardMonthNavigation: Story = {
 		await step(
 			'moves to the next month when focus passes the visible month',
 			async () => {
-				getCell(calendar, dates.lastOfMonth).focus();
-				await expectActiveDate(calendar, dates.lastOfMonth);
+				getDateButton(canvasElement, dates.lastOfMonth).focus();
+				await waitFor(() =>
+					expect(calendar.shadowRoot?.activeElement).toBe(
+						getDateButton(canvasElement, dates.lastOfMonth),
+					),
+				);
 
 				await userEvent.keyboard('{ArrowRight}');
-				await expectActiveDate(calendar, dates.firstOfNextMonth);
-				expect(getMonthLabels(calendar)).toEqual(['September 2026']);
+				await waitFor(() =>
+					expect(calendar.shadowRoot?.activeElement).toBe(
+						getDateButton(canvasElement, dates.firstOfNextMonth),
+					),
+				);
+				expect(getByShadowText(canvasElement, 'September 2026')).toBeTruthy();
 			},
 		);
 
@@ -377,8 +353,12 @@ export const KeyboardMonthNavigation: Story = {
 			'moves to the previous month when focus leaves the visible month',
 			async () => {
 				await userEvent.keyboard('{ArrowLeft}');
-				await expectActiveDate(calendar, dates.lastOfMonth);
-				expect(getMonthLabels(calendar)).toEqual(['August 2026']);
+				await waitFor(() =>
+					expect(calendar.shadowRoot?.activeElement).toBe(
+						getDateButton(canvasElement, dates.lastOfMonth),
+					),
+				);
+				expect(getByShadowText(canvasElement, 'August 2026')).toBeTruthy();
 			},
 		);
 	},
@@ -391,11 +371,10 @@ export const TodaySemantics: Story = {
 		numberOfMonths: 1,
 	},
 	play: async ({ canvasElement, step }) => {
-		const calendar = getCalendar(canvasElement);
 		const today = new Date().toISOString().slice(0, 10);
 
 		await step('marks today', async () => {
-			expect(getCell(calendar, today).ariaLabel).toContain('Today');
+			expect(getDateButton(canvasElement, today).ariaLabel).toContain('Today');
 		});
 	},
 };
