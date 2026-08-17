@@ -1,9 +1,13 @@
 import { html } from '@pionjs/pion';
 import type { Meta, StoryObj } from '@storybook/web-components';
+import {
+	getAllByShadowRole,
+	getAllByShadowText,
+	getByShadowRole,
+} from 'shadow-dom-testing-library';
 import { expect, userEvent, waitFor } from 'storybook/test';
 import '../../src/date-input';
 import type { DateInputProps } from '../../src/date-input/use-date-input';
-import type { DateType } from '../../src/date-input/utils';
 import { dateArgType, DateInputArgs } from '../helper';
 
 const meta: Meta<DateInputArgs> = {
@@ -39,54 +43,32 @@ const getDateInput = (canvasElement: HTMLElement) => {
 	return dateInput!;
 };
 
-const getPartInput = (dateInput: DateInputProps, type: DateType) => {
-	const input = dateInput.shadowRoot?.querySelector<HTMLInputElement>(
-		`input[data-type="${type}"]`,
-	);
-	expect(input).toBeTruthy();
-	return input!;
-};
-
-const getParts = (dateInput: DateInputProps) => ({
-	year: getPartInput(dateInput, 'year'),
-	month: getPartInput(dateInput, 'month'),
-	day: getPartInput(dateInput, 'day'),
-});
-
-const expectPartValues = async (
-	dateInput: DateInputProps,
-	expected: Partial<Record<DateType, string>>,
-) => {
-	await waitFor(() => {
-		Object.entries(expected).forEach(([type, value]) => {
-			expect(getPartInput(dateInput, type as DateType).value).toBe(value);
-		});
-	});
-};
-
-const expectValue = async (dateInput: DateInputProps, value: string) => {
-	await waitFor(() => expect(dateInput.value).toBe(value));
-};
-
 const typeValue = async (input: HTMLInputElement, value: string) => {
 	input.focus();
 	input.select();
 	await userEvent.type(input, value);
 };
 
-const getDatePartContainer = (dateInput: DateInputProps, type: DateType) => {
-	const datePart = dateInput.shadowRoot?.querySelector(
-		`span:has(input[data-type="${type}"])`,
-	);
-	expect(datePart).toBeTruthy();
-	return datePart!;
-};
-
 export const ParsesValue: Story = {
 	render: renderWithLocale('en-US'),
 	play: async ({ canvasElement, step, args }) => {
-		const dateInput = getDateInput(canvasElement);
-		const { year, month, day } = getParts(dateInput);
+		const year = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /year/iu,
+			},
+		);
+		const month = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /month/iu,
+			},
+		);
+		const day = getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
+			name: /day/iu,
+		});
 
 		await step('parses the input date value into date parts', async () => {
 			const parsedValue = `${year.value.padStart(4, '0')}-${month.value.padStart(2, '0')}-${day.value.padStart(2, '0')}`;
@@ -101,14 +83,31 @@ export const EmptyPlaceholders: Story = {
 		value: '',
 	},
 	play: async ({ canvasElement, step }) => {
-		const dateInput = getDateInput(canvasElement);
-		const { year, month, day } = getParts(dateInput);
+		const year = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /year/iu,
+			},
+		);
+		const month = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /month/iu,
+			},
+		);
+		const day = getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
+			name: /day/iu,
+		});
 
 		await step('shows placeholders for empty date parts', async () => {
 			expect(month.placeholder).toBe('MM');
 			expect(day.placeholder).toBe('DD');
 			expect(year.placeholder).toBe('YYYY');
-			await expectPartValues(dateInput, { month: '', day: '', year: '' });
+			expect(month.value).toBe('');
+			expect(day.value).toBe('');
+			expect(year.value).toBe('');
 		});
 	},
 };
@@ -116,24 +115,19 @@ export const EmptyPlaceholders: Story = {
 export const LocaleSweden: Story = {
 	render: renderWithLocale('sv-SE'),
 	play: async ({ canvasElement, step }) => {
-		const dateInput = getDateInput(canvasElement);
-		const dateParts = [...(dateInput.shadowRoot?.children ?? [])];
-
 		await step('renders the locale correct date separator', async () => {
-			const renderedSeparator = dateParts[1]?.textContent;
-			expect(renderedSeparator).toEqual(localeSeparators['sv-SE']);
+			expect(
+				getAllByShadowText(canvasElement, localeSeparators['sv-SE']),
+			).toHaveLength(2);
 		});
 
 		await step('renders date parts in the locale correct order', async () => {
-			expect(dateParts.indexOf(getDatePartContainer(dateInput, 'year')!)).toBe(
-				0,
-			);
-			expect(dateParts.indexOf(getDatePartContainer(dateInput, 'month')!)).toBe(
-				2,
-			);
-			expect(dateParts.indexOf(getDatePartContainer(dateInput, 'day')!)).toBe(
-				4,
-			);
+			const [firstInput, secondInput, thirdInput] =
+				getAllByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton');
+
+			expect(firstInput.ariaLabel).toBe('Year');
+			expect(secondInput.ariaLabel).toBe('Month');
+			expect(thirdInput.ariaLabel).toBe('Day');
 		});
 	},
 };
@@ -141,24 +135,19 @@ export const LocaleSweden: Story = {
 export const LocaleUs: Story = {
 	render: renderWithLocale('en-US'),
 	play: async ({ canvasElement, step }) => {
-		const dateInput = getDateInput(canvasElement);
-		const dateParts = [...(dateInput.shadowRoot?.children ?? [])];
-
 		await step('renders the locale correct date separator', async () => {
-			const renderedSeparator = dateParts[1]?.textContent;
-			expect(renderedSeparator).toEqual(localeSeparators['en-US']);
+			expect(
+				getAllByShadowText(canvasElement, localeSeparators['en-US']),
+			).toHaveLength(2);
 		});
 
 		await step('renders date parts in the locale correct order', async () => {
-			expect(dateParts.indexOf(getDatePartContainer(dateInput, 'year')!)).toBe(
-				4,
-			);
-			expect(dateParts.indexOf(getDatePartContainer(dateInput, 'month')!)).toBe(
-				0,
-			);
-			expect(dateParts.indexOf(getDatePartContainer(dateInput, 'day')!)).toBe(
-				2,
-			);
+			const [firstInput, secondInput, thirdInput] =
+				getAllByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton');
+
+			expect(firstInput.ariaLabel).toBe('Month');
+			expect(secondInput.ariaLabel).toBe('Day');
+			expect(thirdInput.ariaLabel).toBe('Year');
 		});
 	},
 };
@@ -170,26 +159,35 @@ export const ArrowKeyWrapping: Story = {
 	},
 	play: async ({ canvasElement, step }) => {
 		const dateInput = getDateInput(canvasElement);
-		const { month, day } = getParts(dateInput);
+		const month = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /month/iu,
+			},
+		);
+		const day = getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
+			name: /day/iu,
+		});
 
 		await step('wraps the month when incrementing past December', async () => {
 			month.focus();
 			await userEvent.keyboard('{ArrowUp}');
-			await expectPartValues(dateInput, { month: '1' });
-			await expectValue(dateInput, '2024-01-31');
+			await waitFor(() => expect(month.value).toBe('1'));
+			await waitFor(() => expect(dateInput.value).toBe('2024-01-31'));
 		});
 
 		await step('wraps the month when decrementing before January', async () => {
 			await userEvent.keyboard('{ArrowDown}');
-			await expectPartValues(dateInput, { month: '12' });
-			await expectValue(dateInput, '2024-12-31');
+			await waitFor(() => expect(month.value).toBe('12'));
+			await waitFor(() => expect(dateInput.value).toBe('2024-12-31'));
 		});
 
 		await step('wraps the day within the current month', async () => {
 			day.focus();
 			await userEvent.keyboard('{ArrowUp}');
-			await expectPartValues(dateInput, { day: '1' });
-			await expectValue(dateInput, '2024-12-01');
+			await waitFor(() => expect(day.value).toBe('1'));
+			await waitFor(() => expect(dateInput.value).toBe('2024-12-01'));
 		});
 	},
 };
@@ -198,7 +196,23 @@ export const ArrowKeyNavigation: Story = {
 	render: renderWithLocale('en-US'),
 	play: async ({ canvasElement, step }) => {
 		const dateInput = getDateInput(canvasElement);
-		const { year, month, day } = getParts(dateInput);
+		const year = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /year/iu,
+			},
+		);
+		const month = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /month/iu,
+			},
+		);
+		const day = getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
+			name: /day/iu,
+		});
 
 		await step('moves focus between date parts with arrow keys', async () => {
 			month.focus();
@@ -223,14 +237,23 @@ export const OverflowTypingReset: Story = {
 	},
 	play: async ({ canvasElement, step }) => {
 		const dateInput = getDateInput(canvasElement);
-		const { month, day } = getParts(dateInput);
+		const month = getByShadowRole<HTMLInputElement>(
+			canvasElement,
+			'spinbutton',
+			{
+				name: /month/iu,
+			},
+		);
+		const day = getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
+			name: /day/iu,
+		});
 
 		await step(
 			'resets overflowing month input to the last typed digit',
 			async () => {
 				await typeValue(month, '91');
-				await expectPartValues(dateInput, { month: '1' });
-				await expectValue(dateInput, '2024-01-15');
+				await waitFor(() => expect(month.value).toBe('1'));
+				await waitFor(() => expect(dateInput.value).toBe('2024-01-15'));
 			},
 		);
 
@@ -238,8 +261,8 @@ export const OverflowTypingReset: Story = {
 			'resets overflowing day input to the last typed digit',
 			async () => {
 				await typeValue(day, '99');
-				await expectPartValues(dateInput, { day: '9' });
-				await expectValue(dateInput, '2024-01-09');
+				await waitFor(() => expect(day.value).toBe('9'));
+				await waitFor(() => expect(dateInput.value).toBe('2024-01-09'));
 			},
 		);
 	},
