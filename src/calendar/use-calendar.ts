@@ -8,9 +8,11 @@ import {
 } from '@pionjs/pion';
 import {
 	addMonths,
+	differenceInCalendarMonths,
 	endOfMonth,
 	format,
 	isBefore,
+	isSameDay,
 	startOfMonth,
 	subMonths,
 } from 'date-fns';
@@ -51,6 +53,7 @@ export const useCalendar = (host: CalendarProps) => {
 	const [value, setValue] = useProperty<DatepickerValue>('value');
 	const { start, end } = useDatepickerValue(value, mode);
 	const startDate = useMemo(() => ensureDate(start), [start]);
+	const [prevStartDate, setPrevStartDate] = useState(startDate);
 	const endDate = useMemo(() => ensureDate(end), [end]);
 	const minDate = useMemo(() => ensureDate(min), [min]);
 	const maxDate = useMemo(() => ensureDate(max), [max]);
@@ -140,6 +143,39 @@ export const useCalendar = (host: CalendarProps) => {
 			setSelectedMonth,
 		],
 	);
+
+	useEffect(() => {
+		if (!startDate || isSameDay(prevStartDate, startDate)) {
+			return;
+		}
+
+		setPrevStartDate(startDate);
+
+		if (startDate && isBeforeVisibleMonths(startDate, selectedMonth)) {
+			const diff = differenceInCalendarMonths(startDate, selectedMonth);
+			const offset = Math.ceil(Math.abs(diff) / numberOfMonths);
+			setSelectedMonth((prev) => subMonths(prev, offset * numberOfMonths));
+		}
+
+		if (
+			startDate &&
+			isAfterVisibleMonths(startDate, selectedMonth, numberOfMonths)
+		) {
+			const diff = differenceInCalendarMonths(
+				startDate,
+				addMonths(selectedMonth, numberOfMonths - 1),
+			);
+			const offset = Math.ceil(diff / numberOfMonths);
+			setSelectedMonth((prev) => addMonths(prev, offset * numberOfMonths));
+		}
+	}, [
+		startDate,
+		prevStartDate,
+		setPrevStartDate,
+		selectedMonth,
+		setSelectedMonth,
+		numberOfMonths,
+	]);
 
 	useEffect(() => {
 		if (isBeforeVisibleMonths(focusedDate, selectedMonth)) {
