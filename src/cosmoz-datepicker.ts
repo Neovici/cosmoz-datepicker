@@ -53,7 +53,7 @@ const CosmozDatepicker = (host: Props) => {
 			<cosmoz-button
 				slot="button"
 				type="button"
-				exposedparts="button: trigger"
+				exportparts="button:trigger"
 				variant=${triggerVariant}
 				size=${ifDefined(triggerSize)}
 				aria-label=${t('Date picker')}
