@@ -39,27 +39,20 @@ export const styles = css`
 		visibility: hidden;
 	}
 
-	cosmoz-input {
-		margin: 0;
-		padding: 0;
-	}
-
-	cosmoz-input::part(input) {
-		padding: 0;
+	input {
+		appearance: none;
+		box-shadow: none;
 		caret-color: transparent;
-		color: inherit;
+		min-width: 0;
+		outline: 0;
+		width: 100%;
 	}
 
-	cosmoz-input:focus-within {
-		--cz-color-text-placeholder: currentColor;
-	}
-
-	cosmoz-input::part(input)::selection {
+	input::selection {
 		background-color: rgba(0, 0, 0, 0.01);
 	}
 
-	cosmoz-input::part(wrap) {
-		box-shadow: none;
-		border-radius: 0;
+	input::placeholder {
+		color: currentColor;
 	}
 `;

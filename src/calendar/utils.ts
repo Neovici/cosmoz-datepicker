@@ -23,9 +23,6 @@ export const getWeekdayNames = (locale: string) => {
 	return weekdayNames;
 };
 
-export const getMonthName = (date: Date, locale: string) =>
-	Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
-
 export type DateCell = {
 	day: number;
 	iso: string;
@@ -85,7 +82,7 @@ export const isInRange = (
 	date: Date,
 	startDate: Date | undefined,
 	endDate: Date | undefined,
-	focusedDate: Date | undefined,
+	focusedDate: Date,
 ) => {
 	if (
 		endDate &&
@@ -129,11 +126,11 @@ export const ifDisabled = (
 ) =>
 	isCurrentMonth && isDisabled(date, minDate, maxDate) ? 'true' : undefined;
 
-export const ifStart = (day: DateCell, startDate: Date | undefined) =>
-	startDate && isSameDay(new Date(day.iso), startDate) ? true : undefined;
+export const ifStart = (date: Date, startDate: Date | undefined) =>
+	startDate && isSameDay(date, startDate) ? true : undefined;
 
-export const ifEnd = (day: DateCell, endDate: Date | undefined) =>
-	endDate && isSameDay(new Date(day.iso), endDate) ? true : undefined;
+export const ifEnd = (date: Date, endDate: Date | undefined) =>
+	endDate && isSameDay(date, endDate) ? true : undefined;
 
 export const isBeforeVisibleMonths = (date: Date, selectedMonth: Date) =>
 	isBefore(date, startOfMonth(selectedMonth));
@@ -157,3 +154,44 @@ export const getKeyboardDate = (e: KeyboardEvent, date: Date) => {
 
 export const getDateFromEvent = <E extends Event>(e: E) =>
 	ensureDate((e.target as HTMLDivElement).dataset.date);
+
+export const isInRangeOrSelected = (
+	date: Date,
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+	focusedDate: Date,
+	isRangeMode: boolean,
+) =>
+	isRangeMode
+		? isInRange(date, startDate, endDate, focusedDate)
+		: isSelected(date, startDate, endDate);
+
+export const ifInRangeOrSelected = (
+	date: Date,
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+	focusedDate: Date,
+	isRangeMode: boolean,
+) =>
+	isInRangeOrSelected(date, startDate, endDate, focusedDate, isRangeMode)
+		? 'true'
+		: undefined;
+
+export const isFocusHighlighted = (
+	date: Date,
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+	focusedDate: Date,
+	isRangeMode: boolean,
+) => isRangeMode && !endDate && !!startDate && isSameDay(date, focusedDate);
+
+export const resolveAutofocus = (day: DateCell, startDate: Date | undefined) =>
+	startDate
+		? isSameDay(new Date(day.iso), startDate)
+		: day.isToday && day.isCurrentMonth;
+
+export const isSelecting = (
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+	isRangeMode: boolean,
+) => isRangeMode && startDate && !endDate;

@@ -1,14 +1,21 @@
+import { spreadProps } from '@neovici/cosmoz-utils/directives/spread-props';
 import { html } from '@pionjs/pion';
 import { format, isSameDay } from 'date-fns';
+import { t } from 'i18next';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import {
 	DateCell,
 	ifDisabled,
 	ifEnd,
+	ifInRangeOrSelected,
 	ifStart,
+	isFocusHighlighted,
 	isInRange,
+	isInRangeOrSelected,
 	isSelected,
+	isSelecting,
+	resolveAutofocus,
 } from './utils';
 
 type RenderDateOptions = {
@@ -27,6 +34,66 @@ type RenderDateOptions = {
 	startDate: Date | undefined;
 };
 
+type AriaLabelOptions = Pick<
+	RenderDateOptions,
+	'day' | 'endDate' | 'focusedDate' | 'locale' | 'startDate'
+> & {
+	date: Date;
+	isRangeMode: boolean;
+};
+
+const getAriaDateLabel = (
+	date: Date,
+	startDate: Date | undefined,
+	endDate: Date | undefined,
+	locale: string,
+) => {
+	const opts: Intl.DateTimeFormatOptions = {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	};
+
+	if (
+		startDate &&
+		endDate &&
+		(ifStart(date, startDate) || ifEnd(date, endDate))
+	) {
+		return [
+			t('Selected range: {startDate} to {endDate}', {
+				startDate: startDate.toLocaleString(locale, opts),
+				endDate: endDate.toLocaleString(locale, opts),
+			}),
+			date.toLocaleString(locale, opts),
+		].join(', ');
+	}
+
+	return date.toLocaleString(locale, opts);
+};
+
+const getAriaLabel = ({
+	day,
+	date,
+	startDate,
+	endDate,
+	focusedDate,
+	locale,
+	isRangeMode,
+}: AriaLabelOptions) =>
+	[
+		isSelecting(startDate, endDate, isRangeMode) && t('Selecting'),
+		getAriaDateLabel(date, startDate, endDate, locale),
+		day.isToday && day.isCurrentMonth && t('Today'),
+		ifStart(date, startDate) && isRangeMode && t('Start date'),
+		ifEnd(date, endDate) && t('End date'),
+		!isSelecting(startDate, endDate, isRangeMode) &&
+			isInRangeOrSelected(date, startDate, endDate, focusedDate, isRangeMode) &&
+			t('Selected'),
+	]
+		.filter(Boolean)
+		.join(', ');
+
 export const renderDate = ({
 	day,
 	endDate,
@@ -44,50 +111,72 @@ export const renderDate = ({
 }: RenderDateOptions) => {
 	const date = new Date(day.iso);
 	const isRangeMode = !isSingleDateMode;
+	const isHidden = !day.isCurrentMonth && numberOfMonths > 1;
+	const disabled = ifDisabled(date, day.isCurrentMonth, minDate, maxDate);
+
+	const tableCellProps = {
+		role: 'gridCell',
+		ariaHidden: isHidden ? 'true' : undefined,
+		ariaDisabled: disabled || !day.isCurrentMonth,
+		ariaSelected: ifInRangeOrSelected(
+			date,
+			startDate,
+			endDate,
+			focusedDate,
+			isRangeMode,
+		),
+	};
+
+	const dateProps = {
+		role: 'button',
+		tabIndex: isSameDay(date, focusedDate) ? 0 : -1,
+		ariaLabel: getAriaLabel({
+			day,
+			date,
+			startDate,
+			endDate,
+			focusedDate,
+			locale,
+			isRangeMode,
+		}),
+		ariaDisabled: disabled || !day.isCurrentMonth,
+		autofocus: resolveAutofocus(day, startDate),
+	};
 
 	return html`
-		<td ?data-hidden=${!day.isCurrentMonth && numberOfMonths > 1}>
+		<td ?data-hidden=${isHidden} ${spreadProps(tableCellProps)}>
 			<div
-				class="date-cell-wrapper ${isRangeMode &&
-				isInRange(date, startDate, endDate, focusedDate)
-					? 'in-range'
-					: ''}"
+				class=${classMap({
+					'date-cell-wrapper': true,
+					'in-range':
+						isRangeMode && isInRange(date, startDate, endDate, focusedDate),
+				})}
 			>
 				<div
 					class=${classMap({
 						'date-cell': true,
 						'selected-cell': isSelected(date, startDate, endDate),
-						'focused-highlighted-cell':
-							isRangeMode &&
-							!endDate &&
-							!!startDate &&
-							isSameDay(date, focusedDate),
+						'focused-highlighted-cell': isFocusHighlighted(
+							date,
+							startDate,
+							endDate,
+							focusedDate,
+							isRangeMode,
+						),
 						'today-cell': day.isToday && day.isCurrentMonth,
 						'other-month-cell': !day.isCurrentMonth,
 					})}
-					role="button"
-					tabindex=${isSameDay(date, focusedDate) ? '0' : '-1'}
-					aria-label=${date.toLocaleString(locale, {
-						weekday: 'long',
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-					})}
-					aria-disabled=${ifDefined(
-						ifDisabled(date, day.isCurrentMonth, minDate, maxDate),
-					)}
 					data-date=${ifDefined(
 						day.isCurrentMonth ? format(date, 'yyyy-MM-dd') : undefined,
 					)}
-					data-disabled=${ifDefined(
-						ifDisabled(date, day.isCurrentMonth, minDate, maxDate),
-					)}
-					data-start=${ifDefined(ifStart(day, startDate))}
-					data-end=${ifDefined(ifEnd(day, endDate))}
+					data-disabled=${ifDefined(disabled)}
+					data-start=${ifDefined(ifStart(date, startDate))}
+					data-end=${ifDefined(ifEnd(date, endDate))}
 					@pointerdown=${onPointerDown}
 					@click=${onClick}
 					@pointerenter=${onPointerEnter}
 					@focus=${onFocus}
+					${spreadProps(dateProps)}
 				>
 					${day.day}
 				</div>

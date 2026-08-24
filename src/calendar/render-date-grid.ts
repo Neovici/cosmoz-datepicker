@@ -38,9 +38,9 @@ export const renderDateGrid = ({
 	startDate,
 	weekdayNames,
 }: RenderDateGridOptions) => html`
-	<table @keydown=${onKeyDown}>
+	<table role="grid" @keydown=${onKeyDown}>
 		<thead>
-			<tr>
+			<tr aria-hidden="true">
 				${repeat(
 					weekdayNames,
 					(i) => i,

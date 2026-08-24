@@ -40,20 +40,31 @@ const CosmozDatepicker = (host: Props) => {
 		triggerVariant = 'secondary',
 		onStartInputBlur,
 		onEndInputBlur,
+		isOpen,
+		setIsOpen,
 	} = useDatepicker(host);
 
 	return html`
-		<cosmoz-dropdown-next ?disabled=${disabled}>
+		<cosmoz-dropdown-next
+			?disabled=${disabled}
+			@dropdown-toggle=${() => setIsOpen((prev) => !prev)}
+			aria-disabled=${ifDefined(disabled ? 'true' : undefined)}
+		>
 			<cosmoz-button
 				slot="button"
 				type="button"
 				exposedparts="button: trigger"
 				variant=${triggerVariant}
 				size=${ifDefined(triggerSize)}
+				aria-label=${t('Date picker')}
+				aria-disabled=${ifDefined(disabled ? 'true' : undefined)}
+				aria-haspopup="dialog"
+				aria-expanded=${isOpen ? 'true' : 'false'}
 				?disabled=${disabled}
-				>${calendarIcon()}
-				${getTriggerText(start, end, locale, isSingleDateMode)}</cosmoz-button
 			>
+				${calendarIcon()}
+				${getTriggerText(start, end, locale, isSingleDateMode)}
+			</cosmoz-button>
 
 			<div class="content">
 				${when(
@@ -68,6 +79,9 @@ const CosmozDatepicker = (host: Props) => {
 										variant="tertiary"
 										full-width
 										?active=${isPresetActive(preset, start, end)}
+										aria-pressed=${isPresetActive(preset, start, end)
+											? 'true'
+											: 'false'}
 										@click=${() => liftPreset(preset, setValue, min, max)}
 										>${preset.label}</cosmoz-button
 									>
@@ -79,6 +93,7 @@ const CosmozDatepicker = (host: Props) => {
 
 				<div class="main">
 					<cosmoz-calendar
+						autofocus
 						mode=${mode}
 						locale=${locale}
 						number-of-months=${numberOfMonths}
@@ -91,6 +106,9 @@ const CosmozDatepicker = (host: Props) => {
 					<footer>
 						<div class="footer-left">
 							<cosmoz-date-input
+								aria-label=${ifDefined(
+									!isSingleDateMode ? t('Start date') : undefined,
+								)}
 								locale=${locale}
 								.value=${start}
 								@value-changed=${onStartInput}
@@ -101,6 +119,7 @@ const CosmozDatepicker = (host: Props) => {
 								() => html`
 									<span>–</span>
 									<cosmoz-date-input
+										aria-label=${t('End date')}
 										locale=${locale}
 										.value=${end}
 										@value-changed=${onEndInput}

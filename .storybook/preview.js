@@ -1,10 +1,20 @@
 import '@neovici/cosmoz-tokens';
-import i18next from 'i18next';
 import { within as withinShadow } from 'shadow-dom-testing-library';
+import { ensureStorybookI18nInitialized } from './i18n.js';
 
-i18next.init({ lng: 'en', resources: {} });
+let i18nInitPromise;
+
+const initializeStorybookI18n = () => {
+	if (i18nInitPromise != null) {
+		return i18nInitPromise;
+	}
+
+	i18nInitPromise = ensureStorybookI18nInitialized();
+	return i18nInitPromise;
+};
 
 export default {
+	loaders: [async () => initializeStorybookI18n()],
 	parameters: {
 		options: {
 			storySort: {

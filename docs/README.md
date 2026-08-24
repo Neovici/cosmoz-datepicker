@@ -39,7 +39,9 @@ Set and observe the selected value with the `value` property. Dates use `yyyy-MM
 </script>
 ```
 
-## Properties And Attributes
+## API
+
+### Properties and Attributes
 
 | Property         | Attribute         | Type                               | Default              | Description                                                      |
 | ---------------- | ----------------- | ---------------------------------- | -------------------- | ---------------------------------------------------------------- |
@@ -49,7 +51,7 @@ Set and observe the selected value with the `value` property. Dates use `yyyy-MM
 | `min`            | `min`             | `string \| undefined`              | `undefined`          | Earliest selectable date as a `yyyy-MM-dd` string.               |
 | `max`            | `max`             | `string \| undefined`              | `undefined`          | Latest selectable date as a `yyyy-MM-dd` string.                 |
 | `presets`        | -                 | `RangePreset[]`                    | built-in presets     | Custom preset buttons for range mode.                            |
-| `disabled`       | `disabled`        | `boolean`                          | `false`              | Disables opening the datepicker dropdown.                        |
+| `disabled`       | `disabled`        | `boolean`                          | `false`              | Disables the datepicker.                                         |
 | `noPresets`      | `no-presets`      | `boolean`                          | `false`              | Hides preset buttons in range mode.                              |
 | `singleCalendar` | `single-calendar` | `boolean`                          | `false`              | Forces a single-month calendar layout.                           |
 | `triggerSize`    | `trigger-size`    | `CosmozButtonElement['size']`      | `md`                 | Optional size for the trigger button.                            |
@@ -67,6 +69,12 @@ type RangePreset = {
 	end: string | (() => string);
 };
 ```
+
+### Events
+
+| Event           | Detail                                                  | Description                            |
+| --------------- | ------------------------------------------------------- | -------------------------------------- |
+| `value-changed` | `{ value: string \| { start?: string, end?: string } }` | Fired when the selected value changes. |
 
 ## Single And Range Modes
 
@@ -117,12 +125,6 @@ Use `no-presets` to hide preset buttons:
 
 Selected date values and preset values are clamped to the configured bounds.
 
-## Events
-
-| Event           | Detail                                                  | Description                            |
-| --------------- | ------------------------------------------------------- | -------------------------------------- |
-| `value-changed` | `{ value: string \| { start?: string, end?: string } }` | Fired when the selected value changes. |
-
 ## Styling
 
 The trigger button exposes the `trigger` part for external styling:
@@ -141,7 +143,87 @@ This component uses CSS custom properties from `@neovici/cosmoz-tokens`. The tok
 
 The datepicker supports keyboard navigation in the calendar and uses localized date input order based on `locale` or `navigator.language`.
 
+Use arrow keys to navigate calendar dates and `Enter` or `Space` to select a date. The footer date inputs are segmented by year, month, and day, ordered by locale.
+
 Use the `disabled` attribute when the datepicker should not be interactive.
+
+## Internationalization
+
+UI text is managed via [`i18next`](https://www.i18next.com/). The English text is used as the translation key, so it works out of the box when no translations are loaded.
+
+Consumers must initialize i18next before using the component:
+
+```js
+import i18next from 'i18next';
+
+i18next.init({
+	lng: 'en',
+	resources: {},
+	interpolation: {
+		prefix: '{',
+		suffix: '}',
+	},
+});
+```
+
+To provide translations, use `i18next.addResourceBundle()` or any i18next backend:
+
+```js
+i18next.addResourceBundle('sv', 'translation', {
+	Today: 'Idag',
+	Yesterday: 'I går',
+	'This week': 'Denna vecka',
+	'Last week': 'Förra veckan',
+	'This month': 'Denna månad',
+	'Last month': 'Förra månaden',
+	'This year': 'Detta år',
+	'Select date': 'Välj datum',
+	'Select dates': 'Välj datum',
+	'Date picker': 'Datumväljare',
+	'Previous month': 'Föregående månad',
+	'Next month': 'Nästa månad',
+	'Start date': 'Startdatum',
+	'End date': 'Slutdatum',
+	'Selected range: {startDate} to {endDate}':
+		'Valt intervall: {startDate} till {endDate}',
+	Selecting: 'Väljer',
+	Selected: 'Vald',
+	Year: 'År',
+	Month: 'Månad',
+	Day: 'Dag',
+	Empty: 'Tomt',
+	OK: 'OK',
+});
+```
+
+### Translation Keys
+
+| Key                                        | Used in                                    |
+| ------------------------------------------ | ------------------------------------------ |
+| `Today`                                    | Built-in preset label and date aria label  |
+| `Yesterday`                                | Built-in preset label                      |
+| `This week`                                | Built-in preset label                      |
+| `Last week`                                | Built-in preset label                      |
+| `This month`                               | Built-in preset label                      |
+| `Last month`                               | Built-in preset label                      |
+| `This year`                                | Built-in preset label                      |
+| `Select date`                              | Trigger placeholder in single mode         |
+| `Select dates`                             | Trigger placeholder in range mode          |
+| `Date picker`                              | Trigger button aria label                  |
+| `Previous month`                           | Previous month button aria label           |
+| `Next month`                               | Next month button aria label               |
+| `Start date`                               | Start input aria label and date aria label |
+| `End date`                                 | End input aria label and date aria label   |
+| `Selected range: {startDate} to {endDate}` | Range boundary date aria label             |
+| `Selecting`                                | Date aria label while selecting a range    |
+| `Selected`                                 | Selected date aria label                   |
+| `Year`                                     | Date input year segment aria label         |
+| `Month`                                    | Date input month segment aria label        |
+| `Day`                                      | Date input day segment aria label          |
+| `Empty`                                    | Empty date input segment aria value text   |
+| `OK`                                       | Dropdown confirm button                    |
+
+Month names, weekday names, formatted dates, date input order, and week start day are locale-driven through `Intl` and the `locale` property rather than i18next translation keys.
 
 ## Development
 
