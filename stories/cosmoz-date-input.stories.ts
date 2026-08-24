@@ -26,4 +26,25 @@ export default meta;
 
 type Story = StoryObj<DateInputArgs>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'Basic date input.',
+			},
+		},
+	},
+};
+
+export const EmptyState: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story: 'No selected date set.',
+			},
+		},
+	},
+	args: {
+		value: '',
+	},
+};

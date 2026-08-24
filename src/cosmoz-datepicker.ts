@@ -66,7 +66,7 @@ const CosmozDatepicker = (host: Props) => {
 				${getTriggerText(start, end, locale, isSingleDateMode)}
 			</cosmoz-button>
 
-			<div class="content">
+			<div class="content" role="dialog">
 				${when(
 					!(noPresets || isSingleCalendar || isSingleDateMode),
 					() => html`

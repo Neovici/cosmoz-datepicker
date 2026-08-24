@@ -7,6 +7,7 @@ import {
 	startOfMonth,
 } from 'date-fns';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { InputType } from 'storybook/internal/types';
 import { RangePreset } from '../src/presets';
 
 export const localeOptions = [
@@ -60,24 +61,24 @@ export const localeArgType = {
 	control: 'select',
 	options: localeOptions,
 	description: 'Locale used for formatting dates.',
-};
+} satisfies InputType;
 
 export const dateArgType = {
 	control: 'text',
 	description: 'Date string in yyyy-MM-dd format. Leave empty for no value.',
-};
+} satisfies InputType;
 
 export const dateRangeArgType = {
 	control: 'object',
 	description:
 		'String yyyy-MM-dd value in single mode, or an object with start and end yyyy-MM-dd strings in range mode.',
-};
+} satisfies InputType;
 
 export const modeArgType = {
 	control: 'select',
 	options: ['range', 'single'],
 	description: 'Selection mode.',
-};
+} satisfies InputType;
 
 export const currentMonthDate = (day: number) => {
 	const date = new Date();

@@ -3,6 +3,7 @@ import { css } from '@pionjs/pion';
 export const styles = css`
 	:host {
 		--cell-size: calc(var(--cz-spacing) * 10);
+		color: var(--cz-color-text-primary);
 	}
 
 	.calendar {

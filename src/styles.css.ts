@@ -7,6 +7,8 @@ export const styles = css`
 		border: 1px solid var(--cz-color-border-secondary);
 		border-radius: var(--cz-radius-2xl);
 		box-shadow: var(--cz-shadow-xl);
+		color: var(--cz-color-text-primary);
+		font-size: var(--cz-text-base);
 	}
 
 	.range-presets {

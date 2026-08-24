@@ -9,6 +9,7 @@ export const styles = css`
 		font-size: var(--cz-text-base);
 		line-height: var(--cz-text-base-line-height);
 		font-family: var(--cz-font-body);
+		color: var(--cz-color-text-primary);
 		padding: calc(var(--cz-spacing) * 2);
 		border-radius: var(--cz-radius-md);
 		box-shadow: 0 0 0 1px var(--cz-color-border-primary);
