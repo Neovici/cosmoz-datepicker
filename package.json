@@ -1,6 +1,6 @@
 {
   "name": "@neovici/cosmoz-datepicker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Date and date range picker web component for Neovici applications",
   "keywords": [
     "calendar",
