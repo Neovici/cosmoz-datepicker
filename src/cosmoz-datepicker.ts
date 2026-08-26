@@ -41,13 +41,13 @@ const CosmozDatepicker = (host: Props) => {
 		onStartInputBlur,
 		onEndInputBlur,
 		isOpen,
-		setIsOpen,
+		onDropdownToggle,
 	} = useDatepicker(host);
 
 	return html`
 		<cosmoz-dropdown-next
 			?disabled=${disabled}
-			@dropdown-toggle=${() => setIsOpen((prev) => !prev)}
+			@dropdown-toggle=${onDropdownToggle}
 			aria-disabled=${ifDefined(disabled ? 'true' : undefined)}
 		>
 			<cosmoz-button
