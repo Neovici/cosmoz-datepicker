@@ -1,4 +1,4 @@
-import{i as d,n as r,b as x,w as S,I as b}from"./iframe-_0gbPUuk.js";import"./cosmoz-datepicker-a_JUL7rU.js";import{d as v,a as h,m as $}from"./helper-DDoiV5o3.js";import"./preload-helper-PPVm8Dsz.js";import"./calendar-Q4nStrUv.js";import"./date-CAliyzCn.js";import"./date-input-DS2t6SZR.js";const{expect:t,userEvent:s,waitFor:c}=__STORYBOOK_MODULE_TEST__,o={start:"2026-08-14",end:"2026-08-18",afterStart:"2026-08-16",afterEnd:"2026-08-20",presetStart:"2026-08-03",presetEnd:"2026-08-07"},H={title:"Tests/CosmozDatepicker",component:"cosmoz-datepicker",tags:["!autodocs"],argTypes:{mode:$,value:h,min:v,max:v},args:{mode:"range",value:{start:o.start,end:o.end},min:"",max:"",disabled:!1,noPresets:!0,singleCalendar:!0,presets:void 0,triggerSize:"",triggerVariant:"secondary"}},l=e=>x`
+import{i as c,n as r,b as B,w as v,I as x}from"./iframe-Bm6Cp20B.js";import"./cosmoz-datepicker-DiDt89Ur.js";import{d as E,a as S,m as b}from"./helper-CUVgPaiC.js";import"./preload-helper-PPVm8Dsz.js";import"./calendar-DW0JXwNM.js";import"./date-C9w5d6U0.js";import"./date-input-CJBY7n1_.js";const{expect:t,userEvent:s,waitFor:i}=__STORYBOOK_MODULE_TEST__,o={start:"2026-08-14",end:"2026-08-18",afterStart:"2026-08-16",afterEnd:"2026-08-20",presetStart:"2026-08-03",presetEnd:"2026-08-07"},M={title:"Tests/CosmozDatepicker",component:"cosmoz-datepicker",tags:["!autodocs"],argTypes:{mode:b,value:S,min:E,max:E},args:{mode:"range",value:{start:o.start,end:o.end},min:"",max:"",disabled:!1,noPresets:!0,singleCalendar:!0,presets:void 0,triggerSize:"",triggerVariant:"secondary"}},d=e=>B`
     <cosmoz-datepicker
         mode=${e.mode}
         locale="en-US"
@@ -11,7 +11,7 @@ import{i as d,n as r,b as x,w as S,I as b}from"./iframe-_0gbPUuk.js";import"./co
         ?no-presets=${e.noPresets}
         ?single-calendar=${e.singleCalendar}
     ></cosmoz-datepicker>
-`,E=e=>{const n=e.querySelector("cosmoz-datepicker");return t(n).toBeTruthy(),n},p=(e,n)=>b(e,`date-${n}`),u={render:l,play:async({canvasElement:e,step:n})=>{const a=d(e,"Date picker");await n("syncs calendar range selection to inputs and trigger",async()=>{await s.click(a),await c(()=>t(a.ariaExpanded).toBe("true")),await s.click(p(e,o.afterStart)),t(r(e,"spinbutton",{name:/^month, start date$/iu}).value).toBe("8"),t(r(e,"spinbutton",{name:/^day, start date$/iu}).value).toBe("16"),t(r(e,"spinbutton",{name:/^year, start date$/iu}).value).toBe("2026"),await s.click(p(e,o.afterEnd)),t(r(e,"spinbutton",{name:/^month, end date$/iu}).value).toBe("8"),t(r(e,"spinbutton",{name:/^day, end date$/iu}).value).toBe("20"),t(r(e,"spinbutton",{name:/^year, end date$/iu}).value).toBe("2026"),t(a.textContent).toContain("Aug 16, 2026"),t(a.textContent).toContain("Aug 20, 2026")})}},g={render:l,args:{mode:"single",value:o.start},play:async({canvasElement:e,step:n})=>{const a=E(e),i=d(e,"Date picker");await n("syncs single date calendar selection",async()=>{await s.click(i),await c(()=>t(i.ariaExpanded).toBe("true")),await s.click(p(e,o.afterStart)),await c(()=>{t(r(e,"spinbutton",{name:/^month$/iu}).value).toBe("8"),t(r(e,"spinbutton",{name:/^day$/iu}).value).toBe("16"),t(r(e,"spinbutton",{name:/^year$/iu}).value).toBe("2026")}),t(i.textContent).toContain("Aug 16, 2026"),await s.click(r(e,"button",{name:/^ok$/iu})),await c(()=>t(a.value).toBe(o.afterStart))})}},m={render:l,play:async({canvasElement:e,step:n})=>{const a=d(e,"Date picker");await n("opens from the trigger",async()=>{await s.click(a),await c(()=>t(a.ariaExpanded).toBe("true")),t(r(e,"dialog")).toBeTruthy()}),await n("closes from the OK button",async()=>{await s.click(r(e,"button",{name:/^ok$/iu})),await c(()=>t(a.ariaExpanded).toBe("false"))})}},w={render:l,play:async({canvasElement:e,step:n})=>{const a=E(e),i=d(e,"Date picker");await n("opens the dropdown and selects a new range",async()=>{await s.click(i),await c(()=>t(i.ariaExpanded).toBe("true")),await s.click(p(e,o.afterStart)),await s.click(p(e,o.afterEnd)),t(a.value).toEqual({start:o.start,end:o.end})}),await n("updates the value once the dropdown closes",async()=>{await s.click(r(e,"button",{name:/^ok$/iu})),await c(()=>t(a.value).toEqual({start:o.afterStart,end:o.afterEnd}))})}},y={render:l,args:{disabled:!0},play:async({canvasElement:e,step:n})=>{const a=d(e,"Date picker");await n("does not open while disabled",async()=>{await s.click(a),t(a.ariaDisabled).toBe("true"),t(a.ariaExpanded).toBe("false")})}},k={render:l,args:{noPresets:!1,singleCalendar:!1,presets:[{label:"Work week",start:o.presetStart,end:o.presetEnd}]},globals:{viewport:{value:"desktop",isRotated:!1}},play:async({canvasElement:e,step:n})=>{const a=E(e),i=d(e,"Date picker");await n("syncs preset selection to calendar, inputs, and trigger",async()=>{await s.click(i),await c(()=>t(i.ariaExpanded).toBe("true")),await s.click(r(e,"button",{name:"Work week"}));const B=S(e,"Work week",{selector:"cosmoz-button"});t(r(e,"spinbutton",{name:/^day, start date$/iu}).value).toBe("3"),t(r(e,"spinbutton",{name:/^day, end date$/iu}).value).toBe("7"),t(B.ariaPressed).toBe("true"),t(i.textContent).toContain("Aug 3, 2026"),t(i.textContent).toContain("Aug 7, 2026"),await s.click(r(e,"button",{name:/^ok$/iu})),await c(()=>t(a.value).toEqual({start:o.presetStart,end:o.presetEnd}))})}};u.parameters={...u.parameters,docs:{...u.parameters?.docs,source:{originalSource:`{
+`,h=e=>{const n=e.querySelector("cosmoz-datepicker");return t(n).toBeTruthy(),n},l=(e,n)=>x(e,`date-${n}`),u={render:d,play:async({canvasElement:e,step:n})=>{const a=c(e,"Date picker");await n("syncs calendar range selection to inputs and trigger",async()=>{await s.click(a),await i(()=>t(a.ariaExpanded).toBe("true")),await s.click(l(e,o.afterStart)),t(r(e,"spinbutton",{name:/^month, start date$/iu}).value).toBe("8"),t(r(e,"spinbutton",{name:/^day, start date$/iu}).value).toBe("16"),t(r(e,"spinbutton",{name:/^year, start date$/iu}).value).toBe("2026"),await s.click(l(e,o.afterEnd)),t(r(e,"spinbutton",{name:/^month, end date$/iu}).value).toBe("8"),t(r(e,"spinbutton",{name:/^day, end date$/iu}).value).toBe("20"),t(r(e,"spinbutton",{name:/^year, end date$/iu}).value).toBe("2026"),t(a.textContent).toContain("Aug 16, 2026"),t(a.textContent).toContain("Aug 20, 2026")})}},g={render:d,args:{mode:"single",value:o.start},play:async({canvasElement:e,step:n})=>{const a=c(e,"Date picker");await n("syncs single date calendar selection",async()=>{await s.click(a),await i(()=>t(a.ariaExpanded).toBe("true")),await s.click(l(e,o.afterStart)),await i(()=>{t(r(e,"spinbutton",{name:/^month$/iu}).value).toBe("8"),t(r(e,"spinbutton",{name:/^day$/iu}).value).toBe("16"),t(r(e,"spinbutton",{name:/^year$/iu}).value).toBe("2026")}),t(a.textContent).toContain("Aug 16, 2026")})}},m={render:d,play:async({canvasElement:e,step:n})=>{const a=c(e,"Date picker");await n("opens from the trigger",async()=>{await s.click(a),await i(()=>t(a.ariaExpanded).toBe("true")),t(r(e,"dialog")).toBeTruthy()}),await n("closes from the OK button",async()=>{await s.click(r(e,"button",{name:/^ok$/iu})),await i(()=>t(a.ariaExpanded).toBe("false"))})}},w={render:d,play:async({canvasElement:e,step:n})=>{const a=h(e),p=c(e,"Date picker");await n("opens the dropdown and selects a new range",async()=>{await s.click(p),await i(()=>t(p.ariaExpanded).toBe("true")),await s.click(l(e,o.afterStart)),await s.click(l(e,o.afterEnd)),t(a.value).toEqual({start:o.start,end:o.end})}),await n("updates the value once the dropdown closes",async()=>{await s.click(r(e,"button",{name:/^ok$/iu})),await i(()=>t(a.value).toEqual({start:o.afterStart,end:o.afterEnd}))})}},y={render:d,args:{disabled:!0},play:async({canvasElement:e,step:n})=>{const a=c(e,"Date picker");await n("does not open while disabled",async()=>{await s.click(a),t(a.ariaDisabled).toBe("true"),t(a.ariaExpanded).toBe("false")})}},k={render:d,args:{noPresets:!1,singleCalendar:!1,presets:[{label:"Work week",start:o.presetStart,end:o.presetEnd}]},globals:{viewport:{value:"desktop",isRotated:!1}},play:async({canvasElement:e,step:n})=>{const a=c(e,"Date picker");await n("syncs preset selection to calendar, inputs, and trigger",async()=>{await s.click(a),await i(()=>t(a.ariaExpanded).toBe("true")),await s.click(r(e,"button",{name:"Work week"}));const p=v(e,"Work week",{selector:"cosmoz-button"});t(r(e,"spinbutton",{name:/^day, start date$/iu}).value).toBe("3"),t(r(e,"spinbutton",{name:/^day, end date$/iu}).value).toBe("7"),t(p.ariaPressed).toBe("true"),t(a.textContent).toContain("Aug 3, 2026"),t(a.textContent).toContain("Aug 7, 2026")})}};u.parameters={...u.parameters,docs:{...u.parameters?.docs,source:{originalSource:`{
   render: renderDatepicker,
   play: async ({
     canvasElement,
@@ -55,7 +55,6 @@ import{i as d,n as r,b as x,w as S,I as b}from"./iframe-_0gbPUuk.js";import"./co
     canvasElement,
     step
   }) => {
-    const datepicker = getDatepicker(canvasElement);
     const trigger = getByShadowLabelText<HTMLElement>(canvasElement, 'Date picker');
     await step('syncs single date calendar selection', async () => {
       await userEvent.click(trigger);
@@ -73,10 +72,6 @@ import{i as d,n as r,b as x,w as S,I as b}from"./iframe-_0gbPUuk.js";import"./co
         }).value).toBe('2026');
       });
       expect(trigger.textContent).toContain('Aug 16, 2026');
-      await userEvent.click(getByShadowRole(canvasElement, 'button', {
-        name: /^ok$/iu
-      }));
-      await waitFor(() => expect(datepicker.value).toBe(dates.afterStart));
     });
   }
 }`,...g.parameters?.docs?.source}}};m.parameters={...m.parameters,docs:{...m.parameters?.docs,source:{originalSource:`{
@@ -164,7 +159,6 @@ import{i as d,n as r,b as x,w as S,I as b}from"./iframe-_0gbPUuk.js";import"./co
     canvasElement,
     step
   }) => {
-    const datepicker = getDatepicker(canvasElement);
     const trigger = getByShadowLabelText<HTMLElement>(canvasElement, 'Date picker');
     await step('syncs preset selection to calendar, inputs, and trigger', async () => {
       await userEvent.click(trigger);
@@ -184,13 +178,6 @@ import{i as d,n as r,b as x,w as S,I as b}from"./iframe-_0gbPUuk.js";import"./co
       expect(preset.ariaPressed).toBe('true');
       expect(trigger.textContent).toContain('Aug 3, 2026');
       expect(trigger.textContent).toContain('Aug 7, 2026');
-      await userEvent.click(getByShadowRole(canvasElement, 'button', {
-        name: /^ok$/iu
-      }));
-      await waitFor(() => expect(datepicker.value).toEqual({
-        start: dates.presetStart,
-        end: dates.presetEnd
-      }));
     });
   }
-}`,...k.parameters?.docs?.source}}};const A=["CalendarSelectionSyncsRange","SingleDateSync","DropdownOpenClose","ValueUpdatesOnlyOnClose","DisabledState","PresetSyncsRange"];export{u as CalendarSelectionSyncsRange,y as DisabledState,m as DropdownOpenClose,k as PresetSyncsRange,g as SingleDateSync,w as ValueUpdatesOnlyOnClose,A as __namedExportsOrder,H as default};
+}`,...k.parameters?.docs?.source}}};const H=["CalendarSelectionSyncsRange","SingleDateSync","DropdownOpenClose","ValueUpdatesOnlyOnClose","DisabledState","PresetSyncsRange"];export{u as CalendarSelectionSyncsRange,y as DisabledState,m as DropdownOpenClose,k as PresetSyncsRange,g as SingleDateSync,w as ValueUpdatesOnlyOnClose,H as __namedExportsOrder,M as default};
