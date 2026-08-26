@@ -98,12 +98,6 @@ export const CalendarSelectionSyncsRange: Story = {
 				await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
 
 				await userEvent.click(getDateButton(canvasElement, dates.afterStart));
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.afterStart,
-						end: undefined,
-					}),
-				);
 				expect(
 					getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
 						name: /^month, start date$/iu,
@@ -121,12 +115,6 @@ export const CalendarSelectionSyncsRange: Story = {
 				).toBe('2026');
 
 				await userEvent.click(getDateButton(canvasElement, dates.afterEnd));
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.afterStart,
-						end: dates.afterEnd,
-					}),
-				);
 				expect(
 					getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
 						name: /^month, end date$/iu,
@@ -144,6 +132,16 @@ export const CalendarSelectionSyncsRange: Story = {
 				).toBe('2026');
 				expect(trigger.textContent).toContain('Aug 16, 2026');
 				expect(trigger.textContent).toContain('Aug 20, 2026');
+
+				await userEvent.click(
+					getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
+				);
+				await waitFor(() =>
+					expect(datepicker.value).toEqual({
+						start: dates.afterStart,
+						end: dates.afterEnd,
+					}),
+				);
 			},
 		);
 	},
@@ -167,7 +165,6 @@ export const SingleDateSync: Story = {
 			await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
 
 			await userEvent.click(getDateButton(canvasElement, dates.afterStart));
-			await waitFor(() => expect(datepicker.value).toBe(dates.afterStart));
 
 			await waitFor(() => {
 				expect(
@@ -187,6 +184,11 @@ export const SingleDateSync: Story = {
 				).toBe('2026');
 			});
 			expect(trigger.textContent).toContain('Aug 16, 2026');
+
+			await userEvent.click(
+				getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
+			);
+			await waitFor(() => expect(datepicker.value).toBe(dates.afterStart));
 		});
 	},
 };
@@ -210,6 +212,42 @@ export const DropdownOpenClose: Story = {
 				getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
 			);
 			await waitFor(() => expect(trigger.ariaExpanded).toBe('false'));
+		});
+	},
+};
+
+export const ValueUpdatesOnlyOnClose: Story = {
+	render: renderDatepicker,
+	play: async ({ canvasElement, step }) => {
+		const datepicker = getDatepicker(canvasElement);
+		const trigger = getByShadowLabelText<HTMLElement>(
+			canvasElement,
+			'Date picker',
+		);
+
+		await step('opens the dropdown and selects a new range', async () => {
+			await userEvent.click(trigger);
+			await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
+
+			await userEvent.click(getDateButton(canvasElement, dates.afterStart));
+			await userEvent.click(getDateButton(canvasElement, dates.afterEnd));
+
+			expect(datepicker.value).toEqual({
+				start: dates.start,
+				end: dates.end,
+			});
+		});
+
+		await step('updates the value once the dropdown closes', async () => {
+			await userEvent.click(
+				getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
+			);
+			await waitFor(() =>
+				expect(datepicker.value).toEqual({
+					start: dates.afterStart,
+					end: dates.afterEnd,
+				}),
+			);
 		});
 	},
 };
@@ -275,12 +313,6 @@ export const PresetSyncsRange: Story = {
 						selector: 'cosmoz-button',
 					},
 				);
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.presetStart,
-						end: dates.presetEnd,
-					}),
-				);
 				expect(
 					getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
 						name: /^day, start date$/iu,
@@ -294,6 +326,16 @@ export const PresetSyncsRange: Story = {
 				expect(preset.ariaPressed).toBe('true');
 				expect(trigger.textContent).toContain('Aug 3, 2026');
 				expect(trigger.textContent).toContain('Aug 7, 2026');
+
+				await userEvent.click(
+					getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
+				);
+				await waitFor(() =>
+					expect(datepicker.value).toEqual({
+						start: dates.presetStart,
+						end: dates.presetEnd,
+					}),
+				);
 			},
 		);
 	},
