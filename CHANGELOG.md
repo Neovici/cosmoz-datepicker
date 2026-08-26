@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+
+### Patch Changes
+
+- 52bc100: Export datepicker value and preset types from the package root.
+
 ## 1.0.2
 
 ### Patch Changes
