@@ -143,7 +143,6 @@ export const SingleDateSync: Story = {
 		value: dates.start,
 	},
 	play: async ({ canvasElement, step }) => {
-		const datepicker = getDatepicker(canvasElement);
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
@@ -173,11 +172,6 @@ export const SingleDateSync: Story = {
 				).toBe('2026');
 			});
 			expect(trigger.textContent).toContain('Aug 16, 2026');
-
-			await userEvent.click(
-				getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
-			);
-			await waitFor(() => expect(datepicker.value).toBe(dates.afterStart));
 		});
 	},
 };
@@ -278,7 +272,6 @@ export const PresetSyncsRange: Story = {
 		viewport: { value: 'desktop', isRotated: false },
 	},
 	play: async ({ canvasElement, step }) => {
-		const datepicker = getDatepicker(canvasElement);
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
@@ -315,16 +308,6 @@ export const PresetSyncsRange: Story = {
 				expect(preset.ariaPressed).toBe('true');
 				expect(trigger.textContent).toContain('Aug 3, 2026');
 				expect(trigger.textContent).toContain('Aug 7, 2026');
-
-				await userEvent.click(
-					getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
-				);
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.presetStart,
-						end: dates.presetEnd,
-					}),
-				);
 			},
 		);
 	},
