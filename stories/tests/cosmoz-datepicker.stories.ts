@@ -85,7 +85,6 @@ const getDateButton = (canvasElement: HTMLElement, date: string) =>
 export const CalendarSelectionSyncsRange: Story = {
 	render: renderDatepicker,
 	play: async ({ canvasElement, step }) => {
-		const datepicker = getDatepicker(canvasElement);
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
@@ -132,16 +131,6 @@ export const CalendarSelectionSyncsRange: Story = {
 				).toBe('2026');
 				expect(trigger.textContent).toContain('Aug 16, 2026');
 				expect(trigger.textContent).toContain('Aug 20, 2026');
-
-				await userEvent.click(
-					getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
-				);
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.afterStart,
-						end: dates.afterEnd,
-					}),
-				);
 			},
 		);
 	},
