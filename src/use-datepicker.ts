@@ -44,15 +44,29 @@ export const useDatepicker = (host: Props) => {
 	} = host;
 	const isSingleDateMode = mode === 'single';
 	const locale = _locale ?? navigator.language;
-	const [value, setValue] = useProperty<DatepickerValue>('value');
-	const { start, end } = useDatepickerValue(value, mode);
+	const [hostValue, setHostValue] = useProperty<DatepickerValue>('value');
+	const [value, setValue] = useState<DatepickerValue | undefined>(hostValue);
 	const isNarrow = useMediaMatch('(width < 735px)');
 	const isSingleCalendar = singleCalendar || isNarrow || isSingleDateMode;
 	const numberOfMonths = isSingleCalendar ? 1 : 2;
 	const [isOpen, setIsOpen] = useState(false);
+	const { start, end } = useDatepickerValue(value, mode);
 	const rangePresets = useMemo(
 		() => presets ?? getRangePresets(locale),
 		[locale, presets],
+	);
+
+	const onDropdownToggle = useCallback(
+		({ newState }: ToggleEvent) => {
+			if (newState === 'closed') {
+				setHostValue(value);
+			} else {
+				setValue(hostValue);
+			}
+
+			setIsOpen(newState === 'open');
+		},
+		[value, hostValue, setIsOpen, setHostValue, setValue],
 	);
 
 	const onStartInput = useCallback(
@@ -118,6 +132,6 @@ export const useDatepicker = (host: Props) => {
 		onStartInputBlur,
 		onEndInputBlur,
 		isOpen,
-		setIsOpen,
+		onDropdownToggle,
 	};
 };

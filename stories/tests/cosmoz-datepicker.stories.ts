@@ -85,7 +85,6 @@ const getDateButton = (canvasElement: HTMLElement, date: string) =>
 export const CalendarSelectionSyncsRange: Story = {
 	render: renderDatepicker,
 	play: async ({ canvasElement, step }) => {
-		const datepicker = getDatepicker(canvasElement);
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
@@ -98,12 +97,6 @@ export const CalendarSelectionSyncsRange: Story = {
 				await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
 
 				await userEvent.click(getDateButton(canvasElement, dates.afterStart));
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.afterStart,
-						end: undefined,
-					}),
-				);
 				expect(
 					getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
 						name: /^month, start date$/iu,
@@ -121,12 +114,6 @@ export const CalendarSelectionSyncsRange: Story = {
 				).toBe('2026');
 
 				await userEvent.click(getDateButton(canvasElement, dates.afterEnd));
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.afterStart,
-						end: dates.afterEnd,
-					}),
-				);
 				expect(
 					getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
 						name: /^month, end date$/iu,
@@ -156,7 +143,6 @@ export const SingleDateSync: Story = {
 		value: dates.start,
 	},
 	play: async ({ canvasElement, step }) => {
-		const datepicker = getDatepicker(canvasElement);
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
@@ -167,7 +153,6 @@ export const SingleDateSync: Story = {
 			await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
 
 			await userEvent.click(getDateButton(canvasElement, dates.afterStart));
-			await waitFor(() => expect(datepicker.value).toBe(dates.afterStart));
 
 			await waitFor(() => {
 				expect(
@@ -214,6 +199,42 @@ export const DropdownOpenClose: Story = {
 	},
 };
 
+export const ValueUpdatesOnlyOnClose: Story = {
+	render: renderDatepicker,
+	play: async ({ canvasElement, step }) => {
+		const datepicker = getDatepicker(canvasElement);
+		const trigger = getByShadowLabelText<HTMLElement>(
+			canvasElement,
+			'Date picker',
+		);
+
+		await step('opens the dropdown and selects a new range', async () => {
+			await userEvent.click(trigger);
+			await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
+
+			await userEvent.click(getDateButton(canvasElement, dates.afterStart));
+			await userEvent.click(getDateButton(canvasElement, dates.afterEnd));
+
+			expect(datepicker.value).toEqual({
+				start: dates.start,
+				end: dates.end,
+			});
+		});
+
+		await step('updates the value once the dropdown closes', async () => {
+			await userEvent.click(
+				getByShadowRole(canvasElement, 'button', { name: /^ok$/iu }),
+			);
+			await waitFor(() =>
+				expect(datepicker.value).toEqual({
+					start: dates.afterStart,
+					end: dates.afterEnd,
+				}),
+			);
+		});
+	},
+};
+
 export const DisabledState: Story = {
 	render: renderDatepicker,
 	args: {
@@ -251,7 +272,6 @@ export const PresetSyncsRange: Story = {
 		viewport: { value: 'desktop', isRotated: false },
 	},
 	play: async ({ canvasElement, step }) => {
-		const datepicker = getDatepicker(canvasElement);
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
@@ -274,12 +294,6 @@ export const PresetSyncsRange: Story = {
 					{
 						selector: 'cosmoz-button',
 					},
-				);
-				await waitFor(() =>
-					expect(datepicker.value).toEqual({
-						start: dates.presetStart,
-						end: dates.presetEnd,
-					}),
 				);
 				expect(
 					getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
