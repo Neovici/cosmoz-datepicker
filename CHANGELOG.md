@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- de2ff8a: Only update the `value` property when the dropdown closes, instead of on every calendar/input change, so consumers see the final selection once the user is done picking.
+
 ## 1.0.1
 
 ### Patch Changes
