@@ -88,6 +88,7 @@ export const CalendarSelectionSyncsRange: Story = {
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
+			{ depth: 1 },
 		);
 
 		await step(
@@ -146,6 +147,7 @@ export const SingleDateSync: Story = {
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
+			{ depth: 1 },
 		);
 
 		await step('syncs single date calendar selection', async () => {
@@ -182,6 +184,7 @@ export const DropdownOpenClose: Story = {
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
+			{ depth: 1 },
 		);
 
 		await step('opens from the trigger', async () => {
@@ -206,6 +209,7 @@ export const ValueUpdatesOnlyOnClose: Story = {
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
+			{ depth: 1 },
 		);
 
 		await step('opens the dropdown and selects a new range', async () => {
@@ -244,6 +248,7 @@ export const DisabledState: Story = {
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
+			{ depth: 1 },
 		);
 
 		await step('does not open while disabled', async () => {
@@ -275,6 +280,7 @@ export const PresetSyncsRange: Story = {
 		const trigger = getByShadowLabelText<HTMLElement>(
 			canvasElement,
 			'Date picker',
+			{ depth: 1 },
 		);
 
 		await step(

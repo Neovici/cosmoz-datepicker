@@ -296,7 +296,9 @@ export const HeaderMonthNavigation: Story = {
 	},
 	play: async ({ canvasElement, step }) => {
 		await step('moves to the next visible month from the header', async () => {
-			await userEvent.click(getByShadowLabelText(canvasElement, 'Next month'));
+			await userEvent.click(
+				getByShadowLabelText(canvasElement, 'Next month', { depth: 1 }),
+			);
 			await waitFor(() =>
 				expect(getByShadowText(canvasElement, 'September 2026')).toBeTruthy(),
 			);
@@ -306,7 +308,7 @@ export const HeaderMonthNavigation: Story = {
 			'moves to the previous visible month from the header',
 			async () => {
 				await userEvent.click(
-					getByShadowLabelText(canvasElement, 'Previous month'),
+					getByShadowLabelText(canvasElement, 'Previous month', { depth: 1 }),
 				);
 				await waitFor(() =>
 					expect(getByShadowText(canvasElement, 'August 2026')).toBeTruthy(),
