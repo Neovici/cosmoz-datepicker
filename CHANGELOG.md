@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- c4c05d9: Align with latest cosmoz-components: cosmoz-button ^2.5.0, tokens ^3.5.1 || ^4.0.0.
+
 ## 1.0.4
 
 ### Patch Changes
