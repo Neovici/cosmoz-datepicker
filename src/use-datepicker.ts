@@ -1,5 +1,11 @@
 import { CosmozButtonElement } from '@neovici/cosmoz-button';
-import { useCallback, useMemo, useProperty, useState } from '@pionjs/pion';
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useProperty,
+	useState,
+} from '@pionjs/pion';
 import { isAfter, isBefore } from 'date-fns';
 import { getRangePresets, RangePreset } from './presets';
 import { useDatepickerValue } from './use-datepicker-value';
@@ -50,6 +56,11 @@ export const useDatepicker = (host: Props) => {
 	const isSingleCalendar = singleCalendar || isNarrow || isSingleDateMode;
 	const numberOfMonths = isSingleCalendar ? 1 : 2;
 	const [isOpen, setIsOpen] = useState(false);
+	// A value set from outside shows in the trigger right away; while the
+	// popover is open, the pending selection is kept until it closes.
+	useEffect(() => {
+		if (!isOpen) setValue(hostValue);
+	}, [hostValue]);
 	const { start, end } = useDatepickerValue(value, mode);
 	const rangePresets = useMemo(
 		() => presets ?? getRangePresets(locale),

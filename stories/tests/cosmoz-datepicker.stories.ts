@@ -318,3 +318,39 @@ export const PresetSyncsRange: Story = {
 		);
 	},
 };
+
+export const ExternalValueShowsInTrigger: Story = {
+	render: renderDatepicker,
+	args: {
+		mode: 'single',
+		value: dates.start,
+	},
+	play: async ({ canvasElement, step }) => {
+		const datepicker = getDatepicker(canvasElement);
+		const trigger = getByShadowLabelText<HTMLElement>(
+			canvasElement,
+			'Date picker',
+			{ depth: 1 },
+		);
+
+		await step('a value set from outside updates the trigger', async () => {
+			await waitFor(() =>
+				expect(trigger.textContent).toContain('Aug 14, 2026'),
+			);
+			datepicker.value = dates.afterEnd;
+			await waitFor(() =>
+				expect(trigger.textContent).toContain('Aug 20, 2026'),
+			);
+		});
+
+		await step('and the calendar opens on it', async () => {
+			await userEvent.click(trigger);
+			await waitFor(() => expect(trigger.ariaExpanded).toBe('true'));
+			expect(
+				getByShadowRole<HTMLInputElement>(canvasElement, 'spinbutton', {
+					name: /^day$/iu,
+				}).value,
+			).toBe('20');
+		});
+	},
+};
