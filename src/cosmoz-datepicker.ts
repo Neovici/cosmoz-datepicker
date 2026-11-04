@@ -111,7 +111,7 @@ const CosmozDatepicker = (host: Props) => {
 										aria-pressed=${preset === activePreset ? 'true' : 'false'}
 										@click=${() => pickPreset(preset)}
 										>${preset.label}
-										<span class="preset-date"
+										<span slot="suffix" class="preset-date"
 											>${getPresetDateText(invoke(preset.value), locale)}</span
 										></cosmoz-button
 									>
@@ -185,6 +185,7 @@ customElements.define(
 			'single-calendar',
 			'trigger-size',
 			'trigger-variant',
+			'field',
 		],
 		styleSheets: [normalize, styles],
 		shadowRootInit: { delegatesFocus: true, mode: 'open' },

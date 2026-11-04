@@ -26,6 +26,8 @@ export interface Props {
 	presets?: RangePreset[] | DatePreset[];
 	disabled?: boolean;
 	noPresets?: boolean;
+	/** Render the trigger as a form field: full width, left-aligned, input look. */
+	field?: boolean;
 	singleCalendar?: boolean;
 	triggerSize?: CosmozButtonElement['size'];
 	triggerVariant?: CosmozButtonElement['variant'];
