@@ -12,6 +12,15 @@ import {
 import { t } from 'i18next';
 import { startOfWeek } from './utils';
 
+/** A single date offered next to the calendar, e.g. "In 2 weeks". */
+export type DatePreset = {
+	label: string;
+	/** ISO date (`yyyy-MM-dd`), or a function returning one. */
+	value: string | (() => string);
+	/** Tooltip, e.g. why this date is suggested. */
+	title?: string;
+};
+
 export type RangePreset = {
 	label: string;
 	start: string | (() => string);

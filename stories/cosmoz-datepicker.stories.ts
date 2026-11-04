@@ -134,6 +134,31 @@ export const SingleDate: Story = {
 	},
 };
 
+export const SingleDatePresets: Story = {
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'Single date with presets beside the calendar: each shows its date.',
+			},
+		},
+	},
+	args: {
+		mode: 'single',
+		value: currentMonthDate(19),
+		noPresets: false,
+		presets: [
+			{
+				label: 'Earliest',
+				value: currentMonthDate(12),
+				title: '5 business days',
+			},
+			{ label: 'In 2 weeks', value: currentMonthDate(19) },
+			{ label: 'End of month', value: currentMonthDate(28) },
+		],
+	},
+};
+
 export const EmptyState: Story = {
 	parameters: {
 		docs: {

@@ -2,6 +2,7 @@ import '@neovici/cosmoz-button';
 import '@neovici/cosmoz-dropdown';
 import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
+import { invoke } from '@neovici/cosmoz-utils/function';
 import { component, html, lift } from '@pionjs/pion';
 import { t } from 'i18next';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
@@ -13,6 +14,7 @@ import { styles } from './styles.css';
 import { Props, useDatepicker } from './use-datepicker';
 import {
 	closeDropdown,
+	getPresetDateText,
 	getTriggerText,
 	isPresetActive,
 	liftPreset,
@@ -42,6 +44,9 @@ const CosmozDatepicker = (host: Props) => {
 		onEndInputBlur,
 		isOpen,
 		onDropdownToggle,
+		datePresets,
+		activePreset,
+		pickPreset,
 	} = useDatepicker(host);
 
 	return html`
@@ -84,6 +89,31 @@ const CosmozDatepicker = (host: Props) => {
 											: 'false'}
 										@click=${() => liftPreset(preset, setValue, min, max)}
 										>${preset.label}</cosmoz-button
+									>
+								`,
+							)}
+						</div>
+					`,
+				)}
+				${when(
+					datePresets.length,
+					() => html`
+						<div class="date-presets" role="group" aria-label=${t('Presets')}>
+							${repeat(
+								datePresets,
+								(preset) => preset.label,
+								(preset) => html`
+									<cosmoz-button
+										variant="tertiary"
+										full-width
+										title=${ifDefined(preset.title)}
+										?active=${preset === activePreset}
+										aria-pressed=${preset === activePreset ? 'true' : 'false'}
+										@click=${() => pickPreset(preset)}
+										>${preset.label}
+										<span slot="suffix" class="preset-date"
+											>${getPresetDateText(invoke(preset.value), locale)}</span
+										></cosmoz-button
 									>
 								`,
 							)}
@@ -155,6 +185,7 @@ customElements.define(
 			'single-calendar',
 			'trigger-size',
 			'trigger-variant',
+			'field',
 		],
 		styleSheets: [normalize, styles],
 		shadowRootInit: { delegatesFocus: true, mode: 'open' },
