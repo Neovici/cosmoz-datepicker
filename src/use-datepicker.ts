@@ -22,7 +22,7 @@ export interface Props {
 	locale?: string;
 	min?: string;
 	max?: string;
-	/** Range presets in `range` mode; date presets, shown next to the trigger, in `single` mode. */
+	/** Range presets in `range` mode; date presets in `single` mode. Both show beside the calendar. */
 	presets?: RangePreset[] | DatePreset[];
 	disabled?: boolean;
 	noPresets?: boolean;
@@ -58,11 +58,10 @@ export const useDatepicker = (host: Props) => {
 		single: isSingleDateMode,
 		noPresets,
 		locale,
-		value: hostValue,
+		value,
 		min,
 		max,
 		setValue,
-		setHostValue,
 	});
 
 	const onDropdownToggle = useCallback(

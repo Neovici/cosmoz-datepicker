@@ -5,7 +5,8 @@ import { getValidDateString } from './utils';
 
 /**
  * Range presets for `range` mode; in `single` mode, date presets with the one
- * matching the value, and picking one.
+ * matching the pending value, and picking one. Like a range preset, a picked
+ * date is committed when the popover closes.
  */
 export const usePresets = ({
 	presets,
@@ -16,7 +17,6 @@ export const usePresets = ({
 	min,
 	max,
 	setValue,
-	setHostValue,
 }: {
 	presets?: RangePreset[] | DatePreset[];
 	single: boolean;
@@ -26,7 +26,6 @@ export const usePresets = ({
 	min?: string;
 	max?: string;
 	setValue: (value: string) => void;
-	setHostValue: (value: string) => void;
 }) => {
 	const rangePresets = useMemo(
 		() =>
@@ -41,12 +40,9 @@ export const usePresets = ({
 		(preset) => invoke(preset.value) === value,
 	);
 	const pickPreset = useCallback(
-		(preset: DatePreset) => {
-			const picked = getValidDateString(invoke(preset.value), min, max);
-			setValue(picked);
-			setHostValue(picked);
-		},
-		[min, max, setValue, setHostValue],
+		(preset: DatePreset) =>
+			setValue(getValidDateString(invoke(preset.value), min, max)),
+		[min, max, setValue],
 	);
 	return { rangePresets, datePresets, activePreset, pickPreset };
 };

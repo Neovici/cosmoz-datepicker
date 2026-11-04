@@ -1,11 +1,10 @@
 import '@neovici/cosmoz-button';
 import '@neovici/cosmoz-dropdown';
-import { calendarIcon, checkIcon } from '@neovici/cosmoz-icons/untitled';
+import { calendarIcon } from '@neovici/cosmoz-icons/untitled';
 import { normalize } from '@neovici/cosmoz-tokens/normalize';
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { component, html, lift } from '@pionjs/pion';
 import { t } from 'i18next';
-import { nothing } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { when } from 'lit-html/directives/when.js';
@@ -50,7 +49,7 @@ const CosmozDatepicker = (host: Props) => {
 		pickPreset,
 	} = useDatepicker(host);
 
-	const dropdown = html`
+	return html`
 		<cosmoz-dropdown-next
 			?disabled=${disabled}
 			@dropdown-toggle=${onDropdownToggle}
@@ -69,9 +68,7 @@ const CosmozDatepicker = (host: Props) => {
 				?disabled=${disabled}
 			>
 				${calendarIcon()}
-				${activePreset
-					? t('Select date')
-					: getTriggerText(start, end, locale, isSingleDateMode)}
+				${getTriggerText(start, end, locale, isSingleDateMode)}
 			</cosmoz-button>
 
 			<div class="content" role="dialog">
@@ -92,6 +89,31 @@ const CosmozDatepicker = (host: Props) => {
 											: 'false'}
 										@click=${() => liftPreset(preset, setValue, min, max)}
 										>${preset.label}</cosmoz-button
+									>
+								`,
+							)}
+						</div>
+					`,
+				)}
+				${when(
+					datePresets.length,
+					() => html`
+						<div class="date-presets" role="group" aria-label=${t('Presets')}>
+							${repeat(
+								datePresets,
+								(preset) => preset.label,
+								(preset) => html`
+									<cosmoz-button
+										variant="tertiary"
+										full-width
+										title=${ifDefined(preset.title)}
+										?active=${preset === activePreset}
+										aria-pressed=${preset === activePreset ? 'true' : 'false'}
+										@click=${() => pickPreset(preset)}
+										>${preset.label}
+										<span class="preset-date"
+											>${getPresetDateText(invoke(preset.value), locale)}</span
+										></cosmoz-button
 									>
 								`,
 							)}
@@ -148,32 +170,6 @@ const CosmozDatepicker = (host: Props) => {
 			</div>
 		</cosmoz-dropdown-next>
 	`;
-
-	if (!datePresets.length) return dropdown;
-
-	return html`<div class="date-presets" role="group">
-		${repeat(
-			datePresets,
-			(preset) => preset.label,
-			(preset) => {
-				const active = preset === activePreset;
-				return html`<cosmoz-button
-					type="button"
-					variant="secondary"
-					size=${ifDefined(triggerSize)}
-					title=${ifDefined(preset.title)}
-					aria-pressed=${active ? 'true' : 'false'}
-					?disabled=${disabled}
-					@click=${() => pickPreset(preset)}
-					>${active ? checkIcon({ slot: 'prefix' }) : nothing}${preset.label}
-					<span class="preset-date"
-						>${getPresetDateText(invoke(preset.value), locale)}</span
-					></cosmoz-button
-				>`;
-			},
-		)}
-		${dropdown}
-	</div>`;
 };
 
 customElements.define(

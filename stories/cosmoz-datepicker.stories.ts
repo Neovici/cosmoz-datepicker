@@ -139,7 +139,7 @@ export const SingleDatePresets: Story = {
 		docs: {
 			description: {
 				story:
-					'Single date with presets: each shows its date, a calendar picks any other date.',
+					'Single date with presets beside the calendar: each shows its date.',
 			},
 		},
 	},
