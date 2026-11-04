@@ -8,7 +8,7 @@ import {
 } from 'date-fns';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { InputType } from 'storybook/internal/types';
-import { RangePreset } from '../src/presets';
+import { DatePreset, RangePreset } from '../src/presets';
 
 export const localeOptions = [
 	'US (en-US)',
@@ -52,7 +52,7 @@ export interface DatepickerArgs extends DateRangeArgs {
 	disabled: boolean;
 	noPresets: boolean;
 	singleCalendar: boolean;
-	presets?: RangePreset[];
+	presets?: RangePreset[] | DatePreset[];
 	triggerSize?: string;
 	triggerVariant: string;
 }

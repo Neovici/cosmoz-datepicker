@@ -108,3 +108,15 @@ export const isDateRangeValue = (
 	value: DatepickerValue | undefined,
 	mode: DatepickerMode,
 ): value is DateRange => mode !== 'single';
+
+/** "Tue, Nov 10": a preset's date, short enough for a button. */
+export const getPresetDateText = (value: string, locale: string) => {
+	const date = ensureDate(value);
+	return date
+		? new Intl.DateTimeFormat(locale, {
+				weekday: 'short',
+				month: 'short',
+				day: 'numeric',
+			}).format(date)
+		: '';
+};

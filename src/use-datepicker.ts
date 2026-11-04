@@ -1,9 +1,10 @@
 import { CosmozButtonElement } from '@neovici/cosmoz-button';
-import { useCallback, useMemo, useProperty, useState } from '@pionjs/pion';
+import { useCallback, useProperty, useState } from '@pionjs/pion';
 import { isAfter, isBefore } from 'date-fns';
-import { getRangePresets, RangePreset } from './presets';
+import { DatePreset, RangePreset } from './presets';
 import { useDatepickerValue } from './use-datepicker-value';
 import { useMediaMatch } from './use-media-match';
+import { usePresets } from './use-presets';
 import { getValidDateString } from './utils';
 
 export type DateRange = {
@@ -21,7 +22,8 @@ export interface Props {
 	locale?: string;
 	min?: string;
 	max?: string;
-	presets?: RangePreset[];
+	/** Range presets in `range` mode; date presets, shown next to the trigger, in `single` mode. */
+	presets?: RangePreset[] | DatePreset[];
 	disabled?: boolean;
 	noPresets?: boolean;
 	singleCalendar?: boolean;
@@ -51,10 +53,17 @@ export const useDatepicker = (host: Props) => {
 	const numberOfMonths = isSingleCalendar ? 1 : 2;
 	const [isOpen, setIsOpen] = useState(false);
 	const { start, end } = useDatepickerValue(value, mode);
-	const rangePresets = useMemo(
-		() => presets ?? getRangePresets(locale),
-		[locale, presets],
-	);
+	const { rangePresets, datePresets, activePreset, pickPreset } = usePresets({
+		presets,
+		single: isSingleDateMode,
+		noPresets,
+		locale,
+		value: hostValue,
+		min,
+		max,
+		setValue,
+		setHostValue,
+	});
 
 	const onDropdownToggle = useCallback(
 		({ newState }: ToggleEvent) => {
@@ -111,6 +120,9 @@ export const useDatepicker = (host: Props) => {
 	}, [start, end, setValue]);
 
 	return {
+		datePresets,
+		activePreset,
+		pickPreset,
 		end,
 		isSingleCalendar,
 		locale,

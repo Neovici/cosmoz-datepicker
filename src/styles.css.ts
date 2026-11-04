@@ -1,6 +1,19 @@
 import { css } from '@pionjs/pion';
 
 export const styles = css`
+	.date-presets {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: calc(var(--cz-spacing) * 2);
+	}
+
+	.preset-date {
+		margin-inline-start: calc(var(--cz-spacing) * 1.5);
+		opacity: 0.7;
+		font-variant-numeric: tabular-nums;
+	}
+
 	.content {
 		display: flex;
 		background: var(--cz-color-bg-primary);
