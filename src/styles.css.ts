@@ -161,6 +161,11 @@ export const styles = css`
 		--cosmoz-button-justify-content: flex-start;
 	}
 
+	/* the popover keeps its own width instead of stretching to the field */
+	:host([field]) .content {
+		width: max-content;
+	}
+
 	:host([field]) cosmoz-button[slot='button']::part(button) {
 		background: var(--cz-color-bg-primary);
 		border-color: transparent;
