@@ -152,6 +152,25 @@ export const LocaleUs: Story = {
 	},
 };
 
+export const PageLanguage: Story = {
+	render: (args) => html`
+		<cosmoz-date-input .value=${args.value || undefined}></cosmoz-date-input>
+	`,
+	beforeEach: () => {
+		document.documentElement.lang = 'sv-SE';
+		return () => document.documentElement.removeAttribute('lang');
+	},
+	play: async ({ canvasElement, step }) => {
+		await step('uses the page language without a locale', async () => {
+			const [firstInput] = getAllByShadowRole<HTMLInputElement>(
+				canvasElement,
+				'spinbutton',
+			);
+			expect(firstInput.ariaLabel).toBe('Year');
+		});
+	},
+};
+
 export const ArrowKeyWrapping: Story = {
 	render: renderWithLocale('en-US'),
 	args: {

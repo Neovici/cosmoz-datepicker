@@ -69,7 +69,7 @@ const initializeState = (date: Date | undefined, locale: string): DateObject =>
 
 export const useDateInput = (host: DateInputProps) => {
 	const { locale: _locale, ariaLabel: hostAriaLabel } = host;
-	const locale = _locale ?? navigator.language;
+	const locale = _locale || document.documentElement.lang || navigator.language;
 	const [value, setValue] = useProperty<string>('value');
 	const date = useMemo(() => ensureDate(value), [value]);
 	const [inputState, setInputState] = useState(initializeState(date, locale));

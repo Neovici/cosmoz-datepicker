@@ -48,7 +48,7 @@ export const useCalendar = (host: CalendarProps) => {
 		max,
 	} = host;
 	const isSingleDateMode = mode === 'single';
-	const locale = _locale ?? navigator.language;
+	const locale = _locale || document.documentElement.lang || navigator.language;
 	const numberOfMonths = Number(_numberOfMonths ?? 1);
 	const [value, setValue] = useProperty<DatepickerValue>('value');
 	const { start, end } = useDatepickerValue(value, mode);
