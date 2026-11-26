@@ -43,7 +43,7 @@ export const useDatepicker = (host: Props) => {
 		triggerVariant,
 	} = host;
 	const isSingleDateMode = mode === 'single';
-	const locale = _locale ?? navigator.language;
+	const locale = _locale || document.documentElement.lang || navigator.language;
 	const [hostValue, setHostValue] = useProperty<DatepickerValue>('value');
 	const [value, setValue] = useState<DatepickerValue | undefined>(hostValue);
 	const isNarrow = useMediaMatch('(width < 735px)');
